@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinyuan (Eugene) Zhao - FRC Robotics Experience</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- Adjusted path -->
+</head>
+<body>
+    <header>
+        <h1>Jinyuan (Eugene) Zhao</h1>
+        <p>Candidate for BASc in Computer Engineering, Honours</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">About</a></li> <!-- Adjusted path -->
+            <li><a href="../experience.html">Experience</a></li> <!-- Adjusted path -->
+            <li><a href="../projects.html">Projects</a></li> <!-- Adjusted path -->
+            <li><a href="../contact.html">Contact</a></li> <!-- Adjusted path -->
+        </ul>
+    </nav>
+
+    <main>
+        <section id="experience-frc-detailed">
+            <h2>FRC Robotics Team Lead Programmer & Vision Specialist - School FRC Club</h2>
+            <p class="date-location">Sep 2022 - June 2024 (Oakville, ON)</p>
+
+            <p>As the Lead Programmer for our school's FRC Robotics Team, I spearheaded the initiative to integrate advanced machine vision capabilities for the 2024 CRESCENDO competition, which involved detecting and manipulating "Note" game pieces. This was a significant step for the team, as vision systems had not been utilized for several years.</p>
+
+            <h4>Developing the Vision System:</h4>
+            <p>My role encompassed the end-to-end design and implementation of a vision system aimed at enabling the robot to automatically locate and target game pieces. The technical solution involved:</p>
+            <ul>
+                <li><strong>Hardware & Software:</strong> Utilizing an Orange Pi single-board computer as the core processing unit. I successfully installed and configured a specialized fork of PhotonVision (by laviRZ) that included Rockchip (RKNN) support, which was crucial for leveraging the Orange Pi's processing power for machine learning tasks.</li>
+                <li><strong>Object Detection:</strong> Implementing a pre-trained YOLO (You Only Look Once) model within the PhotonVision environment to detect the orange "Note" game pieces in real-time from the robot's camera feed.</li>
+                <li><strong>Integration:</strong> The vision system was designed to output the location of detected Notes. This data was then provided to the main robot control system (programmed in Java), with the drive-to-target integration code being handled by our team captain. The intent was to create a driver-assisted targeting system, where a button press would trigger the robot to fine-tune its alignment with a detected Note for intake.</li>
+                <li><strong>Problem-Solving:</strong> A key challenge was navigating the software landscape for the Orange Pi. I actively researched and utilized resources like the Chief Delphi forums and specific GitHub repositories to find compatible PhotonVision versions and guides, particularly the rknn-readme documentation for the laviRZ fork, which was instrumental.</li>
+            </ul>
+            <p>During development and testing, the vision system demonstrated its capability to successfully detect and provide targeting data for the "Notes."</p>
+
+            <h4>Mentorship and Knowledge Transfer:</h4>
+            <p>Recognizing the need for continuity, I took the initiative to mentor a group of five Grade 10 students. I provided them with foundational knowledge on Linux basics, Orange Pi setup and usage, PhotonVision installation, and basic integration with the Java robot code. I created introductory materials to facilitate their learning. This early guidance and shared knowledge helped these students, with at least one, Ian, actively building upon this foundation. I was proud to learn that in the subsequent year, this group of students went on to independently implement even more complex systems, including camera-based odometry, showcasing the long-term value of this knowledge transfer.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Jinyuan (Eugene) Zhao. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script> <!-- Adjusted path -->
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinyuan (Eugene) Zhao - EON Media Co-op</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- Adjusted path -->
+</head>
+<body>
+    <header>
+        <h1>Jinyuan (Eugene) Zhao</h1>
+        <p>Candidate for BASc in Computer Engineering, Honours</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">About</a></li> <!-- Adjusted path -->
+            <li><a href="../experience.html">Experience</a></li> <!-- Adjusted path -->
+            <li><a href="../projects.html">Projects</a></li> <!-- Adjusted path -->
+            <li><a href="../contact.html">Contact</a></li> <!-- Adjusted path -->
+        </ul>
+    </nav>
+
+    <main>
+        <section id="experience-eonmedia-detailed">
+            <h2>BETS Co-op Student - EON Media</h2>
+            <p class="date-location">Jan 2025 - Apr 2025 (Remote)</p>
+
+            <p>During my co-op term at EON Media, I was part of a dynamic team of BETS co-op students (including Hiroki Nariyoshi and Diya Nair) contributing to various data acquisition and AI-driven media analysis projects. We collaborated closely through daily remote calls to assign tasks, discuss challenges, and share progress. My responsibilities spanned web scraping, security testing, and machine learning research.</p>
+
+            <h4>GovSession Video Acquisition: Tackling "Unscrapable" Websites</h4>
+            <p>A primary objective was to enhance EON Media's GovSession portal, an archive of publicly available government videos. Our team was tasked with developing scrapers for 21 state websites that previous teams had marked as "unscrapable" due to their complex structures or anti-scraping measures. I personally focused on four of the most challenging sites.</p>
+            <p>A common hurdle was that video sources were often obfuscated, appearing as `blob:` URLs in the HTML, which aren't directly downloadable. My approach involved meticulous reverse-engineering of network traffic using browser developer tools. By inspecting network activity while a video played, I could often identify the underlying `.m3u8` (HLS streaming) manifest files. Once these links were found, videos could be downloaded using tools like ffmpeg.</p>
+            <p>To automate this, I leveraged Selenium. For instance, in the Connecticut state legislature scraper, I configured Selenium to capture network performance logs. This allowed the script to programmatically find those `.m3u8` links. The WebDriver was carefully set up with specific Chrome options and a realistic user-agent string to mimic a genuine browser and avoid detection.</p>
+            <p>Scalability and adaptability were also key. The scrapers were designed to be controlled by a `config.json` file, allowing the AI team to specify date ranges for video downloads. This was crucial as different websites had varied interfaces—some with calendars for easy date selection, others with simple video lists requiring different logic to filter by date. Throughout all tasks, I maintained detailed daily notes in Obsidian to track my progress and learnings.</p>
+
+            <h4>Security Testing: Identifying a Referrer Header Misconfiguration</h4>
+            <p>In a separate initiative, my manager tasked us with attempting to scrape one of EON Media's own client portals, WRAL Archives, as an internal security assessment. While investigating, I found that although direct video links were not obvious, they could be reconstructed from clues within the HTML.</p>
+            <p>However, directly accessing these reconstructed URLs was blocked. Through research, I learned about the HTTP "Referrer" header. Using Postman, I crafted a request to a video URL and added a "Referrer" header pointing to the `wralarchives.com` domain. This bypassed the access restriction, revealing a misconfiguration.</p>
+            <p>The potential consequence was significant: a skilled individual could exploit this to download licensed archival videos without authorization, undermining the platform's commercial model. I reported this finding to my manager for their team to address.</p>
+
+            <h4>Machine Learning Research: Sports Logo Detection</h4>
+            <p>A major research project involved developing a system to identify sports team logos in video feeds, a requirement for a new client analyzing sports content. This was particularly for scenarios where only a logo was visible, without accompanying team names.</p>
+            <p>My approach centered on using a pre-trained ResNet50 model, a type of Convolutional Neural Network (CNN), for feature extraction. Instead of using the entire network for classification, I leveraged its powerful convolutional layers to generate a compact vector representation (features) for each logo image. These features were then used to train a K-Nearest Neighbors (KNN) classifier.</p>
+            <p>The workflow involved:
+                <ul>
+                    <li>Gathering and preprocessing a dataset of around 1,000 NBA team logos, ensuring images were in a consistent JPG format.</li>
+                    <li>Splitting the dataset into training, validation, and test sets to ensure robust evaluation. Scripts like `split_dataset.py` were created for this.</li>
+                    <li>Running multiple training experiments (documented in `train.py`), saving the extracted features from each run.</li>
+                    <li>Visualizing the feature space using t-SNE (as shown below) to understand how well the different team logos were separated in the learned feature space. The distinct clustering in the t-SNE plot indicated that the ResNet50 backbone was effective at learning discriminative features.</li>
+                </ul>
+            </p>
+            <div class="image-container">
+                <img src="../assets/images/tsne_resnet50_features.png" alt="t-SNE visualization of ResNet50 features for NBA team logos" style="width:100%;max-width:600px;display:block;margin-left:auto;margin-right:auto;">
+                <p class="caption" style="text-align:center;font-style:italic;font-size:0.9em;">t-SNE plot showing distinct clusters for different NBA team logos based on ResNet50 extracted features.</p>
+            </div>
+            <p>
+                While the model achieved very high accuracy (near 0% error after 20 epochs) on the curated test set, its performance on "actual pictures" (e.g., logos from live game screenshots) was not as strong. My hypothesis was that the initial dataset might not have captured the full diversity of how logos appear in the wild or that more extensive data augmentation techniques were needed. If I had more time, my next steps would have focused on further diversifying the training dataset and exploring advanced augmentation strategies.
+            </p>
+            <p>Throughout this project, I maintained thorough documentation, including a detailed README for the codebase and a Confluence page summarizing the project, methodology, and results. My co-op partner, Diya Nair, explored an alternative SIFT-based approach for logo detection concurrently.</p>
+            <p>Additionally, I conducted a literature review on SIFT/MSER and Homography for player tracking in sports videos, presenting these findings which were then passed on to the incoming AI engineering team by our supervisor, Allyn Bao.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Jinyuan (Eugene) Zhao. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script> <!-- Adjusted path -->
+</body>
+</html>
