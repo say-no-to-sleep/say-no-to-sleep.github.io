@@ -142,3 +142,23 @@ p.context { /* For the "Informal Tutoring..." line */
     margin-bottom: 10px;
     font-weight: bold;
 }
+
+.project-media-item {
+    margin-bottom: 20px;
+    text-align: center; /* Centers the content of the div if you want */
+}
+
+.project-media-item img,
+.project-media-item video {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.project-media-item .caption {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #555;
+}

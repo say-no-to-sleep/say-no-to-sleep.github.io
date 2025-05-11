@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinyuan (Eugene) Zhao - Secure ECG Data Transmission System</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- Adjusted path for CSS -->
+</head>
+<body>
+    <header>
+        <h1>Jinyuan (Eugene) Zhao</h1>
+        <p>Candidate for BASc in Computer Engineering, Honours</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">About</a></li> <!-- Adjusted path -->
+            <li><a href="../experience.html">Experience</a></li> <!-- Adjusted path -->
+            <li><a href="../projects.html">Projects</a></li> <!-- Adjusted path -->
+            <li><a href="../contact.html">Contact</a></li> <!-- Adjusted path -->
+        </ul>
+    </nav>
+
+    <main>
+        <section id="project-ecg-detailed">
+            <h2>Secure ECG Data Transmission System</h2>
+            <p class="date-location">Oct 2024 - Dec 2024</p>
+            <p class="context">ECE 198: Project Studio (Team Project with Vishnu Ajit)</p>
+
+            <p>For our ECE 198 Project Studio course, my partner Vishnu Ajit and I designed and implemented a system for the secure transmission of simulated Electrocardiogram (ECG) data. The project's premise was to address the critical need for protecting sensitive patient information in healthcare settings, aligning with privacy standards like PHIPA, by ensuring that ECG readings could be securely communicated between devices.</p>
+
+            <h4>System Overview & My Role:</h4>
+            <p>The system involved two STM32 microcontrollers: a transmitter (STM32F446RE) and a receiver (STM32F401RE). My primary responsibility focused on the communication aspects between these two microcontrollers, ensuring reliable data transfer, while my partner concentrated more on the algorithmic implementation, including the encryption details.</p>
+            <p>The data flow was as follows:
+                <ol>
+                    <li><strong>Signal Simulation:</strong> A potentiometer connected to the transmitter's ADC was manually adjusted to generate varying analog voltage signals, crudely emulating the characteristic peaks and troughs of an ECG waveform.</li>
+                    <li><strong>Encryption:</strong> The STM32F446RE (transmitter) digitized this analog signal and then encrypted it using the Tiny Encryption Algorithm (TEA). We selected TEA for its simplicity and suitability for resource-constrained microcontrollers. While I adapted an existing implementation of TEA for our needs, my focus was less on the cryptographic theory and more on its integration.</li>
+                    <li><strong>Secure Transmission:</strong> The encrypted data was transmitted from the STM32F446RE to the STM32F401RE via a single-wire UART (Universal Asynchronous Receiver/Transmitter) connection operating in half-duplex mode.</li>
+                    <li><strong>Decryption & Display:</strong> The STM32F401RE (receiver) decrypted the incoming data using the corresponding TEA key. Both the transmitter and receiver boards were equipped with SSD1306 OLED displays connected via I2C. The transmitter's OLED could show a real-time plot of the potentiometer's input and, upon a button press, the current encrypted value. The receiver's OLED mirrored this by displaying the decrypted waveform and could also show the received encrypted value for comparison and debugging.</li>
+                </ol>
+            </p>
+
+            <h4>Technical Challenges & Solutions:</h4>
+            <p>A significant early challenge involved establishing reliable UART communication. Initial attempts resulted in garbled data transmission. Through systematic debugging, we discovered an incompatibility related to the maximum supported clock speeds of our specific STM32 microcontroller variants. My partner's STM32 model had a lower maximum clock speed than mine. To resolve this, I reconfigured my STM32 (the transmitter) to operate at a lower clock speed compatible with his (the receiver), which stabilized the communication link.</p>
+            <p>Integrating the encryption and decryption modules also presented initial hurdles where encrypted data wasn't appearing as expected in debug outputs. Our troubleshooting process involved careful review of the data flow, modular testing, and leveraging available development tools and resources to isolate and fix these issues.</p>
+
+            <h4>Learning & Outcomes:</h4>
+            <p>This project provided valuable experience in end-to-end embedded system design, from conceptualization (as detailed in our project proposal and design documents) to physical implementation and debugging. Key takeaways for me included:
+                <ul>
+                    <li><strong>Inter-MCU Communication:</strong> Gained practical experience in setting up and troubleshooting UART communication between microcontrollers, including resolving hardware-specific constraints like clock speed mismatches.</li>
+                    <li><strong>Teamwork & Collaboration:</strong> Successfully collaborated with a partner by dividing tasks (communication vs. algorithm focus) and jointly tackling integration challenges.</li>
+                    <li><strong>Report Writing & Documentation:</strong> Honed my skills in preparing detailed technical documentation, such as the project proposal and design document, which were crucial for outlining requirements and system architecture.</li>
+                </ul>
+            </p>
+            <p>While my core technical interests developed in other areas during this period, this project provided a solid practical exercise in embedded systems development and secure data handling principles.</p>
+
+            <h4>Project Media:</h4>
+            <p>Below are some visuals from the project, including diagrams from our design documentation and photos/videos of the working system.</p>
+            <!-- Placeholder for images/videos. You will add these to your assets/images or a new assets/videos folder and link them here. -->
+            <!-- Example for an image: -->
+            <!--
+            <div class="project-media-item">
+                <img src="../assets/images/ecg_setup_photo.jpg" alt="Photo of the Secure ECG System setup">
+                <p class="caption">Our Secure ECG project setup with STM32 boards, potentiometer, and OLED displays.</p>
+            </div>
+            -->
+            <!-- Example for a video (you might need to host it on YouTube/Vimeo and embed, or provide a direct link if small): -->
+            <!--
+            <div class="project-media-item">
+                <video width="320" height="240" controls>
+                    <source src="../assets/videos/ecg_demo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p class="caption">Short demonstration of the secure ECG data transmission and display.</p>
+            </div>
+            -->
+            <div class="project-media-item">
+                <img src="../assets/images/ecg_circuit_diagram.png" alt="Circuit Diagram for Secure ECG System">
+                <p class="caption">Circuit Diagram from our Design Document, showing the connections between the STM32s, potentiometer, and OLEDs.</p>
+            </div>
+            <div class="project-media-item">
+                <img src="../assets/images/ecg_signal_flow.png" alt="Signal Flow Diagram for Secure ECG System">
+                <p class="caption">Signal Flow Diagram illustrating the data path from simulation to encrypted transmission and display.</p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Jinyuan (Eugene) Zhao. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script> <!-- Adjusted path for JS -->
+</body>
+</html>
