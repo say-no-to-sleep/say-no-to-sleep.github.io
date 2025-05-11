@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinyuan (Eugene) Zhao - 4-Bit Adder/Subtractor Project</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- Adjusted path -->
+</head>
+<body>
+    <header>
+        <h1>Jinyuan (Eugene) Zhao</h1>
+        <p>Candidate for BASc in Computer Engineering, Honours</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">About</a></li> <!-- Adjusted path -->
+            <li><a href="../experience.html">Experience</a></li> <!-- Adjusted path -->
+            <li><a href="../projects.html">Projects</a></li> <!-- Adjusted path -->
+            <li><a href="../contact.html">Contact</a></li> <!-- Adjusted path -->
+        </ul>
+    </nav>
+
+    <main>
+        <section id="project-adder-subtractor-detailed">
+            <h2>4-Bit Binary Adder/Subtractor (Discrete Transistor Logic)</h2>
+            <p class="date-location">High School Capstone Project (TER4M): Concluded June 2024</p>
+            <p class="technologies">Key Tools: Logisim-Evolution, Tinkercad, Fritzing, NPN Transistors, Discrete Logic Components</p>
+
+            <h4>Project Overview</h4>
+            <p>As my final capstone project for Grade 12 Computer Engineering (TER4M), my teammate Andrew Yong and I undertook an ambitious hardware-focused challenge: to design and build a 4-bit binary adder and subtractor entirely from discrete NPN transistors and passive components. The goal was to create a functional arithmetic unit capable of handling 4-bit inputs (0-15) and producing a 5-bit output (0-31), demonstrating a fundamental understanding of digital logic at the transistor level.</p>
+
+            <h4>Design Journey: From Logic Gates to Transistor Implementation</h4>
+            <p>Our design process involved several stages:</p>
+            <ol>
+                <li><strong>Gate-Level Design (Logisim):</strong> We began by designing the core arithmetic logic using Logisim-Evolution. This involved constructing standard full adders from basic logic gates (XOR, AND, OR) and then cascading four full adders to create the 4-bit adder. For subtraction, we incorporated a mode-select switch and additional XOR gates to implement two's complement arithmetic (conditionally inverting one operand and adding 1 via the first full adder's carry-in).
+                    <!-- Placeholder for Logisim Diagram -->
+                    <figure class="project-media-item">
+                        <img src="../assets/images/adder_logisim_diagram.png" alt="Logisim diagram of the 4-bit adder/subtractor">
+                        <figcaption>Logisim diagram illustrating the gate-level design of the 4-bit adder/subtractor.</figcaption>
+                    </figure>
+                </li>
+                <li><strong>Transistor-Level Translation (Tinkercad & Fritzing):</strong> The next crucial step was translating this gate-level design into a circuit built from NPN transistors. We referenced online resources, such as schematics from "Global Science Network," to understand how to construct basic logic gates (AND, OR, XOR) using transistors as switches. I then meticulously recreated this transistor-level logic in Tinkercad for simulation and as a blueprint for physical assembly. Fritzing was also briefly used for its speed in initial layout planning due to Tinkercad's web-based performance with such a large circuit. Andrew Yong contributed by designing more readable wiring diagrams to aid in the complex assembly.
+                    <!-- Placeholder for Transistor-Level Gate Example -->
+                    <figure class="project-media-item">
+                        <img src="../assets/images/transistor_xor_gate.png" alt="Tinkercad schematic of a transistor-based XOR gate">
+                        <figcaption>Example of an XOR gate implemented with NPN transistors, as designed in Tinkercad.</figcaption>
+                    </figure>
+                </li>
+                <li><strong>Physical Construction (Team Effort):</strong> The physical build was a significant undertaking, involving 104 NPN transistors, numerous resistors, 9 switches for input, 5 LEDs for output, and over 200 jumper wires spread across 6 breadboards. We adopted an "assembly line" approach: I focused on placing transistors and resistors, while Andrew prepared and placed the extensive wiring.
+                    <!-- Placeholder for Physical Build Photo -->
+                    <figure class="project-media-item">
+                        <img src="../assets/images/adder_physical_build.jpg" alt="Photo of the fully assembled 4-bit adder/subtractor on breadboards">
+                        <figcaption>The completed 4-bit adder/subtractor, meticulously assembled on breadboards.</figcaption>
+                    </figure>
+                </li>
+            </ol>
+
+            <h4>Challenges & Debugging</h4>
+            <p>This project was purely hardware-based, with no software or microcontrollers involved, relying entirely on the correct interplay of discrete components. Simulation in Tinkercad was invaluable and proved that the design was logically sound, working 100% of the time in the virtual environment.</p>
+            <p>However, the physical implementation presented significant challenges:
+                <ul>
+                    <li><strong>Wiring Complexity:</strong> With hundreds of connections, wiring errors were a constant concern. We used a tested single full-adder board as a template and even resorted to overlaying photos in Photoshop to cross-check wiring on subsequent sections. The most satisfying moment for me was finally identifying a single wire that was misplaced by one hole on the breadboard after an entire day of meticulous re-checking against the Tinkercad design.</li>
+                    <li><strong>Breadboard Unreliability:</strong> Loose connections between components and the breadboard contacts were a major source of intermittent faults. This highlighted the difference between ideal simulation environments and the practicalities of real-world hardware construction.</li>
+                </ul>
+            </p>
+            <p>Despite these challenges, the process of debugging such a complex circuit provided immense learning opportunities.</p>
+
+            <h4>Learning Outcomes</h4>
+            <p>This capstone project was a profound learning experience in digital electronics:
+                <ul>
+                    <li>Deepened my understanding of how fundamental arithmetic operations are performed at the transistor and gate level.</li>
+                    <li>Provided extensive hands-on experience in translating logical schematics into physical circuits.</li>
+                    <li>Reinforced the importance of meticulous planning, systematic debugging, and perseverance in tackling complex hardware projects.</li>
+                    <li>Offered a tangible appreciation for how countless simple, identical static logic components can be combined to perform complex calculations – the very foundation of modern computing.</li>
+                </ul>
+            </p>
+            <p>While we initially aimed to interface the adder with a Raspberry Pi for I/O display, the time spent on debugging the core circuit and its inherent unreliability on breadboards led us to focus on perfecting the discrete logic unit itself.</p>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Jinyuan (Eugene) Zhao. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script> <!-- Adjusted path -->
+</body>
+</html>

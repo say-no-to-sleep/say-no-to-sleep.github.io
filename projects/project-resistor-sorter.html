@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinyuan (Eugene) Zhao - Automatic Resistor Sorter Project</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- Adjusted path -->
+</head>
+<body>
+    <header>
+        <h1>Jinyuan (Eugene) Zhao</h1>
+        <p>Candidate for BASc in Computer Engineering, Honours</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">About</a></li> <!-- Adjusted path -->
+            <li><a href="../experience.html">Experience</a></li> <!-- Adjusted path -->
+            <li><a href="../projects.html">Projects</a></li> <!-- Adjusted path -->
+            <li><a href="../contact.html">Contact</a></li> <!-- Adjusted path -->
+        </ul>
+    </nav>
+
+    <main>
+        <section id="project-resistor-sorter-detailed">
+            <h2>Automatic Resistor Sorter</h2>
+            <p class="date-location">School Project: Apr 2024 - June 2024</p>
+            <p class="technologies">Key Technologies: Python, OpenCV, Scikit-Learn, Roboflow, Raspberry Pi, Pi Camera, 3D Printing</p>
+            <p class="github-link">View Project Progress & Code Iterations: <a href="https://github.com/say-no-to-sleep" target="_blank">GitHub Repository (General)</a></p> <!-- Update if specific repo link exists -->
+
+            <h4>Project Overview</h4>
+            <p>As a Grade 12 Computer Engineering (Robotics) school project, my team (including Andrew Yong and Mary Li) undertook the challenge of building an automatic resistor sorter. The goal was to create a system capable of identifying resistors placed on a custom-built conveyor belt, reading their color codes, calculating their resistance values, and then physically sorting them. My primary responsibilities focused on the computer vision software, machine learning model development for color band identification, and the overall system integration logic, while my teammates handled the mechanical design/fabrication (Andrew Yong) and electromechanical actuation (Mary Li).</p>
+
+            <h4>The Vision & Machine Learning Challenge: An Iterative Journey</h4>
+            <p>The core technical challenge from my perspective was reliably detecting resistors and accurately identifying their color bands under potentially varying conditions. My development process was highly iterative:</p>
+            <ul>
+                <li><strong>Initial Exploration (Traditional OpenCV):</strong> I began by exploring several open-source OpenCV codebases for resistor detection, primarily relying on Haar Cascade classifiers and traditional image processing techniques (e.g., adaptive thresholding, color masking). While I learned a great deal about OpenCV fundamentals and debugging (utilizing tools like HSV trackbars for color segmentation), these methods proved to be sensitive to lighting variations and struggled with reflective color bands like gold and silver. The manual tuning of color masks for numerous colors became a significant bottleneck.</li>
+                <li><strong>The Pivot to Machine Learning:</strong> After encountering these limitations, I made a strategic decision to pivot towards a machine learning-based approach. This project underscored the power and adaptability of machine learning for complex pattern recognition tasks where traditional algorithms might struggle.</li>
+                <li><strong>Resistor Localization (Roboflow):</strong> For robustly detecting the presence and location of resistors in the camera's view, I utilized a pre-trained object detection model from Roboflow Universe ("detect r Dataset"). This model was accessed via an API, which provided reliable bounding boxes for resistors captured by the Raspberry Pi Camera.</li>
+                <li><strong>Color Band Classification (Custom KNN Model):</strong> The most critical step was accurately identifying the individual color bands. My solution involved:
+                    <ol>
+                        <li>Masking out the resistor body's background to isolate the color bands.</li>
+                        <li>Segmenting each individual band using contour detection.</li>
+                        <li>Creating a small, custom dataset of these segmented band images, labeled with their correct colors (e.g., black, brown, red).</li>
+                        <li>Extracting the average color of each band image as its primary feature.</li>
+                        <li>Training a K-Nearest Neighbors (KNN) classifier using Scikit-learn on these features. While the dataset was modest, this KNN model demonstrated high accuracy (over 90%) in identifying the correct color for unseen bands from the same image source, significantly outperforming the earlier rule-based methods.</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h4>System Integration & Functionality</h4>
+            <p>The final integrated system operated as follows:</p>
+            <ol>
+                <li>A button press initiated the process, triggering the PiCamera2 to capture an image of a resistor on the conveyor belt.</li>
+                <li>The captured image was sent to the Roboflow API, which returned bounding box coordinates for any detected resistors.</li>
+                <li>For each detected resistor, the software would:
+                    <ul>
+                        <li>Crop the resistor from the main image.</li>
+                        <li>Apply image preprocessing (HSV conversion, bilateral filtering, value channel thresholding to reduce noise and normalize lighting).</li>
+                        <li>Compute the vertical median of pixel values along the resistor to create a 1D color strip, simplifying band segmentation.</li>
+                        <li>Segment individual bands from this strip.</li>
+                        <li>Predict the color of each band using the trained KNN model.</li>
+                        <li>Calculate the resistor's value (Ohms), tolerance, and temperature coefficient based on the sequence of identified colors.</li>
+                        <li>Display this information as an overlay on the image.</li>
+                        <li>Finally, signal the Raspberry Pi's GPIO pins to activate a servo motor (to position a sorting mechanism) and a solenoid (to push the resistor into the appropriate bin).</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>One notable technical challenge during development involved a conflict between OpenCV versions when installing the Roboflow `inference_sdk` (which installed a headless version), temporarily removing the ability to use `cv2.imshow` for local debugging and requiring a workaround using git commits/pulls to view image processing results.</p>
+
+            <h4>Learning Outcomes & Visuals</h4>
+            <p>This project was an intensive learning experience. Key takeaways include:
+                <ul>
+                    <li>Deep practical experience with OpenCV for image preprocessing, feature extraction, and object detection.</li>
+                    <li>Hands-on application of machine learning (Scikit-learn KNN) for a real-world classification task, including dataset creation and feature engineering.</li>
+                    <li>Understanding the trade-offs between traditional CV techniques and ML approaches.</li>
+                    <li>Experience with hardware interfacing on a Raspberry Pi (camera, GPIO for servo/solenoid control).</li>
+                    <li>The importance of iterative development and robust debugging strategies, especially when integrating software and hardware.</li>
+                </ul>
+            </p>
+            <p>Below are some visuals from the project, including videos of the sorter in action and images from the development process:</p>
+
+            <!-- Placeholder for Images/Videos - You will add these -->
+            <div class="project-visuals">
+                <figure>
+                    <img src="../assets/images/resistor_sorter_cad_model.png" alt="CAD Model of the Resistor Sorter Conveyor">
+                    <figcaption>CAD model of the 3D-printed conveyor system (Design: Andrew Yong).</figcaption>
+                </figure>
+                <figure>
+                    <img src="../assets/images/resistor_opencv_debug.png" alt="OpenCV Debugging for Resistor Detection">
+                    <figcaption>Early OpenCV development: Resistor detection and HSV color space analysis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="../assets/images/resistor_ml_output.png" alt="Machine Learning Output with Bounding Box">
+                    <figcaption>Final ML output: Resistor localized by Roboflow and color bands identified by KNN.</figcaption>
+                </figure>
+                <figure>
+                    <video controls width="100%" style="max-width:600px;">
+                        <source src="../assets/videos/resistor_sorter_action.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <figcaption>Video: Automatic Resistor Sorter in action.</figcaption>
+                </figure>
+                <!-- Add more <figure> elements for other images or videos as needed -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Jinyuan (Eugene) Zhao. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script> <!-- Adjusted path -->
+</body>
+</html>

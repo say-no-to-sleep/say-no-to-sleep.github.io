@@ -75,3 +75,52 @@ Are there any photos or videos of the resistor sorter in action, or of the 3D-pr
 The more specific you can be about the "how" and the "why" behind your design choices and implementation steps, the better we can showcase your skills.
 
 > See design document, which can answer
+
+
+
+
+---
+
+
+
+
+Collaboration Clarification:
+It's clear Andrew Yong did the 3D modeling/printing and Mary Li did some of the hardware (motor/solenoid/button). For your website, how would you best describe your primary responsibilities versus theirs in a concise way for an overview? (e.g., "I focused on the computer vision software, machine learning model development, and overall system integration logic, while my teammates handled mechanical design/fabrication and electromechanical actuation.")
+
+> CODING 
+> Yes the one you wrote is correct
+
+The "Aha!" Moment for Machine Learning:
+Your document has a very engaging (and humorous) section about realizing ML was the way to go ("From the moment I understood the weakness of Haar Cascade, it disgusted me..."). Can we adapt a slightly more formal but still impactful version of this transition for the website? For example, "After extensively exploring traditional computer vision techniques like Haar Cascades and adaptive thresholding for color band detection, I encountered limitations in robustness, particularly with varying lighting and reflective surfaces. This led me to pivot towards a machine learning-based approach, which ultimately proved to be more reliable."
+
+
+> definitely. I know my computer engineering teacher a lot and we know each other long enough that I can include a lot of jokes in my reports but yes concise writing is important
+
+
+Quantifying the KNN Model for Bands:
+You mentioned "100% certainty on the colors, but do take note that the 100% certainty is only for the pictures already in the folder" and "works around 9/10 times against the images containing the colors but was not used for training."
+For the website, a good way to phrase this might be: "A K-Nearest Neighbors (KNN) model was trained on features extracted from segmented color bands. While the dataset was modest, the model demonstrated high accuracy (over 90%) in identifying the correct color for unseen bands from the same image source, significantly outperforming earlier rule-based methods." This is honest and still impressive.
+
+> Yes
+
+Key Challenges & Learnings (Your Perspective):
+From your perspective working on the vision/ML side, what was the single biggest technical hurdle you overcame?
+What was the most valuable lesson you learned about project development or a specific technology from this experience? (Your closing thought "never doubt machine learning again lol" is great, but maybe phrase it slightly differently for the website, e.g., "This project underscored the power and adaptability of machine learning for complex pattern recognition tasks where traditional algorithms might struggle.")
+
+> The one I was stuck on for the longest was color detection
+> See at the beginning I was using opencv and haarcascade which is ok ish under fixed lighting conditions, but the colors are just absolute nightmare. I had like a lot of separate windows open each with like hsv image, hsv sliders, mask, result, for each color... I even tried flood fill
+
+Visuals:
+The document includes images of:
+3D model of the conveyor (Andrew's part).
+Failed 3D prints (layer shift).
+Your OpenCV debugging (detected resistor, HSV sliders, segmented bands).
+The final CoolMachineLearning2.py output showing a bounding box.
+The "One Code to Rule Them All" title card is fun!
+Question: Do you have any photos of the actual, physical assembled resistor sorter? Or a short video of it attempting to sort? These would be gold for the website. If not, the CAD model and your software screenshots are still good.
+
+> Yes, there are videos.
+
+Which of the images from your document do you think would be most effective to include on the detailed project page? We can select 2-3 key ones.
+
+> I can include all with subtitles, dont worry I can handle that

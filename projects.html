@@ -22,8 +22,30 @@
     </nav>
 
     <main>
-        <section id="projects">
-            <h2>Coming Soon!</h2>
+        <section id="projects-overview">
+            <h2>My Projects</h2>
+            <p>I am passionate about applying my engineering knowledge to tangible projects, exploring areas from embedded systems and secure communication to computer vision and fundamental digital logic. Below are some of the key projects I've undertaken, showcasing my skills in design, implementation, and problem-solving.</p>
+
+            <article class="project-summary"> <!-- Using a similar class as experience for consistency -->
+                <h3>Secure ECG Data Transmission System</h3>
+                <p class="date-location">ECE 198 Project Studio: Oct 2024 - Dec 2024</p>
+                <p>Designed and implemented a system for the secure transmission of simulated Electrocardiogram (ECG) data using two STM32 microcontrollers. The project involved analog signal simulation, encryption via the Tiny Encryption Algorithm (TEA), UART communication, decryption, and real-time display on OLED screens, emphasizing data privacy in healthcare.</p>
+                <p><a href="projects/project-ecg.html" class="read-more">Learn More about the Secure ECG System »</a></p>
+            </article>
+
+            <article class="project-summary">
+                <h3>Automatic Resistor Sorter</h3>
+                <p class="date-location">School Project: Apr 2024 - June 2024</p>
+                <p>Developed the computer vision and machine learning components for an automatic resistor sorter. This involved an iterative process, moving from traditional OpenCV techniques to a more robust ML pipeline using Roboflow for resistor localization and a custom KNN model (Scikit-learn) for identifying color bands from images captured by a Raspberry Pi Camera. The system integrated with a 3D-printed conveyor and sorting mechanism.</p>
+                <p><a href="projects/project-resistor-sorter.html" class="read-more">Discover the Resistor Sorter Details »</a></p>
+            </article>
+
+            <article class="project-summary">
+                <h3>4-Bit Binary Adder/Subtractor (Discrete Transistor Logic)</h3>
+                <p class="date-location">High School Capstone Project (TER4M): Concluded June 2024</p>
+                <p>Designed and built a 4-bit binary adder/subtractor using 104 NPN transistors and discrete components. The project spanned gate-level design in Logisim, transistor-level translation and simulation in Tinkercad, and meticulous physical assembly on breadboards, offering a deep dive into fundamental digital circuit operation.</p>
+                <p><a href="projects/project-adder-subtractor.html" class="read-more">Explore the Transistor-Level Adder »</a></p>
+            </article>
 
         </section>
     </main>
