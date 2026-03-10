@@ -47,7 +47,7 @@
         },
       ],
     },
-    CONTRIBUTORS: ["@axiumin", "@cqn1ne", "@milohmiao", "@theendisnear", "@milohmiao"],
+    CONTRIBUTORS: ["@axiumin", "@cqn1ne", "@milohmiao", "@theendisnear"],
     KNOWN_EDGE_CASES: [],
     COMMAND_INFO: {
       LOAD_P3: {
