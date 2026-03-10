@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | GPIO Bitmask Builder</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="tool.js" defer></script>
+</head>
+<body>
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 222</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">GPIO Bitmask Builder</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">GPIO Bitmask Builder</h1>
+      <p class="tool-page-description">Build and inspect 32-bit GPIO masks for LEDs, pushbuttons, and 7-segment displays.</p>
+    </section>
+
+    <main class="tool-page-main gpio-tool-main">
+      <div id="gpio-tool" class="gpio-tool">
+        <section id="gpio-summary-panel" class="gpio-panel gpio-summary-panel" aria-labelledby="gpio-summary-heading">
+          <div class="gpio-summary-layout">
+            <div class="gpio-summary-copy">
+              <p class="gpio-eyebrow">GPIO Mask</p>
+              <h2 id="gpio-summary-heading" class="gpio-panel-title">32-bit Builder</h2>
+              <p class="gpio-summary-text">Compose GPIO output masks, inspect the raw value, and copy the exact hex word for your lab workflow.</p>
+            </div>
+
+            <div id="gpio-value-stack" class="gpio-value-stack" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <div class="gpio-tool-layout">
+          <div class="gpio-bit-sections">
+            <section class="gpio-panel gpio-bits-panel" aria-labelledby="gpio-upper-heading">
+              <div class="gpio-panel-header">
+                <h2 id="gpio-upper-heading" class="gpio-panel-title">Upper Word [31:16]</h2>
+                <p class="gpio-panel-note">Higher-order GPIO mask bits.</p>
+              </div>
+              <div id="gpio-upper-grid" class="gpio-bit-grid"></div>
+            </section>
+
+            <section class="gpio-panel gpio-bits-panel" aria-labelledby="gpio-lower-heading">
+              <div class="gpio-panel-header">
+                <h2 id="gpio-lower-heading" class="gpio-panel-title">Lower Word [15:0]</h2>
+                <p class="gpio-panel-note">Lower-order GPIO mask bits.</p>
+              </div>
+              <div id="gpio-lower-grid" class="gpio-bit-grid"></div>
+            </section>
+          </div>
+
+          <aside class="gpio-actions-rail" aria-label="Quick Actions">
+            <section class="gpio-panel gpio-actions-panel gpio-actions-panel-desktop" aria-labelledby="gpio-actions-heading">
+              <div class="gpio-panel-header">
+                <h2 id="gpio-actions-heading" class="gpio-panel-title">Quick Actions</h2>
+                <p class="gpio-panel-note">Apply grouped bit operations in one step.</p>
+              </div>
+              <div id="gpio-desktop-actions-grid" class="gpio-actions-grid"></div>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      <div id="gpio-compact-summary" class="gpio-compact-summary" aria-hidden="true"></div>
+      <div id="gpio-mobile-actions-backdrop" class="gpio-mobile-actions-backdrop" aria-hidden="true"></div>
+      <div id="gpio-mobile-actions-tray" class="gpio-mobile-actions-tray" aria-hidden="true">
+        <section class="gpio-panel gpio-actions-panel gpio-actions-panel-mobile" aria-labelledby="gpio-mobile-actions-heading">
+          <div class="gpio-panel-header">
+            <h2 id="gpio-mobile-actions-heading" class="gpio-panel-title">Quick Actions</h2>
+            <p class="gpio-panel-note">Apply grouped bit operations in one step.</p>
+          </div>
+          <div id="gpio-mobile-actions-grid" class="gpio-actions-grid"></div>
+        </section>
+      </div>
+
+      <div id="gpio-toast" class="gpio-toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+222">ECE 222</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

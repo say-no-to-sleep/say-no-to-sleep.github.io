@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Autograder Reverse-Engineering</title>
+  <link rel="stylesheet" href="../../style.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="./project3-data.js" defer></script>
+  <script src="./project4-data.js" defer></script>
+  <script src="./tool.js" defer></script>
+</head>
+<body>
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 250</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">Autograder Reverse-Engineering</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">Autograder Reverse-Engineering</h1>
+      <p class="tool-page-description">Placeholder for dissecting ECE 250 autograder behavior and hidden expectations.</p>
+    </section>
+
+    <main class="tool-page-main tool-page-main-plain">
+      <section class="autograder-shell" aria-labelledby="autograder-tabs-heading">
+        <h2 id="autograder-tabs-heading" class="visually-hidden">Project Tabs</h2>
+
+        <div class="aqua-tabview-wrap">
+          <div class="aqua-tabview" data-content-prefix="autograder-project">
+            <div class="aqua-tabview-indicator"></div>
+            <div class="aqua-tabview-tab active" data-tab="project-3">Project 3</div>
+            <div class="aqua-tabview-tab" data-tab="project-4">Project 4</div>
+            <div class="aqua-tabview-tab disabled" data-tab="project-5">Project 5</div>
+          </div>
+        </div>
+
+        <div class="tab-pane active autograder-tab-pane" id="autograder-project-project-3">
+          <div id="autograder-project-3-root" class="autograder-project-root autograder-project-3-root" aria-live="polite"></div>
+        </div>
+
+        <div class="tab-pane autograder-tab-pane" id="autograder-project-project-4">
+          <div id="autograder-project-4-root" class="autograder-project-root autograder-project-4-root" aria-live="polite"></div>
+        </div>
+
+        <div class="tab-pane autograder-tab-pane" id="autograder-project-project-5">
+          <section class="autograder-panel" aria-labelledby="autograder-project-5-heading">
+            <p class="content-page-eyebrow">Project 5</p>
+            <h2 id="autograder-project-5-heading" class="autograder-panel-title">Project 5 workspace</h2>
+            <p class="autograder-panel-copy">Project 5 is not available yet.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

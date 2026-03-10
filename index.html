@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="aqua2.js" defer></script>
+  <script src="storage.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="top-bar">
+        <h1 class="site-title">WatTheHex</h1>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link menu-link-current" href="index.html" aria-current="page">Home</a>
+          <a class="menu-link" href="tools.html">Tools</a>
+          <a class="menu-link" href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+    <main class="home-page-main home-empty-main">
+      <section class="home-landing">
+        <div class="home-stage">
+          <section class="home-panel home-copy-panel" aria-labelledby="home-welcome-heading">
+            <p class="home-eyebrow">Welcome</p>
+            <h2 id="home-welcome-heading" class="home-title">Welcome</h2>
+            <p class="home-lede">WatTheHex???</p>
+            <p class="home-lede">You can find useful/useless tools here.</p>
+          </section>
+
+          <section class="home-panel" aria-labelledby="home-new-heading">
+            <p id="home-new-heading" class="home-eyebrow">Newly Added</p>
+            <div class="home-highlights">
+              <a class="tool-card home-highlight-card" href="tools/gpio-calculator/index.html" aria-labelledby="home-new-heading home-gpio-title">
+                <div class="home-new-row">
+                  <span class="home-new-badge">New!</span>
+                </div>
+                <h3 id="home-gpio-title" class="tool-card-title">GPIO Bitmask Builder</h3>
+                <p class="tool-card-description">Build and inspect 32-bit GPIO masks for LEDs, pushbuttons, and 7-segment displays.</p>
+                <div class="tool-card-meta">
+                  <span class="tool-chip">ECE 222</span>
+                  <span class="tool-chip">Calculator</span>
+                  <span class="tool-term">2A</span>
+                </div>
+              </a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Tools</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="aqua2.js" defer></script>
+  <script src="storage.js" defer></script>
+  <script src="tools.js" defer></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="index.html">WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="index.html">Home</a>
+          <a class="menu-link menu-link-current" href="tools.html" aria-current="page">Tools</a>
+          <a class="menu-link" href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="tools-page-main">
+      <section class="tools-directory" aria-labelledby="tools-heading">
+        <div class="tools-directory-header">
+          <div>
+            <p class="home-eyebrow">Directory</p>
+            <h1 id="tools-heading" class="tools-directory-title">Tools</h1>
+            <p class="tools-directory-copy">Filter by course, type, and term, then jump straight into the tool you need.</p>
+          </div>
+        </div>
+
+        <section class="filters-panel" aria-labelledby="filters-heading">
+          <h2 id="filters-heading" class="visually-hidden">Tool filters</h2>
+          <div id="filters" class="filter-groups"></div>
+        </section>
+
+        <div class="directory-main">
+          <div id="tool-grid" class="tool-grid" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

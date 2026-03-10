@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Red-Black Tree Visualizer</title>
+  <link rel="stylesheet" href="../../style.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+</head>
+<body>
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 250</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">Red-Black Tree Visualizer</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">Red-Black Tree Visualizer</h1>
+      <p class="tool-page-description">Step through insertions, rotations, and recoloring for balanced tree operations.</p>
+    </section>
+
+    <main class="tool-page-main tool-page-main-plain">
+      <div class="tool-under-construction" aria-live="polite">
+        <p class="tool-under-construction-label">Under Construction</p>
+        <div class="aqua-progress-indeterminate" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>
