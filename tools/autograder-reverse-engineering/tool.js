@@ -93,24 +93,6 @@ function createAutograderAnalyzer({
     return normalizeTestNotes(TEST_NOTES[testNumber]);
   }
 
-  function getRelatedNotes(testNumbers) {
-    const seen = new Set();
-
-    return [...testNumbers]
-      .sort((left, right) => left - right)
-      .flatMap((testNumber) => getTestNotes(testNumber))
-      .filter((note) => {
-        const key = `${note.text}::${note.source}`;
-
-        if (seen.has(key)) {
-          return false;
-        }
-
-        seen.add(key);
-        return true;
-      });
-  }
-
   function getDerivedState() {
     const commandCounts = {};
 
@@ -285,7 +267,6 @@ function createAutograderAnalyzer({
 
   function renderDiagnosis(suspects, loadFailed) {
     let body = "";
-    const relatedNotes = getRelatedNotes(state.failed);
 
     if (state.failed.size === 0) {
       body += `
@@ -307,15 +288,6 @@ function createAutograderAnalyzer({
 
     if (suspects.length > 0) {
       body += `
-        ${
-          relatedNotes.length > 0
-            ? `
-              <div class="autograder-diagnosis-note-list">
-                ${relatedNotes.map((note) => renderNoteCard(note)).join("")}
-              </div>
-            `
-            : ""
-        }
         <div class="autograder-suspect-list">
           ${suspects.map(([command, testSet], index) => renderSuspectCard(command, testSet, index)).join("")}
         </div>
@@ -381,8 +353,8 @@ function createAutograderAnalyzer({
               <h3 id="${sectionPrefix}-tests-heading" class="autograder-panel-title autograder-panel-title-small">Mark the cases that failed</h3>
             </div>
             <div class="autograder-test-actions">
-              <button class="aqua-button autograder-toolbar-button" type="button" data-action="select-all" data-tone="pb">Select all</button>
-              <button class="aqua-button autograder-toolbar-button" type="button" data-action="clear-all" data-tone="misc">Clear all</button>
+              <button class="autograder-toolbar-button" type="button" data-action="select-all" data-tone="primary">Select all</button>
+              <button class="autograder-toolbar-button" type="button" data-action="clear-all" data-tone="danger">Clear all</button>
             </div>
           </div>
           <div class="autograder-test-grid" data-autograder-test-grid></div>

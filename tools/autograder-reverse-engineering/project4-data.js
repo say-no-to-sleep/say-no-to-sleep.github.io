@@ -21,6 +21,12 @@
       3: [
         { text: "has collisions (searches > 1); has failure LOOKUPs" },
       ],
+      5: [
+        {
+          text: "test 5 is deleting a country with a tree present, there might be more though",
+          source: "@theendisnear",
+        }
+      ],
       7: [
         {
           text: "Does not care about TRACE_P3",
@@ -41,7 +47,7 @@
         },
       ],
     },
-    CONTRIBUTORS: ["@axiumin", "@cqn1ne", "@milohmiao"],
+    CONTRIBUTORS: ["@axiumin", "@cqn1ne", "@milohmiao", "@theendisnear", "@milohmiao"],
     KNOWN_EDGE_CASES: [],
     COMMAND_INFO: {
       LOAD_P3: {

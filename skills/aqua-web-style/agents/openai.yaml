@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aqua Web Style"
+  short_description: "Build static UIs in Aqua style"
+  default_prompt: "Use $aqua-web-style to style this HTML/CSS interface in an Aqua-inspired web aesthetic."
