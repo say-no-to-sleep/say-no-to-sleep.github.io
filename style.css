@@ -158,6 +158,21 @@ body::before {
   color: #ffffff;
 }
 
+.top-feedback-link,
+.top-feedback-link.aqua-button {
+  margin-left: auto;
+  min-height: 1.55rem;
+  padding: 0.26rem 0.82rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--aqua-button-text);
+}
+
 .site-title,
 .site-title-link {
   display: inline-flex;
@@ -1724,6 +1739,12 @@ body::before {
 
   .menu-bar {
     width: 100%;
+    margin-left: 0;
+  }
+
+  .top-feedback-link,
+  .top-feedback-link.aqua-button {
+    align-self: flex-end;
     margin-left: 0;
   }
 

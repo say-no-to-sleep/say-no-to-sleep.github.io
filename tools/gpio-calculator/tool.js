@@ -145,7 +145,7 @@
 
   function createActionButtonsMarkup() {
     return ACTIONS.map((action) => {
-      return `<button type="button" class="gpio-action-button aqua-button" data-action="${action.key}" data-tone="${action.tone}">${action.label}</button>`;
+      return `<button type="button" class="gpio-action-button" data-action="${action.key}" data-tone="${action.tone}">${action.label}</button>`;
     }).join("");
   }
 
@@ -171,7 +171,7 @@
       "</div>",
       '<div class="gpio-compact-actions">',
       '<button type="button" class="gpio-copy-button aqua-button-focused" data-action="copy-hex">Copy</button>',
-      `<button type="button" class="gpio-action-button aqua-button gpio-compact-menu-button" data-action="toggle-mobile-actions" aria-controls="gpio-mobile-actions-tray" aria-expanded="${state.isMobileActionsOpen}">Actions</button>`,
+      `<button type="button" class="gpio-action-button gpio-compact-menu-button" data-action="toggle-mobile-actions" aria-controls="gpio-mobile-actions-tray" aria-expanded="${state.isMobileActionsOpen}">Actions</button>`,
       "</div>",
       "</div>",
       "</div>"

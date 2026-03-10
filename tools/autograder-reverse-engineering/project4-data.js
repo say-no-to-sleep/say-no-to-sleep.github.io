@@ -21,8 +21,24 @@
       3: [
         { text: "has collisions (searches > 1); has failure LOOKUPs" },
       ],
+      7: [
+        {
+          text: "Does not care about TRACE_P3",
+          source: "@cqn1ne"
+        },
+        {
+          text: "Does not care about tree, only uses the array",
+          source: "@cqn1ne"
+        },
+      ],
       8: [
         { text: "search count does NOT matter; exact post-CLEAN indices do" },
+      ],
+      9: [
+        {
+          text: "Does not care about TRACE_P3",
+          source: "@cqn1ne"
+        },
       ],
     },
     CONTRIBUTORS: ["@axiumin", "@cqn1ne", "@milohmiao"],
