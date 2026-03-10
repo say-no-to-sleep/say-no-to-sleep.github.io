@@ -346,9 +346,19 @@ body::before {
 
 .home-copy-panel {
   display: flex;
-  min-height: 316px;
   flex-direction: column;
-  justify-content: center;
+  align-self: start;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 0.25rem 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.home-copy-panel::before {
+  display: none;
 }
 
 .home-eyebrow {
@@ -404,6 +414,7 @@ body::before {
 
 .home-highlights {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
@@ -1804,6 +1815,6 @@ body::before {
   }
 
   .home-highlights {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: 1fr;
   }
 }

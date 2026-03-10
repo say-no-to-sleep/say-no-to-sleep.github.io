@@ -624,8 +624,8 @@ function bindAutograderTabPersistence() {
 
   syncAutograderTabFromHash();
 
-  tabView.addEventListener("click", (event) => {
-    const tab = event.target.closest(".aqua-tabview-tab:not(.disabled)");
+  tabView.addEventListener("pointerup", () => {
+    const tab = tabView.querySelector(".aqua-tabview-tab.active:not(.disabled)");
 
     if (!tab) {
       return;
