@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | AM Envelope Visualizer</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="tool.js" defer></script>
+</head>
+<body>
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+        <a
+          class="tool-feedback-link"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Feedback</a>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 240</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">AM Envelope Visualizer</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">AM Envelope Visualizer</h1>
+      <p class="tool-page-description">Trace how the message, envelope, carrier, and RC detector interact across a full amplitude-modulation walkthrough.</p>
+    </section>
+
+    <main class="tool-page-main am-tool-main">
+      <div id="am-tool" class="am-tool">
+        <section class="am-panel am-hero-panel" aria-labelledby="am-overview-heading">
+          <div class="am-hero-copy">
+            <p class="am-eyebrow">ECE 240 / 2A</p>
+            <h2 id="am-overview-heading" class="am-section-title">Envelope Tracking</h2>
+            <p class="am-hero-text">Adjust the message frequency, carrier frequency, modulation index, and RC time constant to see where AM stays recoverable and where the detector starts to break down.</p>
+          </div>
+
+          <div class="am-formula-card" aria-label="Amplitude modulation formula">
+            <p class="am-formula-label">Signal Model</p>
+            <p class="am-formula">s(t) = [1 + m x(t)] cos(omega_c t)</p>
+            <p class="am-formula-support">x(t) = cos(omega_m t)</p>
+          </div>
+        </section>
+
+        <div class="am-layout">
+          <div class="am-stage-stack">
+            <section id="am-status-panel" class="am-panel am-status-panel" aria-labelledby="am-status-heading">
+              <div class="am-panel-header">
+                <div>
+                  <p class="am-eyebrow">Live Checks</p>
+                  <h2 id="am-status-heading" class="am-section-title">Operating Window</h2>
+                </div>
+                <p class="am-panel-note">Healthy AM needs a separated carrier, a positive envelope, and a detector that discharges between carrier cycles without smearing the message.</p>
+              </div>
+
+              <div class="am-status-grid" aria-live="polite">
+                <article class="am-status-card" data-status-card="ratio">
+                  <p class="am-status-label">Carrier Ratio</p>
+                  <p class="am-status-value" id="am-ratio-value">13.3x</p>
+                  <p class="am-status-note" id="am-ratio-note">Carrier is well above the message rate.</p>
+                </article>
+
+                <article class="am-status-card" data-status-card="envelope">
+                  <p class="am-status-label">Envelope State</p>
+                  <p class="am-status-value" id="am-envelope-value">Stable</p>
+                  <p class="am-status-note" id="am-envelope-note">m stays at or below 1, so the envelope never inverts.</p>
+                </article>
+
+                <article class="am-status-card" data-status-card="detector">
+                  <p class="am-status-label">Detector Window</p>
+                  <p class="am-status-value" id="am-detector-value">Valid</p>
+                  <p class="am-status-note" id="am-detector-note">tau sits between 1/fc and 1/fm.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-msg-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">01</div>
+                <div>
+                  <h2 id="am-stage-msg-heading" class="am-stage-title">Message Signal x(t)</h2>
+                  <p class="am-stage-copy">The baseband waveform sets the information you want the receiver to recover.</p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="msg"></canvas>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-scaled-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">02</div>
+                <div>
+                  <h2 id="am-stage-scaled-heading" class="am-stage-title">Scaled Message m x(t)</h2>
+                  <p class="am-stage-copy">The modulation index m controls how deeply the message pushes the carrier envelope up and down.</p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="scaled"></canvas>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-env-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">03</div>
+                <div>
+                  <h2 id="am-stage-env-heading" class="am-stage-title">Envelope 1 + m x(t)</h2>
+                  <p class="am-stage-copy">Adding the DC offset keeps the ideal AM envelope positive. <span id="am-envelope-inline-note" class="am-inline-note">Envelope remains above zero.</span></p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="env"></canvas>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-carrier-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">04</div>
+                <div>
+                  <h2 id="am-stage-carrier-heading" class="am-stage-title">Carrier cos(omega_c t)</h2>
+                  <p class="am-stage-copy">The high-frequency carrier should oscillate much faster than the message to cleanly carry the envelope.</p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="carrier"></canvas>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-am-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">05</div>
+                <div>
+                  <h2 id="am-stage-am-heading" class="am-stage-title">AM Output s(t)</h2>
+                  <p class="am-stage-copy">The solid trace is the transmitted waveform; the dashed guide shows the positive and negative envelope that wraps it.</p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="am"></canvas>
+            </section>
+
+            <section class="am-panel am-stage-panel" aria-labelledby="am-stage-det-heading">
+              <div class="am-stage-header">
+                <div class="am-stage-index">06</div>
+                <div>
+                  <h2 id="am-stage-det-heading" class="am-stage-title">RC Detector Output</h2>
+                  <p class="am-stage-copy">The detector charges to the envelope peaks and decays between them. Good tau values recover the message without ripple or lag.</p>
+                </div>
+              </div>
+              <canvas class="am-stage-canvas" data-canvas="det"></canvas>
+            </section>
+
+            <section class="am-panel am-chain-panel" aria-labelledby="am-chain-heading">
+              <div class="am-panel-header">
+                <div>
+                  <p class="am-eyebrow">Signal Path</p>
+                  <h2 id="am-chain-heading" class="am-section-title">How Each Stage Connects</h2>
+                </div>
+              </div>
+              <p class="am-chain-line">
+                <span>x(t)</span>
+                <span>multiply by m</span>
+                <span>add 1</span>
+                <span>multiply by cos(omega_c t)</span>
+                <span>detect with RC</span>
+                <span>recover the envelope</span>
+              </p>
+            </section>
+          </div>
+
+          <aside class="am-control-rail" aria-labelledby="am-controls-heading">
+            <section class="am-panel am-controls-panel">
+              <div class="am-panel-header">
+                <div>
+                  <p class="am-eyebrow">Controls</p>
+                  <h2 id="am-controls-heading" class="am-section-title">Tune the Signal</h2>
+                </div>
+                <p class="am-panel-note">All controls redraw the six panels immediately so you can see the modulation chain update in place.</p>
+              </div>
+
+              <div class="am-control-list">
+                <label class="am-control" for="am-fm-control" style="--am-control-color: #7a5cc4;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Message Frequency fm</span>
+                    <output class="am-control-value" id="am-fm-value" for="am-fm-control">3.0 Hz</output>
+                  </span>
+                  <input class="am-range" id="am-fm-control" type="range" min="1" max="10" step="0.5" value="3" data-control="fm">
+                  <span class="am-control-scale"><span>1 Hz</span><span>10 Hz</span></span>
+                </label>
+
+                <label class="am-control" for="am-fc-control" style="--am-control-color: #d48a2c;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Carrier Frequency fc</span>
+                    <output class="am-control-value" id="am-fc-value" for="am-fc-control">40 Hz</output>
+                  </span>
+                  <input class="am-range" id="am-fc-control" type="range" min="10" max="100" step="5" value="40" data-control="fc">
+                  <span class="am-control-scale"><span>10 Hz</span><span>100 Hz</span></span>
+                </label>
+
+                <label class="am-control" id="am-m-control-wrap" for="am-m-control" style="--am-control-color: #4aa3c8;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Modulation Index m</span>
+                    <output class="am-control-value" id="am-m-value" for="am-m-control">0.70</output>
+                  </span>
+                  <input class="am-range" id="am-m-control" type="range" min="0" max="1.5" step="0.05" value="0.7" data-control="m">
+                  <span class="am-control-scale"><span>0.00</span><span>1.50</span></span>
+                </label>
+
+                <label class="am-control" id="am-tau-control-wrap" for="am-tau-control" style="--am-control-color: #5aa56f;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Detector Time Constant tau</span>
+                    <output class="am-control-value" id="am-tau-value" for="am-tau-control">0.080 s</output>
+                  </span>
+                  <input class="am-range" id="am-tau-control" type="range" min="0.005" max="0.5" step="0.005" value="0.08" data-control="tau">
+                  <span class="am-control-scale"><span>0.005 s</span><span>0.500 s</span></span>
+                </label>
+              </div>
+
+              <section class="am-note-panel" aria-labelledby="am-what-heading">
+                <h3 id="am-what-heading" class="am-note-title">What to Watch</h3>
+                <ul class="am-note-list">
+                  <li>Stage 3 is the same envelope drawn as the dashed guide in Stage 5.</li>
+                  <li>If m rises above 1, the envelope crosses zero and detector distortion follows.</li>
+                  <li>If fc drops too close to fm, the carrier no longer looks like a fast wrapper around the message.</li>
+                  <li>If tau is too small, the output ripples; if tau is too large, the output drifts behind the message.</li>
+                </ul>
+              </section>
+
+              <section class="am-note-panel" aria-labelledby="am-targets-heading">
+                <h3 id="am-targets-heading" class="am-note-title">Recommended Targets</h3>
+                <ul class="am-note-list">
+                  <li>Carrier ratio fc/fm at or above 10x</li>
+                  <li>Modulation index m at or below 1.00</li>
+                  <li>Detector window 1/fc &lt; tau &lt; 1/fm</li>
+                </ul>
+              </section>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      <div id="am-compact-summary" class="am-compact-summary" aria-hidden="true"></div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+240">ECE 240</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

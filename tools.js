@@ -2,6 +2,15 @@ window.WatTheHex = window.WatTheHex || {};
 
 window.WatTheHex.tools = [
   {
+    name: "AM Envelope Visualizer",
+    description: "Inspect message, envelope, carrier, and RC detector behavior across the full AM signal chain.",
+    course: "ECE 240",
+    type: "Visualizer",
+    term: "2A",
+    date: "2026-03-11",
+    url: "tools/am-envelope-visualizer/index.html"
+  },
+  {
     name: "Autograder Reverse-Engineering",
     description: "Placeholder for dissecting ECE 250 autograder behavior and hidden expectations.",
     course: "ECE 250",
