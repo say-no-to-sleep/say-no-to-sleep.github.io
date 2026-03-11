@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Convolution Visualizer</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
+  <script src="../../assets/render-katex.js" defer></script>
+  <script src="tool.js" defer></script>
+</head>
+<body>
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+        <a
+          class="tool-feedback-link"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Feedback</a>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 205</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">Convolution Visualizer</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">Convolution Visualizer</h1>
+      <p class="tool-page-description">Slide one signal across another, inspect the overlap product, and watch the convolution integral build point by point.</p>
+    </section>
+
+    <main class="tool-page-main conv-tool-main">
+      <div id="conv-tool" class="conv-tool">
+        <section class="conv-hero" aria-labelledby="conv-hero-heading">
+          <div class="conv-hero-copy">
+            <p class="conv-eyebrow">ECE 205 / 2A</p>
+            <h2 id="conv-hero-heading" class="conv-hero-title">Multiply the overlap, then accumulate the area.</h2>
+            <p class="conv-hero-text">Use presets or enter your own expressions for f(t) and g(t). The visualizer flips and shifts g, shades the pointwise product, and traces the final convolution output at the selected time.</p>
+          </div>
+
+          <div class="conv-formula-card" aria-label="Convolution formula">
+            <p class="conv-formula-label">Convolution Model</p>
+            <p class="conv-formula-line" data-katex="y(t) = \int_{-\infty}^{\infty} f(\tau)\,g(t-\tau)\,d\tau" data-katex-display="block">y(t) = integral f(tau) g(t - tau) d tau</p>
+            <p class="conv-formula-support">Domain: -6 to 6 with numerical integration over 600 samples.</p>
+          </div>
+        </section>
+
+        <div class="conv-layout">
+          <div class="conv-stage-stack">
+            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-inputs-heading">
+              <div class="conv-panel-header">
+                <div>
+                  <p class="conv-eyebrow">Stage 01</p>
+                  <h2 id="conv-inputs-heading" class="conv-section-title">Input Signals</h2>
+                </div>
+                <p class="conv-panel-note">Sample f(t) and g(t) across the same time window before the convolution sweep begins.</p>
+              </div>
+
+              <div class="conv-signal-grid">
+                <article class="conv-plot-card" aria-labelledby="conv-f-heading">
+                  <div class="conv-plot-card-header">
+                    <h3 id="conv-f-heading" class="conv-plot-card-title">f(t)</h3>
+                    <p class="conv-plot-card-copy">First signal</p>
+                  </div>
+                  <div id="conv-f-plot" class="conv-plot-host"></div>
+                </article>
+
+                <article class="conv-plot-card" aria-labelledby="conv-g-heading">
+                  <div class="conv-plot-card-header">
+                    <h3 id="conv-g-heading" class="conv-plot-card-title">g(t)</h3>
+                    <p class="conv-plot-card-copy">Second signal</p>
+                  </div>
+                  <div id="conv-g-plot" class="conv-plot-host"></div>
+                </article>
+              </div>
+            </section>
+
+            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-overlap-heading">
+              <div class="conv-panel-header">
+                <div>
+                  <p class="conv-eyebrow">Stage 02</p>
+                  <h2 id="conv-overlap-heading" class="conv-section-title">Flip, Shift, and Multiply</h2>
+                </div>
+                <p class="conv-panel-note">Drag across the chart or use the scrubber to position t. The gold fill shows the current product f(tau) g(t - tau).</p>
+              </div>
+
+              <div class="conv-legend" aria-hidden="true">
+                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-f"></span>f(tau)</span>
+                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-g"></span>g(t - tau)</span>
+                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-product"></span>Product area</span>
+              </div>
+
+              <div id="conv-overlap-plot" class="conv-plot-host conv-plot-host-interactive" aria-label="Interactive overlap plot"></div>
+              <p class="conv-stage-footnote">The vertical marker sets the output time. When the overlap is large, the convolution value at that time grows.</p>
+            </section>
+
+            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-output-heading">
+              <div class="conv-panel-header">
+                <div>
+                  <p class="conv-eyebrow">Stage 03</p>
+                  <h2 id="conv-output-heading" class="conv-section-title">Convolution Output</h2>
+                </div>
+                <p class="conv-panel-note">The faint path shows the full numerical convolution, while the highlighted trace fills in up to the current t.</p>
+              </div>
+
+              <div class="conv-legend" aria-hidden="true">
+                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-output"></span>Traced output</span>
+                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-ghost"></span>Full response</span>
+              </div>
+
+              <div id="conv-output-plot" class="conv-plot-host"></div>
+            </section>
+          </div>
+
+          <aside class="conv-control-rail" aria-labelledby="conv-controls-heading">
+            <section class="conv-panel conv-controls-panel">
+              <div class="conv-panel-header">
+                <div>
+                  <p class="conv-eyebrow">Controls</p>
+                  <h2 id="conv-controls-heading" class="conv-section-title">Signal Editor</h2>
+                </div>
+                <p class="conv-panel-note">Choose a preset or enter your own expressions to resample both signals and recompute the convolution.</p>
+              </div>
+
+              <section class="conv-control-group" aria-labelledby="conv-presets-heading">
+                <div class="conv-control-group-header">
+                  <h3 id="conv-presets-heading" class="conv-control-group-title">Presets</h3>
+                  <p class="conv-control-group-copy">Use common textbook pairs to jump directly into a known response.</p>
+                </div>
+                <div id="conv-preset-list" class="conv-preset-list"></div>
+              </section>
+
+              <section class="conv-control-group" aria-labelledby="conv-expressions-heading">
+                <div class="conv-control-group-header">
+                  <h3 id="conv-expressions-heading" class="conv-control-group-title">Expressions</h3>
+                  <p class="conv-control-group-copy">Supported tokens: t, x, pi, e, u(), rect(), tri(), sin(), cos(), exp(), abs().</p>
+                </div>
+
+                <label class="conv-expression-field" for="conv-f-input">
+                  <span class="conv-expression-row">
+                    <span class="conv-expression-label">f(t)</span>
+                    <span class="conv-expression-tag">Input A</span>
+                  </span>
+                  <div id="conv-f-wrap" class="aqua-input-wrap conv-expression-wrap">
+                    <input id="conv-f-input" class="aqua-input conv-expression-input" type="text" value="rect(t)" spellcheck="false" autocomplete="off">
+                  </div>
+                  <span id="conv-f-error" class="conv-input-error" hidden>Invalid expression. Plotting 0 until the syntax is fixed.</span>
+                </label>
+
+                <label class="conv-expression-field" for="conv-g-input">
+                  <span class="conv-expression-row">
+                    <span class="conv-expression-label">g(t)</span>
+                    <span class="conv-expression-tag">Input B</span>
+                  </span>
+                  <div id="conv-g-wrap" class="aqua-input-wrap conv-expression-wrap">
+                    <input id="conv-g-input" class="aqua-input conv-expression-input" type="text" value="rect(t)" spellcheck="false" autocomplete="off">
+                  </div>
+                  <span id="conv-g-error" class="conv-input-error" hidden>Invalid expression. Plotting 0 until the syntax is fixed.</span>
+                </label>
+              </section>
+
+              <label class="conv-scrub-field" for="conv-time-scrub" style="--conv-range-color: #d39b2d;">
+                <span class="conv-scrub-row">
+                  <span class="conv-scrub-label">Time Sweep</span>
+                  <output id="conv-scrub-value" class="conv-scrub-value" for="conv-time-scrub">0.00</output>
+                </span>
+                <input id="conv-time-scrub" class="conv-range" type="range" min="-6" max="6" step="0.02" value="0">
+                <span class="conv-range-scale"><span>-6</span><span>0</span><span>6</span></span>
+              </label>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+205">ECE 205</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

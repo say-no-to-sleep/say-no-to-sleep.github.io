@@ -2,6 +2,15 @@ window.WatTheHex = window.WatTheHex || {};
 
 window.WatTheHex.tools = [
   {
+    name: "Convolution Visualizer",
+    description: "Slide one signal across another, inspect the overlap product, and watch the convolution build point by point.",
+    course: "ECE 205",
+    type: "Visualizer",
+    term: "2A",
+    date: "2026-03-11",
+    url: "tools/convolution-visualizer/index.html"
+  },
+  {
     name: "AM Envelope Visualizer",
     description: "Inspect message, envelope, carrier, and RC detector behavior across the full AM signal chain.",
     course: "ECE 240",
