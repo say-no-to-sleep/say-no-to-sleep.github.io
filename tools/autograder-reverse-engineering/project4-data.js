@@ -5,7 +5,7 @@
       2: ["LOAD_P3", "LOOKUP_P4"],
       3: ["LOAD_P3", "REMOVE_P4", "LOOKUP_P4"],
       4: ["LOAD_P3", "REMOVE_P4"],
-      5: ["LOAD_P3", "BUILD_P3", "REMOVE_P4"],
+      5: ["LOAD_P3", "BUILD_P3", "REMOVE_P4", "LIMITS_P3"],
       6: ["LOAD_P3", "INSERT_P4", "REMOVE_P4", "LOOKUP_P4"],
       7: ["LOAD_P3", "UNKNOWN"],
       8: ["LOAD_P3", "INSERT_P4", "BUILD_P3", "TRACE_P3", "REMOVE_P4", "CLEAN_P4", "LOOKUP_P4"],
@@ -25,16 +25,19 @@
         {
           text: "test 5 is deleting a country with a tree present, there might be more though",
           source: "@theendisnear",
-        }
+        },
+        {
+          text: "LIMITS_P3 highest is called after REMOVE_P4; removing a country must correctly update the tree or LIMITS_P3 will return stale/dead nodes",
+        },
       ],
       7: [
         {
           text: "Does not care about TRACE_P3",
-          source: "@cqn1ne"
+          source: "@cqn1ne",
         },
         {
           text: "Does not care about tree, only uses the array",
-          source: "@cqn1ne"
+          source: "@cqn1ne",
         },
       ],
       8: [
@@ -43,7 +46,7 @@
       9: [
         {
           text: "Does not care about TRACE_P3",
-          source: "@cqn1ne"
+          source: "@cqn1ne",
         },
       ],
     },
@@ -99,7 +102,7 @@
           "Placeholder for test07 and test09 — confirmed pure P3 regressions but exact commands not yet determined.",
       },
     },
-    NEVER_TESTED: [""],
+    NEVER_TESTED: ["COUNTRY_MIN_P3"],
   };
 
   const wattheHex = global.WatTheHex || (global.WatTheHex = {});
