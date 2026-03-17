@@ -1095,6 +1095,7 @@
     const toState = getStepStateSets(toStep);
     const maxValue = Math.max(...toStep.array, 1);
     const canAnimateByValue = canAnimateByValueIdentity(fromStep.array, toStep.array);
+    const useInsertionOverlay = state.algorithm === "insertion" && (hasInsertionHold(fromStep) || hasInsertionHold(toStep));
 
     const indexMarkup = geometry.showIndexLabels
       ? toStep.array.map((_, index) => {
@@ -1103,9 +1104,14 @@
       }).join("")
       : "";
 
-    const barEntries = canAnimateByValue
+    const barEntries = useInsertionOverlay
+      ? buildInsertionBarEntries(fromStep, toStep, geometry, motionProgress, pulse, fromState, toState, maxValue)
+      : canAnimateByValue
       ? buildValueMotionBarEntries(fromStep, toStep, geometry, motionProgress, pulse, fromState, toState, maxValue)
       : buildSlotMotionBarEntries(fromStep, toStep, geometry, motionProgress, pulse, fromState, toState, maxValue);
+    const insertionMarkup = useInsertionOverlay
+      ? createInsertionOverlayMarkup(fromStep, toStep, geometry, motionProgress, pulse, maxValue)
+      : "";
 
     const barMarkup = barEntries
       .sort((left, right) => Number(left.highlighted) - Number(right.highlighted) || left.currentX - right.currentX)
@@ -1124,6 +1130,7 @@
           createAnimatedPointerMarkup(fromStep.hi, toStep.hi, "hi", 50, COLORS.pointer, geometry, motionProgress, pulse)
         ].join("")}
         ${barMarkup}
+        ${insertionMarkup}
         ${indexMarkup}
       </svg>
     `;
@@ -1932,6 +1939,32 @@
     });
   }
 
+  function buildInsertionBarEntries(fromStep, toStep, geometry, motionProgress, pulse, fromState, toState, maxValue) {
+    return toStep.array.map((value, index) => {
+      if (isInsertionHoleAtIndex(toStep, index)) {
+        return null;
+      }
+
+      return buildBarEntry({
+        x: getBarX(index, geometry),
+        value,
+        labelValue: value,
+        fromIndex: index,
+        toIndex: index,
+        fromStep: toStep,
+        toStep,
+        fromState: toState,
+        toState,
+        geometry,
+        pulse,
+        maxValue,
+        motionProgress: 1,
+        baseValue: value,
+        movingWeight: 1
+      });
+    }).filter(Boolean);
+  }
+
   function buildBarEntry({
     x,
     value,
@@ -1952,6 +1985,9 @@
     const baseHeight = Math.max(10, (baseValue / maxValue) * geometry.plotHeight);
     const isHighlighted = isPlotIndexHighlighted(toIndex, toStep, toState.active);
     const emphasis = isHighlighted ? pulse * movingWeight : 0;
+    const fromHole = isInsertionHoleAtIndex(fromStep, fromIndex);
+    const toHole = isInsertionHoleAtIndex(toStep, toIndex);
+    const holdOpacity = lerp(fromHole ? 0.08 : 1, toHole ? 0.08 : 1, motionProgress);
     const barHeight = baseHeight + emphasis * 10;
     const y = geometry.padTop + geometry.plotHeight - barHeight - emphasis * 7;
     const fill = mixColor(
@@ -1967,11 +2003,12 @@
     const radius = Math.min(8, geometry.barWidth / 4);
     const textY = y + 16;
     const valueLabel = geometry.showValueLabels
-      ? `<text x="${x + geometry.barWidth / 2}" y="${textY}" text-anchor="middle" class="sort-plot-bar-value">${escapeHtml(String(Math.round(labelValue)))}</text>`
+      ? `<text x="${x + geometry.barWidth / 2}" y="${textY}" text-anchor="middle" class="sort-plot-bar-value" opacity="${holdOpacity}">${escapeHtml(String(Math.round(labelValue)))}</text>`
       : "";
     const glow = isHighlighted
       ? `<rect class="sort-plot-bar-glow" x="${x - 2}" y="${y - 3}" width="${geometry.barWidth + 4}" height="${barHeight + 6}" rx="${radius + 2}" ry="${radius + 2}" fill="${fill}" opacity="${0.09 + emphasis * 0.16}" />`
       : "";
+    const rectOpacity = holdOpacity;
 
     return {
       currentX: x,
@@ -1979,11 +2016,97 @@
       markup: `
         <g class="sort-plot-bar">
           ${glow}
-          <rect x="${x}" y="${y}" width="${geometry.barWidth}" height="${barHeight}" rx="${radius}" ry="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${1.2 + emphasis * 0.25}" />
+          <rect x="${x}" y="${y}" width="${geometry.barWidth}" height="${barHeight}" rx="${radius}" ry="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${1.2 + emphasis * 0.25}" opacity="${rectOpacity}" />
           ${valueLabel}
         </g>
       `
     };
+  }
+
+  function createInsertionOverlayMarkup(fromStep, toStep, geometry, progress, pulse, maxValue) {
+    const sourceKey = hasInsertionHold(fromStep) ? fromStep.insertionKey : toStep.insertionKey;
+    const targetKey = hasInsertionHold(toStep) ? toStep.insertionKey : fromStep.insertionKey;
+
+    if (!Number.isFinite(sourceKey) && !Number.isFinite(targetKey)) {
+      return "";
+    }
+
+    const keyValue = Number.isFinite(targetKey) ? targetKey : sourceKey;
+    const sourceHole = Number.isInteger(fromStep.insertionHoleIndex) ? fromStep.insertionHoleIndex : toStep.insertionHoleIndex;
+    const targetHole = Number.isInteger(toStep.insertionHoleIndex) ? toStep.insertionHoleIndex : fromStep.insertionHoleIndex;
+
+    if (!Number.isInteger(sourceHole) || !Number.isInteger(targetHole)) {
+      return "";
+    }
+
+    const x = lerp(getBarX(sourceHole, geometry), getBarX(targetHole, geometry), progress);
+    const holeOpacity = lerp(hasInsertionHold(fromStep) ? 1 : 0, hasInsertionHold(toStep) ? 1 : 0, progress);
+    const keyOpacity = holeOpacity;
+    const keyHeight = Math.max(10, (Math.abs(keyValue) / maxValue) * geometry.plotHeight);
+    const holeY = geometry.padTop + geometry.plotHeight - keyHeight;
+    const chipLabel = `key ${Math.round(keyValue)}`;
+    const chipWidth = Math.max(56, geometry.barWidth + 10, chipLabel.length * 8.2);
+    const chipHeight = 24 + pulse * 2;
+    const chipX = x + geometry.barWidth / 2 - chipWidth / 2;
+    const chipY = Math.max(geometry.padTop + 10, holeY - 36);
+    const chipRadius = Math.min(10, chipHeight / 2);
+    const holeStroke = mixColor(COLORS.compare, COLORS.line, 0.28);
+    const guideY1 = chipY + chipHeight + 4;
+    const guideY2 = Math.max(guideY1 + 8, holeY - 6);
+
+    return `
+      <g class="sort-insertion-overlay" opacity="${holeOpacity}">
+        <rect
+          x="${x}"
+          y="${holeY}"
+          width="${geometry.barWidth}"
+          height="${keyHeight}"
+          rx="${Math.min(8, geometry.barWidth / 4)}"
+          ry="${Math.min(8, geometry.barWidth / 4)}"
+          fill="rgba(227, 190, 85, 0.08)"
+          stroke="${holeStroke}"
+          stroke-width="1.6"
+          stroke-dasharray="5 4"
+        />
+        <line
+          x1="${x + geometry.barWidth / 2}"
+          y1="${guideY1}"
+          x2="${x + geometry.barWidth / 2}"
+          y2="${guideY2}"
+          stroke="rgba(180, 134, 33, 0.42)"
+          stroke-width="1.2"
+          stroke-dasharray="4 4"
+          opacity="${keyOpacity}"
+        />
+        <rect
+          x="${chipX}"
+          y="${chipY}"
+          width="${chipWidth}"
+          height="${chipHeight}"
+          rx="${chipRadius}"
+          ry="${chipRadius}"
+          fill="rgba(244, 229, 185, 0.9)"
+          stroke="rgba(180, 134, 33, 0.62)"
+          stroke-width="1.2"
+          opacity="${keyOpacity}"
+        />
+        <text
+          x="${chipX + chipWidth / 2}"
+          y="${chipY + chipHeight / 2 + 5}"
+          text-anchor="middle"
+          class="sort-plot-bar-value"
+          opacity="${keyOpacity}"
+        >${escapeHtml(chipLabel)}</text>
+      </g>
+    `;
+  }
+
+  function hasInsertionHold(step) {
+    return step && Number.isFinite(step.insertionKey) && Number.isInteger(step.insertionHoleIndex);
+  }
+
+  function isInsertionHoleAtIndex(step, index) {
+    return hasInsertionHold(step) && step.insertionHoleIndex === index;
   }
 
   function createGridMarkup(geometry) {
@@ -2677,6 +2800,8 @@
         writesOrSwaps: operations,
         activeIndices: [index],
         sortedIndices: range(0, index - 1),
+        insertionKey: key,
+        insertionHoleIndex: index,
         phase: "setup"
       }));
 
@@ -2688,6 +2813,8 @@
           writesOrSwaps: operations,
           activeIndices: [scan, scan + 1],
           sortedIndices: range(0, index - 1),
+          insertionKey: key,
+          insertionHoleIndex: scan + 1,
           phase: "compare"
         }));
 
@@ -2701,6 +2828,8 @@
             writesOrSwaps: operations,
             activeIndices: [scan, scan + 1],
             sortedIndices: range(0, index - 1),
+            insertionKey: key,
+            insertionHoleIndex: scan,
             phase: "write"
           }));
           scan -= 1;
@@ -3640,6 +3769,8 @@
     auxWriteIndex = null,
     auxRange = null,
     auxPhase = "idle",
+    insertionKey = null,
+    insertionHoleIndex = null,
     radixEntries = [],
     radixMainSlots = [],
     radixBuckets = [],
@@ -3671,6 +3802,8 @@
       auxWriteIndex,
       auxRange: auxRange ? { ...auxRange } : null,
       auxPhase,
+      insertionKey,
+      insertionHoleIndex,
       radixEntries: radixEntries.map((entry) => ({ ...entry })),
       radixMainSlots: [...radixMainSlots],
       radixBuckets: radixBuckets.map((bucket) => [...bucket]),
