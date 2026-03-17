@@ -2,6 +2,15 @@ window.WatTheHex = window.WatTheHex || {};
 
 window.WatTheHex.tools = [
   {
+    name: "Sorting Visualizer",
+    description: "Step through lecture-faithful sorting algorithms, inspect the active region, and compare iterative vs divide-and-conquer strategies.",
+    course: "ECE 250",
+    type: "Visualizer",
+    term: "2A",
+    date: "2026-03-17",
+    url: "tools/sorting-visualizer/index.html"
+  },
+  {
     name: "Convolution Visualizer",
     description: "Slide one signal across another, inspect the overlap product, and watch the convolution build point by point.",
     course: "ECE 205",

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Sorting Visualizer</title>
+  <style>
+    html.sort-page-pending body {
+      display: none !important;
+    }
+
+    .sort-tool-pending {
+      visibility: hidden !important;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.add("sort-page-pending");
+  </script>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
+  <script src="../../assets/render-katex.js" defer></script>
+  <script src="tool.js" defer></script>
+</head>
+<body class="sort-page-loading">
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+        <a
+          class="tool-feedback-link"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Feedback</a>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 250</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">Sorting Visualizer</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">Sorting Visualizer</h1>
+      <p class="tool-page-description">Step through classic ECE 250 sorting algorithms, inspect the active region at each move, and compare the tradeoffs between iterative and divide-and-conquer strategies.</p>
+    </section>
+
+    <main class="tool-page-main sort-tool-main">
+      <div id="sort-tool" class="sort-tool sort-tool-pending" aria-busy="true">
+        <div class="sort-layout">
+          <div class="sort-stage-stack">
+            <section class="sort-panel sort-stage-panel" aria-labelledby="sort-stage-heading">
+              <div class="sort-panel-header sort-stage-header">
+                <div>
+                  <p class="sort-eyebrow">Stage</p>
+                  <h2 id="sort-stage-heading" class="sort-section-title">Array Walkthrough</h2>
+                </div>
+                <p id="sort-stage-note" class="sort-panel-note">Choose a family, then an algorithm inside that family.</p>
+              </div>
+
+              <div class="sort-family-shell">
+                <div class="aqua-tabview-wrap sort-tabview-wrap">
+                  <div id="sort-family-tabs" class="aqua-tabview sort-tabview" data-content-prefix="sort-family" role="tablist" aria-label="Sorting families">
+                    <div class="aqua-tabview-indicator"></div>
+                    <div class="aqua-tabview-tab active" data-tab="iterative" role="tab" tabindex="0" aria-selected="true">Iterative</div>
+                    <div class="aqua-tabview-tab" data-tab="divide" role="tab" tabindex="0" aria-selected="false">Divide and Conquer</div>
+                    <div class="aqua-tabview-tab" data-tab="radix" role="tab" tabindex="0" aria-selected="false">Radix</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="sort-stage-toolbar" class="sort-stage-toolbar">
+                <div id="sort-algo-field" class="sort-select-field">
+                  <span class="sort-field-label">Algorithm</span>
+                  <div id="sort-algo-select" class="aqua-select graphite-select sort-select" data-select-kind="algo">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">Bubble Sort</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">Bubble Sort</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="aqua-select-option chosen" data-value="bubble" data-family="iterative">Bubble Sort</div>
+                      <div class="aqua-select-option" data-value="selection" data-family="iterative">Selection Sort</div>
+                      <div class="aqua-select-option" data-value="insertion" data-family="iterative">Insertion Sort</div>
+                      <div class="aqua-select-option" data-value="heap" data-family="iterative">Heap Sort</div>
+                      <div class="aqua-select-option" data-value="merge" data-family="divide">Merge Sort</div>
+                      <div class="aqua-select-option" data-value="quick" data-family="divide">Quicksort</div>
+                      <div class="aqua-select-option" data-value="radix" data-family="radix">Radix Sort</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="sort-heap-variant-field" class="sort-select-field sort-heap-variant-field" hidden>
+                  <span class="sort-field-label">Heap variant</span>
+                  <div id="sort-heap-variant-select" class="aqua-select graphite-select sort-select" data-select-kind="heap-variant">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">Lecture min-heap</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">Lecture min-heap</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="aqua-select-option chosen" data-value="lecture-min">Lecture min-heap</div>
+                      <div class="aqua-select-option" data-value="ascending-max">Ascending max-heap</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sort-stage-meta" aria-live="polite">
+                  <span id="sort-phase-chip" class="sort-phase-chip">Compare</span>
+                </div>
+              </div>
+
+              <div class="sort-plot-panel">
+                <div id="sort-plot" class="sort-plot" aria-label="Sorting visualization"></div>
+              </div>
+
+              <section id="sort-merge-panel" class="sort-subpanel sort-merge-panel" aria-label="Merge temporary space visualization" hidden>
+                <div id="sort-merge-aux" class="sort-merge-aux" aria-label="Merge temporary space"></div>
+              </section>
+
+              <section id="sort-heap-panel" class="sort-subpanel sort-heap-panel" aria-labelledby="sort-heap-heading" hidden>
+                <div class="sort-subpanel-header">
+                  <h3 id="sort-heap-heading" class="sort-subpanel-title">Heap Shape</h3>
+                  <p id="sort-heap-copy" class="sort-subpanel-copy">The heap region is shown as an array-backed min-heap while the descending sorted suffix grows on the right.</p>
+                </div>
+                <div id="sort-heap-tree" class="sort-heap-tree" aria-label="Heap tree visualization"></div>
+              </section>
+
+              <section class="sort-subpanel sort-narration-panel" aria-labelledby="sort-narration-heading">
+                <div class="sort-subpanel-header">
+                  <h3 id="sort-narration-heading" class="sort-subpanel-title">Current Move</h3>
+                  <p class="sort-subpanel-copy">Track the active invariant or local transformation at this step.</p>
+                </div>
+                <p id="sort-narration" class="sort-narration" aria-live="polite">Loading the first run.</p>
+              </section>
+            </section>
+
+            <section class="sort-panel sort-info-panel" aria-labelledby="sort-summary-heading">
+              <div class="sort-panel-header">
+                <div>
+                  <p class="sort-eyebrow">Algorithm</p>
+                  <h2 id="sort-summary-heading" class="sort-section-title">Summary</h2>
+                </div>
+              </div>
+              <div class="sort-summary-copy">
+                <p id="sort-summary-idea" class="sort-summary-idea">Bubble sort repeatedly sweeps across the array and swaps adjacent pairs that are out of order.</p>
+                <div class="sort-summary-grid">
+                  <div class="sort-summary-row"><span>Best</span><span id="sort-best" data-katex="\mathcal{O}(n)">O(n)</span></div>
+                  <div class="sort-summary-row"><span>Average</span><span id="sort-average" data-katex="\mathcal{O}(n^2)">O(n²)</span></div>
+                  <div class="sort-summary-row"><span>Worst</span><span id="sort-worst" data-katex="\mathcal{O}(n^2)">O(n²)</span></div>
+                  <div class="sort-summary-row"><span>Space</span><span id="sort-space" data-katex="\mathcal{O}(1)">O(1)</span></div>
+                </div>
+                <p id="sort-summary-tradeoff" class="sort-summary-tradeoff">Tradeoff: very simple, but it can spend a lot of time swapping neighboring values.</p>
+              </div>
+            </section>
+          </div>
+
+          <aside class="sort-control-rail" aria-labelledby="sort-controls-heading">
+            <section class="sort-panel sort-controls-panel">
+              <div class="sort-panel-header">
+                <div>
+                  <p class="sort-eyebrow">Controls</p>
+                  <h2 id="sort-controls-heading" class="sort-section-title">Playback</h2>
+                </div>
+              </div>
+
+              <div class="sort-control-group">
+                <div class="sort-select-field">
+                  <span class="sort-field-label">Dataset preset</span>
+                  <div id="sort-preset-select" class="aqua-select graphite-select sort-select" data-select-kind="preset">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">Random</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">Random</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="aqua-select-option chosen" data-value="random">Random</div>
+                      <div class="aqua-select-option" data-value="sorted">Already Sorted</div>
+                      <div class="aqua-select-option" data-value="reverse">Reverse Sorted</div>
+                      <div class="aqua-select-option" data-value="lecture">Lecture Example</div>
+                    </div>
+                  </div>
+                </div>
+
+                <label class="sort-slider-field" for="sort-size-slider">
+                  <span class="sort-slider-row">
+                    <span class="sort-field-label">Array size</span>
+                    <output id="sort-size-output" class="sort-slider-output" for="sort-size-slider">16</output>
+                  </span>
+                  <div id="sort-size-slider" class="aqua-slider sort-slider" data-min="6" data-max="28" data-value="16" tabindex="0" role="slider" aria-label="Array size" aria-valuemin="6" aria-valuemax="28" aria-valuenow="16">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="sort-slider-scale"><span id="sort-size-min">6</span><span id="sort-size-max">28</span></span>
+                </label>
+
+                <label class="sort-slider-field" for="sort-speed-slider">
+                  <span class="sort-slider-row">
+                    <span class="sort-field-label">Playback speed</span>
+                    <output id="sort-speed-output" class="sort-slider-output" for="sort-speed-slider">260 ms</output>
+                  </span>
+                  <div id="sort-speed-slider" class="aqua-slider graphite-slider sort-slider" data-min="60" data-max="800" data-value="260" tabindex="0" role="slider" aria-label="Playback speed" aria-valuemin="60" aria-valuemax="800" aria-valuenow="260">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="sort-slider-scale"><span>Fast</span><span>Slow</span></span>
+                </label>
+              </div>
+
+              <div class="sort-button-grid">
+                <button id="sort-play-button" type="button" class="aqua-button">Play</button>
+                <button id="sort-step-back-button" type="button" class="graphite-button">Step Back</button>
+                <button id="sort-step-forward-button" type="button" class="graphite-button">Step Forward</button>
+                <button id="sort-reset-button" type="button" class="graphite-button">Reset</button>
+                <button id="sort-shuffle-button" type="button" class="aqua-button">Shuffle</button>
+              </div>
+
+              <div class="sort-progress-block">
+                <div class="sort-progress-row">
+                  <span class="sort-field-label">Run progress</span>
+                  <span id="sort-step-label" class="sort-progress-label">Step 1 / 1</span>
+                </div>
+                <div id="sort-progress" class="aqua-progress sort-progress" data-value="0" aria-hidden="true">
+                  <div class="aqua-progress-fill"></div>
+                </div>
+              </div>
+
+              <div class="sort-metric-grid" aria-live="polite">
+                <article class="sort-metric-card">
+                  <p id="sort-primary-metric-label" class="sort-metric-label">Comparisons</p>
+                  <p id="sort-comparisons" class="sort-metric-value">0</p>
+                </article>
+                <article class="sort-metric-card">
+                  <p id="sort-operations-label" class="sort-metric-label">Swaps</p>
+                  <p id="sort-operations" class="sort-metric-value">0</p>
+                </article>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach((link) => {
+        link.setAttribute("href", "../../index.html");
+      });
+
+      document.querySelectorAll("[data-local-tools]").forEach((link) => {
+        link.setAttribute("href", "../../tools.html");
+      });
+
+      document.querySelectorAll("[data-local-about]").forEach((link) => {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

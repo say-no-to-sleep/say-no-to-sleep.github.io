@@ -2,6 +2,7 @@ const tools = window.WatTheHex?.tools ?? [];
 
 const filtersRoot = document.getElementById("filters");
 const toolGrid = document.getElementById("tool-grid");
+const homeHighlightsRoot = document.getElementById("home-highlights");
 
 const filterConfig = [
   { key: "course", label: "Course", sort: compareCourse },
@@ -27,6 +28,7 @@ const filterOptions = Object.fromEntries(
 hydrateFiltersFromQuery();
 renderFilters();
 renderCards();
+renderHomeHighlights();
 
 function renderFilters() {
   if (!filtersRoot) {
@@ -110,6 +112,47 @@ function renderCards() {
   });
 
   toolGrid.appendChild(fragment);
+}
+
+function renderHomeHighlights() {
+  if (!homeHighlightsRoot) {
+    return;
+  }
+
+  homeHighlightsRoot.textContent = "";
+
+  const fragment = document.createDocumentFragment();
+
+  sortedTools.slice(0, 4).forEach((tool, index) => {
+    const card = document.createElement("a");
+    card.className = "tool-card home-highlight-card";
+    card.href = tool.url;
+    card.setAttribute("aria-labelledby", `home-new-heading home-highlight-title-${index}`);
+
+    const badgeRow = document.createElement("div");
+    badgeRow.className = "home-new-row";
+    badgeRow.appendChild(createBadge("home-new-badge", "New!"));
+
+    const title = document.createElement("h3");
+    title.id = `home-highlight-title-${index}`;
+    title.className = "tool-card-title";
+    title.textContent = tool.name;
+
+    const description = document.createElement("p");
+    description.className = "tool-card-description";
+    description.textContent = tool.description;
+
+    const meta = document.createElement("div");
+    meta.className = "tool-card-meta";
+    meta.appendChild(createBadge("tool-chip", tool.course));
+    meta.appendChild(createBadge("tool-chip", tool.type));
+    meta.appendChild(createBadge("tool-term", tool.term));
+
+    card.append(badgeRow, title, description, meta);
+    fragment.appendChild(card);
+  });
+
+  homeHighlightsRoot.appendChild(fragment);
 }
 
 function toggleFilter(key, value) {
