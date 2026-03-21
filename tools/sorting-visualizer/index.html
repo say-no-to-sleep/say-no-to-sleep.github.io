@@ -309,6 +309,20 @@
   </div>
 
   <script>
+    function syncStickyViewportClip() {
+      if (!window.CSS || !CSS.supports("overflow-x", "clip")) {
+        return;
+      }
+
+      document.documentElement.style.overflowX = "clip";
+      document.body.style.overflowX = "clip";
+    }
+
+    window.addEventListener("load", () => {
+      syncStickyViewportClip();
+      requestAnimationFrame(syncStickyViewportClip);
+    }, { once: true });
+
     if (window.location.protocol === "file:") {
       document.querySelectorAll("[data-local-home]").forEach((link) => {
         link.setAttribute("href", "../../index.html");

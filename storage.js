@@ -129,6 +129,33 @@
     });
   }
 
+  function applyViewportOverflowClip() {
+    if (!document.documentElement || !document.body) {
+      return;
+    }
+
+    if (!globalThis.CSS || !CSS.supports("overflow-x", "clip")) {
+      return;
+    }
+
+    document.documentElement.style.overflowX = "clip";
+    document.body.style.overflowX = "clip";
+  }
+
+  function initViewportOverflowClip() {
+    applyViewportOverflowClip();
+
+    if ("requestAnimationFrame" in globalThis) {
+      requestAnimationFrame(() => {
+        applyViewportOverflowClip();
+      });
+    }
+
+    globalThis.addEventListener("pageshow", applyViewportOverflowClip);
+  }
+
+  initViewportOverflowClip();
+
   window.WatTheHex = window.WatTheHex || {};
   window.WatTheHex.storage = {
     init,

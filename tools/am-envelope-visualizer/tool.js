@@ -4,10 +4,10 @@
   const PAD = 14;
   const SAMPLES = 1400;
   const CONTROL_CONFIG = {
-    fm: { decimals: 1, suffix: " Hz" },
-    fc: { decimals: 0, suffix: " Hz" },
-    m: { decimals: 2, suffix: "" },
-    tau: { decimals: 3, suffix: " s" }
+    fm: { decimals: 1, suffix: " Hz", fromInternal: (value) => value / 2 },
+    fc: { decimals: 0, suffix: " Hz", fromInternal: (value) => value * 5 },
+    m: { decimals: 2, suffix: "", fromInternal: (value) => value / 20 },
+    tau: { decimals: 3, suffix: " s", fromInternal: (value) => value / 200 }
   };
   const STAGE_COLORS = {
     msg: "#7a5cc4",
@@ -62,12 +62,7 @@
       const control = input.dataset.control;
       refs.inputs[control] = input;
       refs.outputs[control] = document.getElementById(`am-${control}-value`);
-
-      input.addEventListener("input", () => {
-        state[control] = parseFloat(input.value);
-        syncControlPresentation(control);
-        queueRender();
-      });
+      bindSlider(input, control);
     });
 
     refs.tool.querySelectorAll("[data-canvas]").forEach((canvas) => {
@@ -75,7 +70,7 @@
     });
 
     Object.keys(refs.inputs).forEach((control) => {
-      state[control] = parseFloat(refs.inputs[control].value);
+      state[control] = controlValueFromInternal(control, getSliderIntegerValue(refs.inputs[control]));
       syncControlPresentation(control);
     });
 
@@ -102,12 +97,8 @@
       return;
     }
 
-    const min = parseFloat(input.min);
-    const max = parseFloat(input.max);
-    const value = parseFloat(input.value);
-    const percent = ((value - min) / (max - min)) * 100;
-
-    input.style.setProperty("--am-range-fill", `${percent}%`);
+    const value = controlValueFromInternal(control, getSliderIntegerValue(input));
+    updateSliderA11y(input, control, value);
 
     if (output) {
       output.textContent = formatControlValue(control, value);
@@ -117,6 +108,99 @@
   function formatControlValue(control, value) {
     const config = CONTROL_CONFIG[control];
     return `${value.toFixed(config.decimals)}${config.suffix}`;
+  }
+
+  function controlValueFromInternal(control, value) {
+    return CONTROL_CONFIG[control].fromInternal(value);
+  }
+
+  function getSliderIntegerValue(slider) {
+    return Number.parseInt(slider.dataset.value || "0", 10);
+  }
+
+  function updateSliderA11y(slider, control, value) {
+    slider.setAttribute("aria-valuenow", String(value));
+    slider.setAttribute("aria-valuetext", formatControlValue(control, value));
+  }
+
+  function setSliderValue(slider, value) {
+    const min = Number.parseInt(slider.dataset.min || "0", 10);
+    const max = Number.parseInt(slider.dataset.max || "100", 10);
+    const next = clamp(value, min, max);
+    const fraction = max === min ? 0 : (next - min) / (max - min);
+    const percentage = fraction * 100;
+    const fill = slider.querySelector(".aqua-slider-fill");
+    const thumb = slider.querySelector(".aqua-slider-thumb");
+
+    slider.dataset.value = String(next);
+
+    if (fill) {
+      fill.style.width = `calc(${percentage}% + 1px)`;
+    }
+
+    if (thumb) {
+      thumb.style.left = `${percentage}%`;
+    }
+  }
+
+  function bindSlider(slider, control) {
+    const syncFromDom = () => {
+      const value = getSliderIntegerValue(slider);
+      state[control] = controlValueFromInternal(control, value);
+      syncControlPresentation(control);
+      queueRender();
+    };
+
+    const scheduleSync = () => {
+      if (slider._syncFrame) {
+        cancelAnimationFrame(slider._syncFrame);
+      }
+
+      slider._syncFrame = requestAnimationFrame(() => {
+        slider._syncFrame = 0;
+        syncFromDom();
+      });
+    };
+
+    ["pointerdown", "pointermove", "pointerup", "pointercancel"].forEach((eventName) => {
+      slider.addEventListener(eventName, scheduleSync);
+    });
+
+    slider.addEventListener("keydown", (event) => {
+      const min = Number.parseInt(slider.dataset.min || "0", 10);
+      const max = Number.parseInt(slider.dataset.max || "100", 10);
+      const current = getSliderIntegerValue(slider);
+      let next = current;
+
+      switch (event.key) {
+        case "ArrowLeft":
+        case "ArrowDown":
+          next = current - 1;
+          break;
+        case "ArrowRight":
+        case "ArrowUp":
+          next = current + 1;
+          break;
+        case "PageDown":
+          next = current - 3;
+          break;
+        case "PageUp":
+          next = current + 3;
+          break;
+        case "Home":
+          next = min;
+          break;
+        case "End":
+          next = max;
+          break;
+        default:
+          return;
+      }
+
+      event.preventDefault();
+      setSliderValue(slider, next);
+      syncFromDom();
+    });
   }
 
   function queueRender() {

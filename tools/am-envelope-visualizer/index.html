@@ -6,12 +6,12 @@
   <title>WatTheHex | AM Envelope Visualizer</title>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
-  <link rel="stylesheet" href="tool.css">
+  <link rel="stylesheet" href="tool.css?v=20260318">
   <script src="../../aqua2.js" defer></script>
   <script src="../../storage.js" defer></script>
   <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
   <script src="../../assets/render-katex.js" defer></script>
-  <script src="tool.js" defer></script>
+  <script src="tool.js?v=20260318" defer></script>
 </head>
 <body>
   <div class="page-shell tool-page">
@@ -193,7 +193,12 @@
                     <span class="am-control-label">Message Frequency fm</span>
                     <output class="am-control-value" id="am-fm-value" for="am-fm-control">3.0 Hz</output>
                   </span>
-                  <input class="am-range" id="am-fm-control" type="range" min="1" max="10" step="0.5" value="3" data-control="fm">
+                  <div class="aqua-slider am-slider" id="am-fm-control" data-control="fm" data-min="2" data-max="20" data-value="6" tabindex="0" role="slider" aria-label="Message Frequency fm" aria-valuemin="1" aria-valuemax="10" aria-valuenow="3.0">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
                   <span class="am-control-scale"><span>1 Hz</span><span>10 Hz</span></span>
                 </label>
 
@@ -202,7 +207,12 @@
                     <span class="am-control-label">Carrier Frequency fc</span>
                     <output class="am-control-value" id="am-fc-value" for="am-fc-control">40 Hz</output>
                   </span>
-                  <input class="am-range" id="am-fc-control" type="range" min="10" max="100" step="5" value="40" data-control="fc">
+                  <div class="aqua-slider am-slider" id="am-fc-control" data-control="fc" data-min="2" data-max="20" data-value="8" tabindex="0" role="slider" aria-label="Carrier Frequency fc" aria-valuemin="10" aria-valuemax="100" aria-valuenow="40">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
                   <span class="am-control-scale"><span>10 Hz</span><span>100 Hz</span></span>
                 </label>
 
@@ -211,7 +221,12 @@
                     <span class="am-control-label">Modulation Index m</span>
                     <output class="am-control-value" id="am-m-value" for="am-m-control">0.70</output>
                   </span>
-                  <input class="am-range" id="am-m-control" type="range" min="0" max="1.5" step="0.05" value="0.7" data-control="m">
+                  <div class="aqua-slider am-slider" id="am-m-control" data-control="m" data-min="0" data-max="30" data-value="14" tabindex="0" role="slider" aria-label="Modulation Index m" aria-valuemin="0" aria-valuemax="1.5" aria-valuenow="0.70">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
                   <span class="am-control-scale"><span>0.00</span><span>1.50</span></span>
                 </label>
 
@@ -220,29 +235,16 @@
                     <span class="am-control-label">Detector Time Constant tau</span>
                     <output class="am-control-value" id="am-tau-value" for="am-tau-control">0.080 s</output>
                   </span>
-                  <input class="am-range" id="am-tau-control" type="range" min="0.005" max="0.5" step="0.005" value="0.08" data-control="tau">
+                  <div class="aqua-slider am-slider" id="am-tau-control" data-control="tau" data-min="1" data-max="100" data-value="16" tabindex="0" role="slider" aria-label="Detector Time Constant tau" aria-valuemin="0.005" aria-valuemax="0.5" aria-valuenow="0.080">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
                   <span class="am-control-scale"><span>0.005 s</span><span>0.500 s</span></span>
                 </label>
               </div>
 
-              <section class="am-note-panel" aria-labelledby="am-what-heading">
-                <h3 id="am-what-heading" class="am-note-title">What to Watch</h3>
-                <ul class="am-note-list">
-                  <li>Stage 3 is the same envelope drawn as the dashed guide in Stage 5.</li>
-                  <li>If m rises above 1, the envelope crosses zero and detector distortion follows.</li>
-                  <li>If fc drops too close to fm, the carrier no longer looks like a fast wrapper around the message.</li>
-                  <li>If tau is too small, the output ripples; if tau is too large, the output drifts behind the message.</li>
-                </ul>
-              </section>
-
-              <section class="am-note-panel" aria-labelledby="am-targets-heading">
-                <h3 id="am-targets-heading" class="am-note-title">Recommended Targets</h3>
-                <ul class="am-note-list">
-                  <li>Carrier ratio fc/fm at or above 10x</li>
-                  <li>Modulation index m at or below 1.00</li>
-                  <li>Detector window 1/fc &lt; tau &lt; 1/fm</li>
-                </ul>
-              </section>
             </section>
           </aside>
         </div>
@@ -258,6 +260,20 @@
   </div>
 
   <script>
+    function syncStickyViewportClip() {
+      if (!window.CSS || !CSS.supports("overflow-x", "clip")) {
+        return;
+      }
+
+      document.documentElement.style.overflowX = "clip";
+      document.body.style.overflowX = "clip";
+    }
+
+    window.addEventListener("load", () => {
+      syncStickyViewportClip();
+      requestAnimationFrame(syncStickyViewportClip);
+    }, { once: true });
+
     if (window.location.protocol === "file:") {
       document.querySelectorAll("[data-local-home]").forEach((link) => {
         link.setAttribute("href", "../../index.html");

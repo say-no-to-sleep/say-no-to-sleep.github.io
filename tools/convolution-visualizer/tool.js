@@ -16,6 +16,7 @@
   const TS = Array.from({ length: SAMPLE_COUNT }, (_, index) => DOMAIN_MIN + index * DT);
   const COMPUTE_TS = Array.from({ length: COMPUTE_SAMPLE_COUNT }, (_, index) => COMPUTE_MIN + index * DT);
   const DISPLAY_SAMPLE_OFFSET = Math.round((DOMAIN_MIN - COMPUTE_MIN) / DT);
+  const SCRUB_SCALE = 50;
   const X_TICKS = [-4, -2, 0, 2, 4];
   const SCREEN_RADIUS = 16;
   const PRESETS = [
@@ -101,7 +102,7 @@
     refs.presetList.addEventListener("click", handlePresetClick);
     refs.fInput.addEventListener("input", handleExpressionInput);
     refs.gInput.addEventListener("input", handleExpressionInput);
-    refs.scrub.addEventListener("input", handleScrubInput);
+    bindScrubSlider(refs.scrub);
     refs.overlapPlot.addEventListener("pointerdown", handlePointerDown);
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -131,7 +132,6 @@
 
     refs.fInput.value = state.fExpr;
     refs.gInput.value = state.gExpr;
-    refs.scrub.value = String(state.cursorT);
 
     renderAll();
   }
@@ -148,7 +148,7 @@
   }
 
   function handleScrubInput() {
-    state.cursorT = clamp(parseFloat(refs.scrub.value), DOMAIN_MIN, DOMAIN_MAX);
+    state.cursorT = clamp(scrubValueFromInternal(getSliderIntegerValue(refs.scrub)), DOMAIN_MIN, DOMAIN_MAX);
     renderDynamicViews();
   }
 
@@ -242,11 +242,99 @@
   }
 
   function syncScrubPresentation() {
-    refs.scrub.value = String(state.cursorT);
+    setSliderValue(refs.scrub, scrubInternalFromValue(state.cursorT));
     refs.scrubValue.textContent = formatSigned(state.cursorT, 2);
+    updateSliderA11y(refs.scrub, state.cursorT);
+  }
 
-    const percent = ((state.cursorT - DOMAIN_MIN) / (DOMAIN_MAX - DOMAIN_MIN)) * 100;
-    refs.scrub.style.setProperty("--conv-range-fill", `${percent}%`);
+  function scrubInternalFromValue(value) {
+    return Math.round(value * SCRUB_SCALE);
+  }
+
+  function scrubValueFromInternal(value) {
+    return value / SCRUB_SCALE;
+  }
+
+  function getSliderIntegerValue(slider) {
+    return Number.parseInt(slider.dataset.value || "0", 10);
+  }
+
+  function updateSliderA11y(slider, value) {
+    slider.setAttribute("aria-valuenow", String(value));
+    slider.setAttribute("aria-valuetext", formatSigned(value, 2));
+  }
+
+  function setSliderValue(slider, value) {
+    const min = Number.parseInt(slider.dataset.min || "0", 10);
+    const max = Number.parseInt(slider.dataset.max || "100", 10);
+    const next = clampInteger(value, min, max);
+    const fraction = max === min ? 0 : (next - min) / (max - min);
+    const percentage = fraction * 100;
+    const fill = slider.querySelector(".aqua-slider-fill");
+    const thumb = slider.querySelector(".aqua-slider-thumb");
+
+    slider.dataset.value = String(next);
+
+    if (fill) {
+      fill.style.width = `calc(${percentage}% + 1px)`;
+    }
+
+    if (thumb) {
+      thumb.style.left = `${percentage}%`;
+    }
+  }
+
+  function bindScrubSlider(slider) {
+    const scheduleSync = () => {
+      if (slider._syncFrame) {
+        cancelAnimationFrame(slider._syncFrame);
+      }
+
+      slider._syncFrame = requestAnimationFrame(() => {
+        slider._syncFrame = 0;
+        handleScrubInput();
+      });
+    };
+
+    ["pointerdown", "pointermove", "pointerup", "pointercancel"].forEach((eventName) => {
+      slider.addEventListener(eventName, scheduleSync);
+    });
+
+    slider.addEventListener("keydown", (event) => {
+      const min = Number.parseInt(slider.dataset.min || "0", 10);
+      const max = Number.parseInt(slider.dataset.max || "100", 10);
+      const current = getSliderIntegerValue(slider);
+      let next = current;
+
+      switch (event.key) {
+        case "ArrowLeft":
+        case "ArrowDown":
+          next = current - 1;
+          break;
+        case "ArrowRight":
+        case "ArrowUp":
+          next = current + 1;
+          break;
+        case "PageDown":
+          next = current - 10;
+          break;
+        case "PageUp":
+          next = current + 10;
+          break;
+        case "Home":
+          next = min;
+          break;
+        case "End":
+          next = max;
+          break;
+        default:
+          return;
+      }
+
+      event.preventDefault();
+      setSliderValue(slider, next);
+      handleScrubInput();
+    });
   }
 
   function createSignalPlotMarkup(plotKey, label, samples, color) {

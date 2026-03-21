@@ -6,12 +6,12 @@
   <title>WatTheHex | Convolution Visualizer</title>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
-  <link rel="stylesheet" href="tool.css">
+  <link rel="stylesheet" href="tool.css?v=20260318">
   <script src="../../aqua2.js" defer></script>
   <script src="../../storage.js" defer></script>
   <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
   <script src="../../assets/render-katex.js" defer></script>
-  <script src="tool.js" defer></script>
+  <script src="tool.js?v=20260318" defer></script>
 </head>
 <body>
   <div class="page-shell tool-page">
@@ -135,7 +135,6 @@
                   <p class="conv-eyebrow">Controls</p>
                   <h2 id="conv-controls-heading" class="conv-section-title">Signal Editor</h2>
                 </div>
-                <p class="conv-panel-note">Choose a preset or enter your own expressions to resample both signals and recompute the convolution.</p>
               </div>
 
               <section class="conv-control-group" aria-labelledby="conv-presets-heading">
@@ -180,7 +179,12 @@
                   <span class="conv-scrub-label">Time Sweep</span>
                   <output id="conv-scrub-value" class="conv-scrub-value" for="conv-time-scrub">0.00</output>
                 </span>
-                <input id="conv-time-scrub" class="conv-range" type="range" min="-6" max="6" step="0.02" value="0">
+                <div id="conv-time-scrub" class="aqua-slider conv-slider" data-min="-300" data-max="300" data-value="0" tabindex="0" role="slider" aria-label="Time Sweep" aria-valuemin="-6" aria-valuemax="6" aria-valuenow="0">
+                  <div class="aqua-slider-track">
+                    <div class="aqua-slider-fill"></div>
+                    <div class="aqua-slider-thumb"></div>
+                  </div>
+                </div>
                 <span class="conv-range-scale"><span>-6</span><span>0</span><span>6</span></span>
               </label>
             </section>
@@ -196,6 +200,20 @@
   </div>
 
   <script>
+    function syncStickyViewportClip() {
+      if (!window.CSS || !CSS.supports("overflow-x", "clip")) {
+        return;
+      }
+
+      document.documentElement.style.overflowX = "clip";
+      document.body.style.overflowX = "clip";
+    }
+
+    window.addEventListener("load", () => {
+      syncStickyViewportClip();
+      requestAnimationFrame(syncStickyViewportClip);
+    }, { once: true });
+
     if (window.location.protocol === "file:") {
       document.querySelectorAll("[data-local-home]").forEach((link) => {
         link.setAttribute("href", "../../index.html");
