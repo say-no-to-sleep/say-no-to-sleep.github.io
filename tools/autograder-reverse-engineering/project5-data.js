@@ -50,6 +50,13 @@
         },
         CONTRIBUTORS: [],
         KNOWN_EDGE_CASES: [
+            {
+                affectedTests: [2, 5, 6, 7, 8, 9, 10],
+                command: "ADJACENT_P5",
+                source: "@echometer",
+                input: "",
+                description: "ADJACENT_P5 should not output the country it is called on.",
+            },
         ],
         COMMAND_INFO: {
             LOAD_P3: {

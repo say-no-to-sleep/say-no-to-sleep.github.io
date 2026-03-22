@@ -1661,6 +1661,10 @@ body::before {
   font-style: italic;
 }
 
+.autograder-edge-case-input:empty {
+  display: none;
+}
+
 .autograder-edge-case-input {
   margin: 0;
   padding: 0.85rem 0.95rem;
