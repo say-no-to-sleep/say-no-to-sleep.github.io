@@ -55,6 +55,20 @@ function normalizeContributors(rawContributors) {
     .filter(Boolean);
 }
 
+function deriveSharedSetupCommands(testCommands, testNumbers) {
+  if (testNumbers.length === 0) {
+    return new Set();
+  }
+
+  const firstTestCommands = Array.isArray(testCommands[testNumbers[0]]) ? testCommands[testNumbers[0]] : [];
+
+  return new Set(
+    firstTestCommands.filter((command) =>
+      testNumbers.every((testNumber) => Array.isArray(testCommands[testNumber]) && testCommands[testNumber].includes(command))
+    )
+  );
+}
+
 function createAutograderAnalyzer({
   root,
   dataset,
@@ -75,6 +89,7 @@ function createAutograderAnalyzer({
   const COMMAND_INFO = dataset.COMMAND_INFO || {};
   const NEVER_TESTED = Array.isArray(dataset.NEVER_TESTED) ? dataset.NEVER_TESTED : [];
   const TEST_NUMBERS = Object.keys(TEST_COMMANDS).map(Number).sort((left, right) => left - right);
+  const SHARED_SETUP_COMMANDS = deriveSharedSetupCommands(TEST_COMMANDS, TEST_NUMBERS);
 
   const state = {
     failed: new Set(),
@@ -106,8 +121,12 @@ function createAutograderAnalyzer({
       }
     }
 
+    const implicatedCommands = Object.keys(commandCounts);
+    const allTestsFailed = state.failed.size === TEST_NUMBERS.length && TEST_NUMBERS.length > 0;
+    const hasSpecificCommands = implicatedCommands.some((command) => !SHARED_SETUP_COMMANDS.has(command));
+
     const suspects = Object.entries(commandCounts)
-      .filter(([command]) => command !== "LOAD_P3" || Object.keys(commandCounts).length === 1)
+      .filter(([command]) => allTestsFailed || !SHARED_SETUP_COMMANDS.has(command) || !hasSpecificCommands)
       .sort((left, right) => right[1].size - left[1].size);
 
     const loadFailed = commandCounts.LOAD_P3?.size > 0 && suspects.length === 0;
@@ -636,6 +655,7 @@ function initAutograderAnalyzers() {
 
   const project3Root = document.getElementById("autograder-project-3-root");
   const project4Root = document.getElementById("autograder-project-4-root");
+  const project5Root = document.getElementById("autograder-project-5-root");
 
   createAutograderAnalyzer({
     root: project3Root,
@@ -655,6 +675,16 @@ function initAutograderAnalyzers() {
     sectionPrefix: "autograder-p4",
     emptyCopy: "Nothing is selected yet. Start by marking the Project 4 tests that failed in your autograder results.",
     introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, call out known edge cases, and point you toward the code paths worth checking first.",
+  });
+
+  createAutograderAnalyzer({
+    root: project5Root,
+    dataset: globalThis.WatTheHex?.project5Data,
+    projectLabel: "Project 5",
+    analyzerTitle: "P5 Test Failure Analyzer",
+    sectionPrefix: "autograder-p5",
+    emptyCopy: "Nothing is selected yet. Start by marking the Project 5 tests that failed in your autograder results.",
+    introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, edge cases, and graph operations worth checking first.",
   });
 }
 

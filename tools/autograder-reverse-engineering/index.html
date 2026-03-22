@@ -9,6 +9,7 @@
   <script src="../../storage.js" defer></script>
   <script src="./project3-data.js" defer></script>
   <script src="./project4-data.js" defer></script>
+  <script src="./project5-data.js" defer></script>
   <script src="./tool.js" defer></script>
 </head>
 <body>
@@ -40,7 +41,7 @@
 
     <section class="tool-page-intro">
       <h1 class="tool-page-title">Autograder Reverse-Engineering</h1>
-      <p class="tool-page-description">Placeholder for dissecting ECE 250 autograder behavior and hidden expectations.</p>
+      <p class="tool-page-description">Reverse-engineer ECE 250 autograder behavior by mapping failed tests back to the commands, edge cases, and implementation details they exercise.</p>
     </section>
 
     <main class="tool-page-main tool-page-main-plain">
@@ -52,7 +53,7 @@
             <div class="aqua-tabview-indicator"></div>
             <div class="aqua-tabview-tab active" data-tab="project-3">Project 3</div>
             <div class="aqua-tabview-tab" data-tab="project-4">Project 4</div>
-            <div class="aqua-tabview-tab disabled" data-tab="project-5">Project 5</div>
+            <div class="aqua-tabview-tab" data-tab="project-5">Project 5</div>
           </div>
         </div>
 
@@ -65,11 +66,7 @@
         </div>
 
         <div class="tab-pane autograder-tab-pane" id="autograder-project-project-5">
-          <section class="autograder-panel" aria-labelledby="autograder-project-5-heading">
-            <p class="content-page-eyebrow">Project 5</p>
-            <h2 id="autograder-project-5-heading" class="autograder-panel-title">Project 5 workspace</h2>
-            <p class="autograder-panel-copy">Project 5 is not available yet.</p>
-          </section>
+          <div id="autograder-project-5-root" class="autograder-project-root autograder-project-5-root" aria-live="polite"></div>
         </div>
       </section>
     </main>
