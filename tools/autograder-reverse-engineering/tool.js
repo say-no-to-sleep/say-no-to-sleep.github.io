@@ -664,7 +664,7 @@ function initAutograderAnalyzers() {
     analyzerTitle: "P3 Test Failure Analyzer",
     sectionPrefix: "autograder-p3",
     emptyCopy: "Nothing is selected yet. Start by marking the Project 3 tests that failed in your autograder results.",
-    introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, call out known edge cases, and point you toward the code paths worth checking first.",
+    introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, edge cases, and graph operations worth checking first.",
   });
 
   createAutograderAnalyzer({
@@ -674,7 +674,7 @@ function initAutograderAnalyzers() {
     analyzerTitle: "P4 Test Failure Analyzer",
     sectionPrefix: "autograder-p4",
     emptyCopy: "Nothing is selected yet. Start by marking the Project 4 tests that failed in your autograder results.",
-    introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, call out known edge cases, and point you toward the code paths worth checking first.",
+    introCopy: "Select the tests you failed and this analyzer will narrow the likely culprit commands, edge cases, and graph operations worth checking first.",
   });
 
   createAutograderAnalyzer({
