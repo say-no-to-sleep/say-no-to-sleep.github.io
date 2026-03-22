@@ -121,13 +121,31 @@ function createAutograderAnalyzer({
       }
     }
 
+    const passingTests = TEST_NUMBERS.filter((testNumber) => !state.failed.has(testNumber));
+
+    const commandPassingCounts = {};
+    for (const command of Object.keys(commandCounts)) {
+      commandPassingCounts[command] = 0;
+      for (const testNumber of passingTests) {
+        if (Array.isArray(TEST_COMMANDS[testNumber]) && TEST_COMMANDS[testNumber].includes(command)) {
+          commandPassingCounts[command]++;
+        }
+      }
+    }
+
     const implicatedCommands = Object.keys(commandCounts);
     const allTestsFailed = state.failed.size === TEST_NUMBERS.length && TEST_NUMBERS.length > 0;
     const hasSpecificCommands = implicatedCommands.some((command) => !SHARED_SETUP_COMMANDS.has(command));
 
     const suspects = Object.entries(commandCounts)
       .filter(([command]) => allTestsFailed || !SHARED_SETUP_COMMANDS.has(command) || !hasSpecificCommands)
-      .sort((left, right) => right[1].size - left[1].size);
+      .map(([command, testSet]) => {
+        const failedCount = testSet.size;
+        const passingCount = commandPassingCounts[command] || 0;
+        const specificity = failedCount / (failedCount + passingCount);
+        return [command, testSet, specificity, passingCount];
+      })
+      .sort((left, right) => right[2] - left[2] || right[1].size - left[1].size);
 
     const loadFailed = commandCounts.LOAD_P3?.size > 0 && suspects.length === 0;
     const relevantEdgeCases = KNOWN_EDGE_CASES.filter((edgeCase) =>
@@ -267,8 +285,12 @@ function createAutograderAnalyzer({
     `;
   }
 
-  function renderSuspectCard(command, testSet, rank) {
+  function renderSuspectCard(command, testSet, rank, specificity, passingCount) {
     const info = COMMAND_INFO[command] || { description: "No description added yet." };
+    const failedLabel = `${testSet.size} failed test${testSet.size > 1 ? "s" : ""}`;
+    const coverageText = specificity >= 1.0
+      ? `unique to ${failedLabel}`
+      : `appears in ${failedLabel}, also in ${passingCount} passing`;
 
     return `
       <article class="autograder-suspect-card${rank === 0 ? " autograder-suspect-card-top" : ""}">
@@ -276,7 +298,7 @@ function createAutograderAnalyzer({
           <div class="autograder-suspect-title-row">
             ${rank === 0 ? '<span class="autograder-suspect-rank">Top Suspect</span>' : ""}
             ${renderCommandBadge(command)}
-            <span class="autograder-suspect-coverage">appears in ${testSet.size} failed test${testSet.size > 1 ? "s" : ""}</span>
+            <span class="autograder-suspect-coverage">${coverageText}</span>
           </div>
           <p class="autograder-suspect-description">${escapeHtml(info.description)}</p>
         </div>
@@ -308,7 +330,7 @@ function createAutograderAnalyzer({
     if (suspects.length > 0) {
       body += `
         <div class="autograder-suspect-list">
-          ${suspects.map(([command, testSet], index) => renderSuspectCard(command, testSet, index)).join("")}
+          ${suspects.map(([command, testSet, specificity, passingCount], index) => renderSuspectCard(command, testSet, index, specificity, passingCount)).join("")}
         </div>
       `;
     }
