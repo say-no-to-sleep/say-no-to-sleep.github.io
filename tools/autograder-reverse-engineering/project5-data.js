@@ -48,7 +48,7 @@
                 { text: "Known sample inpu.t" },
             ],
         },
-        CONTRIBUTORS: [],
+        CONTRIBUTORS: ["@echometer"],
         KNOWN_EDGE_CASES: [
             {
                 affectedTests: [2, 5, 6, 7, 8, 9, 10],
@@ -56,6 +56,14 @@
                 source: "@echometer",
                 input: "",
                 description: "ADJACENT_P5 should not output the country it is called on.",
+            },
+            {
+            affectedTests: [6, 7, 8, 10],
+            command: "UPDATE_EDGES_P5",
+            source: "Anonymous",
+            input: "UPDATE_EDGES_P5 SeriesCode threshold relation",
+            description:
+                "(P3 Bug) The IntervalTree query must explore both subtrees when the threshold falls within a node's range, not just tunnel down one branch. Greedy single-path traversal skips valid countries in the opposite subtree, causing edges to be missing and downstream ADJACENT_P5 and PATH_P5 to return wrong results.",
             },
         ],
         COMMAND_INFO: {
