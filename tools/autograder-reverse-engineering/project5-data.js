@@ -45,7 +45,7 @@
                 { text: "Same structure as test 9. PATH_P5 also returns true." },
             ],
             11: [
-                { text: "Known sample inpu.t" },
+                { text: "Known sample input." },
             ],
         },
         CONTRIBUTORS: ["@echometer"],
