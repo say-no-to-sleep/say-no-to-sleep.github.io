@@ -15,37 +15,37 @@
         },
         TEST_NOTES: {
             1: [
-                { text: "Known sample input." },
+                { text: "Known sample input. No UPDATE_EDGES_P5 calls." },
             ],
             2: [
-                { text: "Graph remains disconnected after INITIALIZE. ADJACENT_P5 is called on countries that either don't exist in the graph or have no neighbors, hitting both the failure and none output paths." },
+                { text: "No UPDATE_EDGES_P5 calls — graph remains totally disconnected. ADJACENT_P5 hits both the failure and none output paths." },
             ],
             3: [
-                { text: "Only tests that UPDATE_EDGES_P5 succeeds (at least one new relationship added)." },
+                { text: "Exactly 1 UPDATE_EDGES_P5 call, outputs success." },
             ],
             4: [
-                { text: "UPDATE_EDGES_P5 produces both success and failure outputs." },
+                { text: "Exactly 2 UPDATE_EDGES_P5 calls. Call 1 outputs success, call 2 outputs failure (either duplicate relationship or no countries qualify)." },
             ],
             5: [
-                { text: "ADJACENT_P5 returns real country names (non-empty, non-failure). Graph has at least one pair of connected countries." },
+                { text: "Exactly 1 UPDATE_EDGES_P5 call. ADJACENT_P5 returns real country names." },
             ],
             6: [
-                { text: "Possibly same structure as test 5. ADJACENT_P5 returns real country names." },
+                { text: "Exactly 2 UPDATE_EDGES_P5 calls. ADJACENT_P5 returns real country names." },
             ],
             7: [
-                { text: "ADJACENT_P5 is called multiple times: at least once returning none and at least once returning real neighbors. Tests that the graph is only partially connected." },
+                { text: "Exactly 2 UPDATE_EDGES_P5 calls. ADJACENT_P5 is called multiple times: at least once returning none and at least once returning real neighbors." },
             ],
             8: [
                 { text: "ADJACENT_P5 hits all three output cases in one test: failure, none, and real neighbor names. Most comprehensive ADJACENT test." },
             ],
             9: [
-                { text: "PATH_P5 returns true. The two countries queried are connected by a path in the graph." },
+                { text: "Exactly 2 UPDATE_EDGES_P5 calls. ADJACENT_P5 returns real neighbors. PATH_P5 returns true." },
             ],
             10: [
-                { text: "Same structure as test 9. PATH_P5 also returns true." },
+                { text: "At least 3 UPDATE_EDGES_P5 calls (exact count unknown). ADJACENT_P5 returns real neighbors. PATH_P5 returns true." },
             ],
             11: [
-                { text: "Known sample input." },
+                { text: "Known sample input. Exactly 2 UPDATE_EDGES_P5 calls with different thresholds on the same series. RELATIONSHIPS_P5 called on the same pair twice and on a pair with no edge (outputs none)." },
             ],
         },
         CONTRIBUTORS: ["@echometer"],
@@ -58,12 +58,19 @@
                 description: "ADJACENT_P5 should not output the country it is called on.",
             },
             {
-            affectedTests: [6, 7, 8, 10],
-            command: "UPDATE_EDGES_P5",
-            source: "Anonymous",
-            input: "UPDATE_EDGES_P5 SeriesCode threshold relation",
-            description:
-                "(P3 Bug) The IntervalTree query must explore both subtrees when the threshold falls within a node's range, not just tunnel down one branch. Greedy single-path traversal skips valid countries in the opposite subtree, causing edges to be missing and downstream ADJACENT_P5 and PATH_P5 to return wrong results.",
+                affectedTests: [6, 7, 8, 10],
+                command: "UPDATE_EDGES_P5",
+                source: "Anonymous",
+                input: "UPDATE_EDGES_P5 SeriesCode threshold relation",
+                description:
+                    "(P3 Bug) The IntervalTree query must explore both subtrees when the threshold falls within a node's range, not just tunnel down one branch. Greedy single-path traversal skips valid countries in the opposite subtree, causing edges to be missing and downstream ADJACENT_P5 and PATH_P5 to return wrong results.",
+            },
+            {
+                affectedTests: [4],
+                command: "UPDATE_EDGES_P5",
+                source: "@echometer",
+                input: "",
+                description: "Call 1 succeeds, call 2 fails. The failure on call 2 is likely a duplicate relationship (same series/threshold/relation combo) or a combo where no countries qualify. Tuple equality uses == on all three components, not tolerance.",
             },
         ],
         COMMAND_INFO: {
