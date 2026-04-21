@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WatTheHex | Graph Traversal Visualizer</title>
+  <style>
+    html.gt-page-pending body {
+      display: none !important;
+    }
+
+    .gt-tool-pending {
+      visibility: hidden !important;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.add("gt-page-pending");
+  </script>
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../aqua2.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="tool.js" defer></script>
+</head>
+<body class="gt-page-loading">
+  <div class="page-shell tool-page">
+    <header class="site-header">
+      <div class="top-bar">
+        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
+        <nav class="menu-bar" aria-label="Primary">
+          <a class="menu-link" href="/" data-local-home>Home</a>
+          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
+          <a class="menu-link" href="/about.html" data-local-about>About</a>
+        </nav>
+        <a
+          class="tool-feedback-link"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Feedback</a>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a class="breadcrumb-link" href="/tools.html" data-local-tools>Tools</a>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span>ECE 250</span>
+      <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+      <span aria-current="page">Graph Traversal Visualizer</span>
+    </nav>
+
+    <section class="tool-page-intro">
+      <h1 class="tool-page-title">Graph Traversal Visualizer</h1>
+      <p class="tool-page-description">Step through iterative DFS and BFS finding a path from start to target. Watch the stack or queue build up, see exactly which pseudocode line runs at each step, and compare how the two algorithms explore the same graph differently.</p>
+    </section>
+
+    <main class="tool-page-main gt-tool-main">
+      <div id="gt-tool" class="gt-tool gt-tool-pending" aria-busy="true">
+        <div class="gt-layout">
+          <div class="gt-stage-stack">
+            <section class="gt-panel gt-stage-panel" aria-labelledby="gt-stage-heading">
+              <div class="gt-panel-header gt-stage-header">
+                <div class="gt-stage-header-main">
+                  <div>
+                    <p class="gt-eyebrow">Stage</p>
+                    <h2 id="gt-stage-heading" class="gt-section-title">Traversal Walkthrough</h2>
+                  </div>
+                </div>
+                <p id="gt-stage-note" class="gt-panel-note">Compare how DFS and BFS expand the frontier on the same graph.</p>
+              </div>
+
+              <div class="gt-stage-toolbar">
+                <div class="gt-tab-shell">
+                  <div class="aqua-tabview-wrap gt-tabview-wrap">
+                    <div id="gt-algo-tabs" class="aqua-tabview gt-tabview" role="tablist" aria-label="Traversal algorithm">
+                      <div class="aqua-tabview-indicator"></div>
+                      <div class="aqua-tabview-tab active" data-tab="dfs" role="tab" tabindex="0" aria-selected="true">DFS</div>
+                      <div class="aqua-tabview-tab" data-tab="bfs" role="tab" tabindex="0" aria-selected="false">BFS</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="gt-stage-meta" aria-live="polite">
+                  <span id="gt-phase-chip" class="gt-phase-chip" data-tone="dfs">Depth-first search · stack frontier</span>
+                </div>
+              </div>
+
+              <div class="gt-stage">
+                <section class="gt-graph-shell" aria-labelledby="gt-graph-heading">
+                  <div class="gt-graph-shell-header">
+                    <div>
+                      <p class="gt-mini-label">Graph</p>
+                      <h3 id="gt-graph-heading" class="gt-subpanel-title">Traversal Map</h3>
+                    </div>
+                    <p class="gt-subpanel-copy">Watch the active node, candidate edge, and discovered path update step by step.</p>
+                  </div>
+                  <div class="gt-graph-view">
+                    <svg
+                      id="gt-svg"
+                      class="gt-graph-svg"
+                      viewBox="0 0 580 440"
+                      role="img"
+                      aria-label="Graph visualization"
+                    ></svg>
+                  </div>
+                </section>
+
+                <aside class="gt-frontier-panel" aria-labelledby="gt-frontier-heading">
+                  <div class="gt-frontier-header">
+                    <div>
+                      <p class="gt-mini-label">Frontier</p>
+                      <h3 id="gt-frontier-heading" class="gt-subpanel-title gt-frontier-title">Next Paths</h3>
+                    </div>
+                    <div class="gt-frontier-header-meta">
+                      <span id="gt-frontier-label" class="gt-frontier-label">Stack</span>
+                      <span id="gt-frontier-pointer" class="gt-frontier-pointer">↑ top</span>
+                    </div>
+                  </div>
+                  <div id="gt-frontier-items" class="gt-frontier-items" aria-live="polite" aria-label="Frontier contents"></div>
+                </aside>
+
+                <section class="gt-subpanel gt-code-shell" aria-labelledby="gt-code-heading">
+                  <div class="gt-subpanel-header">
+                    <div>
+                      <p class="gt-mini-label">Pseudocode</p>
+                      <h3 id="gt-code-heading" class="gt-subpanel-title">Algorithm Trace</h3>
+                    </div>
+                  </div>
+                  <div id="gt-code-panel" class="gt-code-panel" aria-label="Pseudocode"></div>
+                </section>
+              </div>
+
+              <div class="gt-progress-block">
+                <div class="gt-progress-row">
+                  <span class="gt-field-label">Run progress</span>
+                  <span class="gt-progress-label">Step <span id="gt-step-num">1</span> / <span id="gt-step-total">1</span></span>
+                </div>
+                <div id="gt-progress" class="aqua-progress gt-progress" data-value="0" aria-hidden="true">
+                  <div class="aqua-progress-fill"></div>
+                </div>
+              </div>
+
+              <section class="gt-subpanel gt-narration-panel" aria-labelledby="gt-narration-heading">
+                <div class="gt-subpanel-header">
+                  <div>
+                    <h3 id="gt-narration-heading" class="gt-subpanel-title">Current Move</h3>
+                    <p class="gt-subpanel-copy">Follow the exact pseudocode action that produced the current frontier.</p>
+                  </div>
+                </div>
+                <p id="gt-narration" class="gt-narration" role="status" aria-live="polite" aria-atomic="true">Loading the first traversal.</p>
+              </section>
+            </section>
+
+            <section class="gt-panel gt-state-panel" aria-labelledby="gt-state-heading">
+              <div class="gt-panel-header">
+                <div>
+                  <p class="gt-eyebrow">Traversal</p>
+                  <h2 id="gt-state-heading" class="gt-section-title">State</h2>
+                </div>
+                <p class="gt-panel-note">Keep the visited set, active path, and final answer visible while the traversal runs.</p>
+              </div>
+
+              <div class="gt-state-grid" aria-live="polite">
+                <article class="gt-state-card">
+                  <p class="gt-state-label">Visited</p>
+                  <p id="gt-visited-set" class="gt-state-value">{ }</p>
+                </article>
+
+                <article class="gt-state-card">
+                  <p class="gt-state-label">Current path</p>
+                  <p id="gt-current-path" class="gt-state-value">—</p>
+                </article>
+
+                <article class="gt-state-card gt-state-card-result">
+                  <p class="gt-state-label">Result</p>
+                  <p id="gt-result-placeholder" class="gt-state-placeholder">No result yet.</p>
+                  <div id="gt-result" class="gt-result" hidden>
+                    <span class="gt-result-label">Path</span>
+                    <span id="gt-result-path" class="gt-result-path"></span>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+          </div>
+
+          <aside class="gt-control-rail" aria-labelledby="gt-controls-heading">
+            <section class="gt-panel gt-controls-panel">
+              <div class="gt-panel-header">
+                <div>
+                  <p class="gt-eyebrow">Controls</p>
+                  <h2 id="gt-controls-heading" class="gt-section-title">Playback</h2>
+                </div>
+              </div>
+
+              <div class="gt-control-group">
+                <div class="gt-select-field">
+                  <span class="gt-field-label">Preset</span>
+                  <div id="gt-preset-select" class="aqua-select graphite-select gt-select" data-select-kind="preset">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">Lecture Example</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">Lecture Example</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="gt-select-options">
+                        <div class="aqua-select-option chosen" data-value="lecture">Lecture Example</div>
+                        <div class="aqua-select-option" data-value="cycle">Cycle-Heavy</div>
+                        <div class="aqua-select-option" data-value="disconnected">Disconnected (No Path)</div>
+                        <div class="aqua-select-option" data-value="custom">Custom…</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="gt-select-field">
+                  <span class="gt-field-label">Start node</span>
+                  <div id="gt-start-select" class="aqua-select graphite-select gt-select" data-select-kind="start">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">A</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">A</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="gt-select-options"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="gt-select-field">
+                  <span class="gt-field-label">Target node</span>
+                  <div id="gt-target-select" class="aqua-select graphite-select gt-select" data-select-kind="target">
+                    <div class="aqua-select-trigger">
+                      <div class="aqua-select-value-wrap">
+                        <span class="aqua-select-value selected">F</span>
+                      </div>
+                      <div class="aqua-select-cap">
+                        <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="aqua-select-panel">
+                      <div class="aqua-select-panel-header">
+                        <div class="aqua-select-value-wrap">
+                          <span class="aqua-select-value">F</span>
+                        </div>
+                        <div class="aqua-select-cap">
+                          <svg viewBox="0 0 13 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.5 14L1 8.5M6.5 14L12 8.5M6.5 4V14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="gt-select-options"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <label class="gt-slider-field" for="gt-speed-slider">
+                  <span class="gt-slider-row">
+                    <span class="gt-field-label">Playback speed</span>
+                    <output id="gt-speed-label" class="gt-slider-output" for="gt-speed-slider">1×</output>
+                  </span>
+                  <div id="gt-speed-slider" class="aqua-slider graphite-slider gt-slider" data-min="0" data-max="4" data-value="1" tabindex="0" role="slider" aria-label="Playback speed" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="gt-slider-scale"><span>0.5×</span><span>12×</span></span>
+                </label>
+              </div>
+
+              <div class="gt-button-grid">
+                <button id="gt-play-button" type="button" class="aqua-button gt-play-button">Play</button>
+                <button id="gt-step-back-button" type="button" class="graphite-button">Step Back</button>
+                <button id="gt-step-forward-button" type="button" class="graphite-button">Step Forward</button>
+                <button id="gt-reset-button" type="button" class="graphite-button">Reset</button>
+              </div>
+
+              <p class="gt-kb-hint">← / → step · Space play · R reset</p>
+            </section>
+
+            <section id="gt-custom-panel" class="gt-panel gt-custom-panel" aria-labelledby="gt-custom-heading" hidden>
+              <div class="gt-panel-header">
+                <div>
+                  <p class="gt-eyebrow">Graph Editor</p>
+                  <h2 id="gt-custom-heading" class="gt-section-title">Custom Adjacency List</h2>
+                </div>
+                <p class="gt-panel-note">One node per line. Comments beginning with # are ignored.</p>
+              </div>
+
+              <label class="gt-textarea-field" for="gt-custom-text">
+                <span class="gt-field-label">Adjacency list</span>
+                <textarea
+                  id="gt-custom-text"
+                  class="gt-custom-textarea"
+                  spellcheck="false"
+                  rows="8"
+                  placeholder="A: B C&#10;B: A D E&#10;C: A F&#10;# blank lines and # comments ok"
+                ></textarea>
+              </label>
+              <p class="gt-custom-hint">Press Ctrl+Enter or Cmd+Enter to apply.</p>
+              <div class="gt-custom-actions">
+                <button id="gt-apply-button" type="button" class="aqua-button">Apply Graph</button>
+              </div>
+              <p id="gt-custom-error" class="gt-custom-error" hidden aria-live="polite"></p>
+            </section>
+
+            <section class="gt-panel gt-summary-panel" aria-labelledby="gt-summary-heading">
+              <div class="gt-panel-header">
+                <div>
+                  <p class="gt-eyebrow">Algorithm</p>
+                  <h2 id="gt-summary-heading" class="gt-section-title">Summary</h2>
+                </div>
+              </div>
+
+              <div class="gt-summary-copy">
+                <p id="gt-summary-idea" class="gt-summary-idea">Depth-first search dives down one path until it must backtrack.</p>
+                <div class="gt-summary-grid">
+                  <div class="gt-summary-row"><span>Frontier</span><span id="gt-summary-frontier">Stack (LIFO)</span></div>
+                  <div class="gt-summary-row"><span>Explores</span><span id="gt-summary-pattern">Deeper paths first</span></div>
+                  <div class="gt-summary-row"><span>Strength</span><span id="gt-summary-strength">Fast to follow one branch to completion</span></div>
+                </div>
+                <p id="gt-summary-tradeoff" class="gt-summary-tradeoff">Tradeoff: it can find a path quickly, but not necessarily the shallowest one.</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="tool-page-footer">
+      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
+      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+    </footer>
+  </div>
+
+  <script>
+    function syncStickyViewportClip() {
+      if (!window.CSS || !CSS.supports("overflow-x", "clip")) {
+        return;
+      }
+
+      document.documentElement.style.overflowX = "clip";
+      document.body.style.overflowX = "clip";
+    }
+
+    window.addEventListener("load", function () {
+      syncStickyViewportClip();
+      requestAnimationFrame(syncStickyViewportClip);
+    }, { once: true });
+
+    if (window.location.protocol === "file:") {
+      document.querySelectorAll("[data-local-home]").forEach(function (link) {
+        link.setAttribute("href", "../../index.html");
+      });
+      document.querySelectorAll("[data-local-tools]").forEach(function (link) {
+        link.setAttribute("href", "../../tools.html");
+      });
+      document.querySelectorAll("[data-local-about]").forEach(function (link) {
+        link.setAttribute("href", "../../about.html");
+      });
+    }
+  </script>
+</body>
+</html>

@@ -2,6 +2,15 @@ window.WatTheHex = window.WatTheHex || {};
 
 window.WatTheHex.tools = [
   {
+    name: "Graph Traversal Visualizer",
+    description: "Step through iterative DFS and BFS finding a path between nodes. Watch the stack or queue build up and compare how the two algorithms explore differently.",
+    course: "ECE 250",
+    type: "Visualizer",
+    term: "2A",
+    date: "2026-04-21",
+    url: "tools/graph-traversal-visualizer/index.html"
+  },
+  {
     name: "Sorting Visualizer",
     description: "Step through lecture-faithful sorting algorithms, inspect the active region, and compare iterative vs divide-and-conquer strategies.",
     course: "ECE 250",
