@@ -1,0 +1,306 @@
+.ag-tool-main.tool-page-main {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.autograder-shell {
+  display: grid;
+  gap: 1rem;
+  color: var(--aqua-foreground, var(--text));
+}
+
+.autograder-tab-pane {
+  min-width: 0;
+}
+
+.autograder-panel > * + * {
+  margin-top: 0.95rem;
+}
+
+.autograder-eyebrow {
+  margin: 0;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.autograder-panel-title {
+  margin: 0;
+  color: var(--aqua-foreground, var(--text));
+  font-size: 1.28rem;
+  font-weight: 720;
+  letter-spacing: -0.03em;
+}
+
+.autograder-panel-copy {
+  margin: 0;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  line-height: 1.6;
+}
+
+.autograder-project-root,
+.autograder-project-3-root,
+.autograder-project-4-root {
+  min-width: 0;
+}
+
+.autograder-project-layout,
+.autograder-p3-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.autograder-panel-intro .autograder-panel-copy {
+  max-width: 68ch;
+}
+
+.autograder-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.autograder-section-header > div:first-child {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.autograder-section-header-split {
+  align-items: center;
+}
+
+.autograder-panel-title-small {
+  font-size: 1.08rem;
+  letter-spacing: -0.02em;
+}
+
+.autograder-test-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.autograder-test-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.autograder-command-list,
+.autograder-edge-case-list,
+.autograder-suspect-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.autograder-command-row {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+}
+
+.autograder-command-row-heading,
+.autograder-edge-case-meta,
+.autograder-suspect-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.autograder-command-row-test,
+.autograder-edge-case-tests,
+.autograder-edge-case-source,
+.autograder-suspect-coverage,
+.autograder-command-row-note,
+.autograder-suspect-file {
+  font-size: 0.76rem;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+}
+
+.autograder-command-row-test {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--aqua-foreground, var(--text));
+}
+
+.autograder-command-row-note {
+  font-style: italic;
+}
+
+.autograder-command-row-badges,
+.autograder-suspect-functions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.autograder-command-row-note-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.autograder-note-card {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.85rem 1rem;
+}
+
+.autograder-note-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.autograder-note-card-text {
+  margin: 0;
+  color: var(--aqua-foreground, var(--text));
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.autograder-note-card-source {
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  font-size: 0.82rem;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.autograder-contributor-list {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.autograder-edge-case-card {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 1.05rem;
+}
+
+.autograder-edge-case-source {
+  margin-left: auto;
+  font-style: italic;
+}
+
+/* Terminal glow inside Aqua glass code block (edge-case samples only). */
+.aqua-code-block.autograder-edge-case-input {
+  border-color: color-mix(in srgb, rgba(157, 240, 165, 0.42) 24%, var(--aqua-border, rgba(255, 255, 255, 0.14)));
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%),
+    color-mix(in srgb, #0b1014 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 28px rgba(157, 240, 165, 0.07),
+    0 8px 22px rgba(0, 0, 0, 0.22);
+  color: #9df0a5;
+}
+
+.aqua-code-block.autograder-edge-case-input .aqua-code-line {
+  color: #9df0a5;
+  text-shadow:
+    0 0 6px rgba(157, 240, 165, 0.72),
+    0 0 16px rgba(120, 220, 130, 0.38),
+    0 0 28px rgba(90, 200, 105, 0.2);
+}
+
+.aqua-code-block.autograder-edge-case-input .aqua-code-line::before {
+  color: rgba(157, 240, 165, 0.38);
+  text-shadow: none;
+}
+
+[data-theme="dark"] .aqua-code-block.autograder-edge-case-input {
+  border-color: color-mix(in srgb, rgba(157, 240, 165, 0.34) 30%, var(--aqua-border, rgba(255, 255, 255, 0.14)));
+  background:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%),
+    color-mix(in srgb, #06090c 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 32px rgba(157, 240, 165, 0.09),
+    0 10px 26px rgba(0, 0, 0, 0.38);
+}
+
+[data-theme="dark"] .aqua-code-block.autograder-edge-case-input .aqua-code-line::before {
+  color: rgba(157, 240, 165, 0.3);
+}
+
+.autograder-edge-case-description,
+.autograder-suspect-description,
+.autograder-suspect-edge-case-copy,
+.autograder-diagnosis-empty-copy,
+.autograder-load-warning-copy {
+  margin: 0;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  line-height: 1.55;
+}
+
+.autograder-suspect-card {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 1.05rem;
+}
+
+.autograder-suspect-header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.autograder-suspect-file {
+  margin: 0;
+}
+
+.autograder-suspect-edge-cases {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.autograder-suspect-edge-case {
+  padding: 0.8rem 0.9rem;
+}
+
+.autograder-suspect-edge-case-heading,
+.autograder-diagnosis-empty-title,
+.autograder-load-warning-title {
+  margin: 0 0 0.25rem;
+  color: var(--aqua-foreground, var(--text));
+  font-weight: 700;
+}
+
+.autograder-diagnosis-empty,
+.autograder-load-warning {
+  padding: 1rem 1.05rem;
+}
+
+.autograder-never-tested {
+  margin: -0.15rem 0 0;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-align: center;
+  opacity: 0.72;
+}
+
+@media (max-width: 640px) {
+  .autograder-test-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -527,17 +527,6 @@
   font-weight: 700;
 }
 
-.conv-slider {
-  --aqua-color: var(--conv-range-color);
-  --aqua-background: #8aaec8;
-  --aqua-border: rgba(90, 110, 130, 0.48);
-  outline: none;
-}
-
-.conv-slider:focus-visible {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--conv-range-color) 30%, white 70%);
-}
-
 .conv-range-scale {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

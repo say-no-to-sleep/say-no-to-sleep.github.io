@@ -22,7 +22,6 @@
   const state = {
     bits: createEmptyBits(),
     isCompactSummaryVisible: false,
-    isMobileActionsOpen: false,
     toastTimeoutId: null,
     toastHideTimeoutId: null
   };
@@ -114,7 +113,64 @@
       return { label: "7-Seg", kind: "seg" };
     }
 
-    return { label: `Bit ${index}`, kind: "general" };
+    return { label: "GPIO", kind: "general" };
+  }
+
+  function getKindChipClass(kind) {
+    if (kind === "pb" || kind === "general") {
+      return "graphite-chip gpio-chip";
+    }
+
+    return "aqua-chip gpio-chip";
+  }
+
+  function createKindChipMarkup(metadata) {
+    return `<span class="${getKindChipClass(metadata.kind)} gpio-chip--${metadata.kind}">${escapeHtml(metadata.label)}</span>`;
+  }
+
+  function bindCheckboxChipInteractions(chip) {
+    if (!chip || chip.dataset.gpioChipBound === "true") {
+      return;
+    }
+
+    chip.dataset.gpioChipBound = "true";
+
+    const input = chip.querySelector('input[type="checkbox"]');
+    const control = input?.nextElementSibling;
+
+    if (input && control?.classList.contains("aqua-checkbox-control")) {
+      input.addEventListener("change", () => {
+        control.classList.remove("settling");
+        void control.offsetWidth;
+        control.classList.add("settling");
+      });
+
+      control.addEventListener("animationend", (event) => {
+        if (event.animationName === "checkbox-settle") {
+          control.classList.remove("settling");
+        }
+      });
+    }
+
+    function releasePress() {
+      chip.classList.remove("pressing");
+    }
+
+    chip.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+
+      chip.classList.add("pressing");
+    });
+
+    chip.addEventListener("pointerup", releasePress);
+    chip.addEventListener("pointercancel", releasePress);
+    chip.addEventListener("pointerleave", (event) => {
+      if (event.buttons === 1) {
+        releasePress();
+      }
+    });
   }
 
   function isMobileViewport() {
@@ -126,17 +182,21 @@
   }
 
   function createValueRowMarkup(label, value, kind) {
+    const rowClass = kind === "hex" ? "gpio-value-row gpio-value-row--hex" : "gpio-value-row";
+
     return [
-      '<div class="gpio-value-row">',
+      `<div class="${rowClass}">`,
       `<span class="gpio-value-label">${label}</span>`,
-      `<p class="gpio-value-code" data-kind="${kind}">${escapeHtml(value)}</p>`,
+      `<span class="gpio-value-code" data-kind="${kind}">${escapeHtml(value)}</span>`,
       "</div>"
     ].join("");
   }
 
   function createCompactValueRowMarkup(label, value, kind) {
+    const rowClass = kind === "hex" ? "gpio-compact-row gpio-compact-row--hex" : "gpio-compact-row";
+
     return [
-      `<div class="gpio-compact-row" data-kind="${kind}">`,
+      `<div class="${rowClass}">`,
       `<span class="gpio-compact-label">${label}</span>`,
       `<span class="gpio-compact-code" data-kind="${kind}">${escapeHtml(value)}</span>`,
       "</div>"
@@ -145,7 +205,8 @@
 
   function createActionButtonsMarkup() {
     return ACTIONS.map((action) => {
-      return `<button type="button" class="gpio-action-button" data-action="${action.key}" data-tone="${action.tone}">${action.label}</button>`;
+      const buttonClass = action.tone === "danger" ? "graphite-button" : "aqua-button";
+      return `<button type="button" class="${buttonClass}" data-action="${action.key}" data-tone="${action.tone}">${action.label}</button>`;
     }).join("");
   }
 
@@ -153,31 +214,22 @@
     refs.valueStack.innerHTML = [
       createValueRowMarkup("HEX", `0x${formatHex(state.bits)}`, "hex"),
       createValueRowMarkup("DEC", formatDecimal(state.bits), "dec"),
-      createValueRowMarkup("BIN", formatBinary(state.bits), "bin"),
-      '<button type="button" class="gpio-copy-button aqua-button-focused" data-action="copy-hex">Copy Hex</button>'
+      createValueRowMarkup("BIN", formatBinary(state.bits), "bin")
     ].join("");
 
     syncSummaryObserverTarget();
   }
 
   function renderCompactSummary() {
-    refs.compactSummary.innerHTML = [
-      '<div class="gpio-panel gpio-compact-summary-panel">',
-      '<div class="gpio-compact-summary-layout">',
-      '<div class="gpio-compact-values">',
+    if (!refs.compactValues) {
+      return;
+    }
+
+    refs.compactValues.innerHTML = [
       createCompactValueRowMarkup("HEX", `0x${formatHex(state.bits)}`, "hex"),
       createCompactValueRowMarkup("DEC", formatDecimal(state.bits), "dec"),
-      createCompactValueRowMarkup("BIN", formatBinary(state.bits), "bin"),
-      "</div>",
-      '<div class="gpio-compact-actions">',
-      '<button type="button" class="gpio-copy-button aqua-button-focused" data-action="copy-hex">Copy</button>',
-      `<button type="button" class="gpio-action-button gpio-compact-menu-button" data-action="toggle-mobile-actions" aria-controls="gpio-mobile-actions-tray" aria-expanded="${state.isMobileActionsOpen}">Actions</button>`,
-      "</div>",
-      "</div>",
-      "</div>"
+      createCompactValueRowMarkup("BIN", formatBinary(state.bits), "bin")
     ].join("");
-
-    syncFloatingUiState();
   }
 
   function renderActions() {
@@ -188,6 +240,7 @@
 
   function renderBitSection(container, indices) {
     container.innerHTML = indices.map((index) => createBitMarkup(index)).join("");
+    container.querySelectorAll(".gpio-bit-cell").forEach(bindCheckboxChipInteractions);
   }
 
   function renderBitSections() {
@@ -211,73 +264,62 @@
     const isOn = state.bits[index];
 
     return [
-      `<div class="gpio-bit-toggle" data-kind="${metadata.kind}" data-on="${isOn}">`,
-      '<label class="aqua-checkbox">',
-      `<input type="checkbox" data-bit-index="${index}" ${isOn ? "checked" : ""} aria-label="${metadata.label} bit ${index}">`,
+      `<label class="aqua-checkbox-chip gpio-bit-cell" data-kind="${metadata.kind}">`,
+      `<input type="checkbox" data-bit-index="${index}" ${isOn ? "checked" : ""} aria-label="${metadata.label}, bit ${index}">`,
       '<span class="aqua-checkbox-control"><span class="aqua-checkbox-left"></span><span class="aqua-checkbox-right"></span></span>',
-      "</label>",
-      '<div class="gpio-bit-toggle-layout">',
-      `<span class="gpio-bit-label">${metadata.label}</span>`,
+      '<span class="aqua-checkbox-label">',
+      '<span class="gpio-bit-meta">',
+      createKindChipMarkup(metadata),
       `<span class="gpio-bit-index">Bit ${index}</span>`,
-      `<span class="gpio-bit-state">${isOn ? "On" : "Off"}</span>`,
-      "</div>",
-      "</div>"
+      "</span>",
+      "</span>",
+      "</label>"
     ].join("");
   }
 
-  function syncBitToggleElement(toggle, index) {
+  function syncBitToggleElement(cell, index) {
     const metadata = getBitMetadata(index);
     const isOn = state.bits[index];
-    const input = toggle.querySelector("input[data-bit-index]");
-    const label = toggle.querySelector(".gpio-bit-label");
-    const bitIndex = toggle.querySelector(".gpio-bit-index");
-    const bitState = toggle.querySelector(".gpio-bit-state");
+    const input = cell.querySelector("input[data-bit-index]");
+    const kindChip = cell.querySelector(".gpio-chip");
+    const bitIndex = cell.querySelector(".gpio-bit-index");
 
-    toggle.dataset.kind = metadata.kind;
-    toggle.dataset.on = String(isOn);
+    cell.dataset.kind = metadata.kind;
+    cell.classList.add("aqua-checkbox-chip");
+    cell.classList.remove("graphite-checkbox-chip");
 
     if (input) {
       input.checked = isOn;
-      input.setAttribute("aria-label", `${metadata.label} bit ${index}`);
+      input.setAttribute("aria-label", `${metadata.label}, bit ${index}`);
     }
 
-    if (label) {
-      label.textContent = metadata.label;
+    if (kindChip) {
+      kindChip.className = `${getKindChipClass(metadata.kind)} gpio-chip--${metadata.kind}`;
+      kindChip.textContent = metadata.label;
     }
 
     if (bitIndex) {
       bitIndex.textContent = `Bit ${index}`;
     }
-
-    if (bitState) {
-      bitState.textContent = isOn ? "On" : "Off";
-    }
   }
 
   function syncRenderedBitToggles() {
-    refs.tool.querySelectorAll(".gpio-bit-toggle input[data-bit-index]").forEach((input) => {
-      const toggle = input.closest(".gpio-bit-toggle");
+    refs.tool.querySelectorAll(".gpio-bit-cell input[data-bit-index]").forEach((input) => {
+      const cell = input.closest(".gpio-bit-cell");
 
-      if (toggle) {
-        syncBitToggleElement(toggle, Number(input.dataset.bitIndex));
+      if (cell) {
+        syncBitToggleElement(cell, Number(input.dataset.bitIndex));
       }
     });
   }
 
-  function syncFloatingUiState() {
+  function syncCompactSummaryVisibility() {
     refs.compactSummary.classList.toggle("is-visible", state.isCompactSummaryVisible);
     refs.compactSummary.setAttribute("aria-hidden", String(!state.isCompactSummaryVisible));
+  }
 
-    refs.mobileActionsBackdrop.classList.toggle("is-visible", state.isMobileActionsOpen);
-    refs.mobileActionsBackdrop.setAttribute("aria-hidden", String(!state.isMobileActionsOpen));
-
-    refs.mobileActionsTray.classList.toggle("is-visible", state.isMobileActionsOpen);
-    refs.mobileActionsTray.setAttribute("aria-hidden", String(!state.isMobileActionsOpen));
-
-    const trigger = refs.compactSummary.querySelector("[data-action='toggle-mobile-actions']");
-    if (trigger) {
-      trigger.setAttribute("aria-expanded", String(state.isMobileActionsOpen));
-    }
+  function closeMobileActionsPanel() {
+    refs.mobileActionsPanel?.querySelector("[data-aqua-floating-panel-dismiss]")?.click();
   }
 
   function setCompactSummaryVisible(visible) {
@@ -289,23 +331,11 @@
 
     state.isCompactSummaryVisible = nextVisible;
 
-    if (!nextVisible && state.isMobileActionsOpen) {
-      state.isMobileActionsOpen = false;
+    if (!nextVisible) {
+      closeMobileActionsPanel();
     }
 
-    syncFloatingUiState();
-  }
-
-  function setMobileActionsOpen(open) {
-    const nextOpen = Boolean(open) && state.isCompactSummaryVisible && isMobileViewport();
-
-    if (state.isMobileActionsOpen === nextOpen) {
-      syncFloatingUiState();
-      return;
-    }
-
-    state.isMobileActionsOpen = nextOpen;
-    syncFloatingUiState();
+    syncCompactSummaryVisibility();
   }
 
   function getSummaryVisibilityTarget() {
@@ -383,24 +413,6 @@
 
     if (actionButton && refs.scope.contains(actionButton)) {
       handleAction(actionButton.dataset.action);
-      return;
-    }
-
-    if (!state.isMobileActionsOpen) {
-      return;
-    }
-
-    const clickedInsideTray = event.target.closest("#gpio-mobile-actions-tray");
-    const clickedTrayToggle = event.target.closest("[data-action='toggle-mobile-actions']");
-
-    if (!clickedInsideTray && !clickedTrayToggle) {
-      setMobileActionsOpen(false);
-    }
-  }
-
-  function handleKeydown(event) {
-    if (event.key === "Escape" && state.isMobileActionsOpen) {
-      setMobileActionsOpen(false);
     }
   }
 
@@ -411,48 +423,25 @@
     }
 
     const index = Number(bitInput.dataset.bitIndex);
-    const toggle = bitInput.closest(".gpio-bit-toggle");
+    const cell = bitInput.closest(".gpio-bit-cell");
 
     state.bits = toggleBitAt(state.bits, index);
 
-    if (toggle) {
-      syncBitToggleElement(toggle, index);
+    if (cell) {
+      syncBitToggleElement(cell, index);
     }
 
     renderDerivedValues();
   }
 
-  function handleBitToggleClick(event) {
-    const toggle = event.target.closest(".gpio-bit-toggle");
-    if (!toggle || !refs.tool.contains(toggle)) {
-      return;
-    }
-
-    if (event.target.closest(".aqua-checkbox")) {
-      return;
-    }
-
-    const input = toggle.querySelector("input[data-bit-index]");
-    if (!input) {
-      return;
-    }
-
-    input.click();
-  }
-
   function handleAction(actionKey) {
-    if (actionKey === "toggle-mobile-actions") {
-      setMobileActionsOpen(!state.isMobileActionsOpen);
-      return;
-    }
-
     const groupAction = ACTIONS.find((action) => action.key === actionKey && Array.isArray(action.indices));
 
     if (groupAction) {
       state.bits = toggleBitGroup(state.bits, groupAction.indices);
       renderDerivedValues();
       syncRenderedBitToggles();
-      setMobileActionsOpen(false);
+      closeMobileActionsPanel();
       return;
     }
 
@@ -460,7 +449,7 @@
       state.bits = invertBitMask(state.bits);
       renderDerivedValues();
       syncRenderedBitToggles();
-      setMobileActionsOpen(false);
+      closeMobileActionsPanel();
       return;
     }
 
@@ -468,7 +457,7 @@
       state.bits = clearAllBits();
       renderDerivedValues();
       syncRenderedBitToggles();
-      setMobileActionsOpen(false);
+      closeMobileActionsPanel();
       return;
     }
 
@@ -476,7 +465,7 @@
       state.bits = shiftBitsLeft(state.bits);
       renderDerivedValues();
       syncRenderedBitToggles();
-      setMobileActionsOpen(false);
+      closeMobileActionsPanel();
       return;
     }
 
@@ -484,7 +473,7 @@
       state.bits = shiftBitsRight(state.bits);
       renderDerivedValues();
       syncRenderedBitToggles();
-      setMobileActionsOpen(false);
+      closeMobileActionsPanel();
       return;
     }
 
@@ -562,9 +551,7 @@
 
   function handleViewportChange() {
     if (!isMobileViewport()) {
-      setMobileActionsOpen(false);
-    } else {
-      syncFloatingUiState();
+      closeMobileActionsPanel();
     }
   }
 
@@ -578,8 +565,8 @@
     refs.upperGrid = document.getElementById("gpio-upper-grid");
     refs.lowerGrid = document.getElementById("gpio-lower-grid");
     refs.compactSummary = document.getElementById("gpio-compact-summary");
-    refs.mobileActionsBackdrop = document.getElementById("gpio-mobile-actions-backdrop");
-    refs.mobileActionsTray = document.getElementById("gpio-mobile-actions-tray");
+    refs.compactValues = document.getElementById("gpio-compact-values");
+    refs.mobileActionsPanel = document.getElementById("gpio-mobile-actions-panel");
     refs.toast = document.getElementById("gpio-toast");
     refs.mobileQuery = window.matchMedia ? window.matchMedia(MOBILE_BREAKPOINT_QUERY) : null;
 
@@ -593,16 +580,14 @@
       !refs.upperGrid ||
       !refs.lowerGrid ||
       !refs.compactSummary ||
-      !refs.mobileActionsBackdrop ||
-      !refs.mobileActionsTray ||
+      !refs.compactValues ||
+      !refs.mobileActionsPanel ||
       !refs.toast
     ) {
       return;
     }
 
     document.addEventListener("click", handleDocumentClick);
-    document.addEventListener("keydown", handleKeydown);
-    refs.tool.addEventListener("click", handleBitToggleClick);
     refs.tool.addEventListener("change", handleChange);
 
     if (refs.mobileQuery) {
@@ -614,7 +599,7 @@
     }
 
     renderAll();
-    syncFloatingUiState();
+    syncCompactSummaryVisibility();
     initSummaryObserver();
   }
 

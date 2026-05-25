@@ -6,7 +6,7 @@
   <title>WatTheHex | GPIO Bitmask Builder</title>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="tool.css">
-  <script src="../../aqua2.js" defer></script>
+  <script src="../../vendor/aqua-neo/aqua2.js" defer></script>
   <script src="../../storage.js" defer></script>
   <script src="tool.js" defer></script>
 </head>
@@ -16,9 +16,11 @@
       <div class="top-bar">
         <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
         <nav class="menu-bar" aria-label="Primary">
-          <a class="menu-link" href="/" data-local-home>Home</a>
-          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
-          <a class="menu-link" href="/about.html" data-local-about>About</a>
+          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
+            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
+            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+          </div>
         </nav>
         <a
           class="tool-feedback-link"
@@ -42,9 +44,9 @@
       <p class="tool-page-description">Build and inspect 32-bit GPIO masks for LEDs, pushbuttons, and 7-segment displays.</p>
     </section>
 
-    <main class="tool-page-main gpio-tool-main">
+    <main class="tool-page-main tool-page-main-plain gpio-tool-main">
       <div id="gpio-tool" class="gpio-tool">
-        <section id="gpio-summary-panel" class="gpio-panel gpio-summary-panel" aria-labelledby="gpio-summary-heading">
+        <section id="gpio-summary-panel" class="gpio-summary-panel" aria-labelledby="gpio-summary-heading">
           <div class="gpio-summary-layout">
             <div class="gpio-summary-copy">
               <p class="gpio-eyebrow">GPIO Mask</p>
@@ -52,13 +54,20 @@
               <p class="gpio-summary-text">Compose GPIO output masks, inspect the raw value, and copy the exact hex word for your lab workflow.</p>
             </div>
 
-            <div id="gpio-value-stack" class="gpio-value-stack" aria-live="polite"></div>
+            <div class="aqua-container gpio-value-panel">
+              <div class="gpio-value-layout">
+                <div id="gpio-value-stack" class="gpio-value-stack" aria-live="polite"></div>
+                <div class="gpio-value-actions">
+                  <button type="button" class="aqua-button aqua-button-focused gpio-copy-button" data-action="copy-hex">Copy Hex</button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <div class="gpio-tool-layout">
           <div class="gpio-bit-sections">
-            <section class="gpio-panel gpio-bits-panel" aria-labelledby="gpio-upper-heading">
+            <section class="gpio-bits-panel" aria-labelledby="gpio-upper-heading">
               <div class="gpio-panel-header">
                 <h2 id="gpio-upper-heading" class="gpio-panel-title">Upper Word [31:16]</h2>
                 <p class="gpio-panel-note">Higher-order GPIO mask bits.</p>
@@ -66,7 +75,7 @@
               <div id="gpio-upper-grid" class="gpio-bit-grid"></div>
             </section>
 
-            <section class="gpio-panel gpio-bits-panel" aria-labelledby="gpio-lower-heading">
+            <section class="gpio-bits-panel" aria-labelledby="gpio-lower-heading">
               <div class="gpio-panel-header">
                 <h2 id="gpio-lower-heading" class="gpio-panel-title">Lower Word [15:0]</h2>
                 <p class="gpio-panel-note">Lower-order GPIO mask bits.</p>
@@ -76,7 +85,7 @@
           </div>
 
           <aside class="gpio-actions-rail" aria-label="Quick Actions">
-            <section class="gpio-panel gpio-actions-panel gpio-actions-panel-desktop" aria-labelledby="gpio-actions-heading">
+            <section class="aqua-container gpio-actions-panel gpio-actions-panel-desktop" aria-labelledby="gpio-actions-heading">
               <div class="gpio-panel-header">
                 <h2 id="gpio-actions-heading" class="gpio-panel-title">Quick Actions</h2>
                 <p class="gpio-panel-note">Apply grouped bit operations in one step.</p>
@@ -87,24 +96,50 @@
         </div>
       </div>
 
-      <div id="gpio-compact-summary" class="gpio-compact-summary" aria-hidden="true"></div>
-      <div id="gpio-mobile-actions-backdrop" class="gpio-mobile-actions-backdrop" aria-hidden="true"></div>
-      <div id="gpio-mobile-actions-tray" class="gpio-mobile-actions-tray" aria-hidden="true">
-        <section class="gpio-panel gpio-actions-panel gpio-actions-panel-mobile" aria-labelledby="gpio-mobile-actions-heading">
-          <div class="gpio-panel-header">
-            <h2 id="gpio-mobile-actions-heading" class="gpio-panel-title">Quick Actions</h2>
-            <p class="gpio-panel-note">Apply grouped bit operations in one step.</p>
+      <div id="gpio-compact-summary" class="gpio-compact-summary" aria-hidden="true">
+        <div class="aqua-container gpio-compact-summary-panel">
+          <div class="gpio-compact-summary-layout">
+            <div id="gpio-compact-values" class="gpio-compact-values" aria-live="polite"></div>
+            <div class="gpio-compact-actions">
+              <button type="button" class="aqua-button aqua-button-focused gpio-copy-button" data-action="copy-hex">Copy</button>
+              <button
+                type="button"
+                class="aqua-button gpio-compact-menu-button"
+                data-aqua-floating-panel-toggle="gpio-mobile-actions-panel"
+                aria-controls="gpio-mobile-actions-panel"
+                aria-pressed="false"
+                aria-expanded="false"
+              >Actions</button>
+            </div>
           </div>
-          <div id="gpio-mobile-actions-grid" class="gpio-actions-grid"></div>
-        </section>
+        </div>
       </div>
 
-      <div id="gpio-toast" class="gpio-toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+      <div
+        id="gpio-mobile-actions-panel"
+        class="aqua-floating-panel gpio-mobile-actions-panel"
+        role="complementary"
+        aria-label="Quick Actions"
+        aria-hidden="true"
+        inert
+        data-anchor="top-right"
+      >
+        <div class="aqua-container">
+          <p class="aqua-floating-panel-title" id="gpio-mobile-actions-heading">Quick Actions</p>
+          <p class="aqua-floating-panel-body gpio-panel-note">Apply grouped bit operations in one step.</p>
+          <div id="gpio-mobile-actions-grid" class="gpio-actions-grid"></div>
+          <div class="aqua-floating-panel-actions">
+            <button type="button" class="graphite-button" data-aqua-floating-panel-dismiss>Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="gpio-toast" class="gpio-toast aqua-container" role="status" aria-live="polite" aria-atomic="true" hidden></div>
     </main>
 
     <footer class="tool-page-footer">
-      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+222">ECE 222</a>
-      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+      <a class="aqua-chip site-chip site-chip--course tool-footer-link" href="../../tools.html?course=ECE+222">ECE 222</a>
+      <a class="graphite-chip site-chip site-chip--term tool-footer-link" href="../../tools.html?term=2A">2A</a>
     </footer>
   </div>
 

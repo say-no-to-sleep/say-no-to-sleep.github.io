@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex | Red-Black Tree Visualizer</title>
   <link rel="stylesheet" href="../../style.css">
-  <script src="../../aqua2.js" defer></script>
+  <link rel="stylesheet" href="tool.css">
+  <script src="../../vendor/aqua-neo/aqua2.js" defer></script>
   <script src="../../storage.js" defer></script>
 </head>
 <body>
@@ -14,9 +15,11 @@
       <div class="top-bar">
         <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
         <nav class="menu-bar" aria-label="Primary">
-          <a class="menu-link" href="/" data-local-home>Home</a>
-          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
-          <a class="menu-link" href="/about.html" data-local-about>About</a>
+          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
+            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
+            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+          </div>
         </nav>
         <a
           class="tool-feedback-link"
@@ -40,16 +43,20 @@
       <p class="tool-page-description">Step through insertions, rotations, and recoloring for balanced tree operations.</p>
     </section>
 
-    <main class="tool-page-main tool-page-main-plain">
-      <div class="tool-under-construction" aria-live="polite">
-        <p class="tool-under-construction-label">Under Construction</p>
-        <div class="aqua-progress-indeterminate" aria-hidden="true"></div>
+    <main class="tool-page-main tool-page-main-plain rbt-tool-main">
+      <div class="rbt-shell">
+        <section class="aqua-container rbt-status-panel" aria-live="polite">
+          <p class="rbt-eyebrow">Visualizer</p>
+          <h2 class="rbt-status-title">Under Construction</h2>
+          <p class="rbt-status-copy">Insertion, rotation, and recoloring walkthroughs are on the way.</p>
+          <div class="aqua-progress-indeterminate rbt-progress" aria-hidden="true"></div>
+        </section>
       </div>
     </main>
 
     <footer class="tool-page-footer">
-      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
-      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+      <a class="aqua-chip site-chip site-chip--course tool-footer-link" href="../../tools.html?course=ECE+250">ECE 250</a>
+      <a class="graphite-chip site-chip site-chip--term tool-footer-link" href="../../tools.html?term=2A">2A</a>
     </footer>
   </div>
 

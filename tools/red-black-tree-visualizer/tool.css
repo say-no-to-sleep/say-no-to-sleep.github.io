@@ -1,0 +1,53 @@
+.rbt-tool-main.tool-page-main {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.rbt-shell {
+  display: grid;
+  place-items: center;
+  min-height: min(52vh, 420px);
+  padding: 0.5rem 0 1rem;
+}
+
+.rbt-status-panel {
+  width: min(440px, 100%);
+  display: grid;
+  gap: 0.65rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.rbt-eyebrow {
+  margin: 0;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.rbt-status-title {
+  margin: 0;
+  color: var(--aqua-foreground, var(--text));
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 760;
+  letter-spacing: -0.04em;
+}
+
+.rbt-status-copy {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--aqua-foreground-muted, var(--text-muted));
+  line-height: 1.55;
+}
+
+.rbt-progress {
+  width: min(280px, 100%);
+  margin-top: 0.35rem;
+}

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex | About</title>
   <link rel="stylesheet" href="style.css">
-  <script src="aqua2.js" defer></script>
+  <script src="vendor/aqua-neo/aqua2.js" defer></script>
   <script src="storage.js" defer></script>
 </head>
 <body>
@@ -14,9 +14,11 @@
       <div class="top-bar">
         <a class="site-title-link" href="index.html">WatTheHex</a>
         <nav class="menu-bar" aria-label="Primary">
-          <a class="menu-link" href="index.html">Home</a>
-          <a class="menu-link" href="tools.html">Tools</a>
-          <a class="menu-link menu-link-current" href="about.html" aria-current="page">About</a>
+          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
+            <a class="aqua-text-button" href="index.html" aria-pressed="false">Home</a>
+            <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
+            <a class="aqua-text-button" href="about.html" aria-pressed="true" aria-current="page">About</a>
+          </div>
         </nav>
         <a
           class="tool-feedback-link"
@@ -28,27 +30,27 @@
     </header>
 
     <main class="content-page-main">
-      <section class="content-panel about-panel" aria-labelledby="about-heading">
-        <div class="content-page-header">
+      <div class="about-page" aria-labelledby="about-heading">
+        <header class="content-page-header">
           <p class="content-page-eyebrow">About</p>
           <h1 id="about-heading" class="content-page-title">What this site is using</h1>
           <p class="content-page-copy">WatTheHex is a small static utility shelf for Waterloo ECE students.</p>
-        </div>
+        </header>
 
         <div class="about-grid">
-          <section class="about-section">
+          <section class="aqua-container about-block">
             <h2 class="about-section-title">Fonts</h2>
             <p class="about-section-copy">The main UI uses Lucida Grande. Code-like numeric readouts use Andale Mono.</p>
             <p class="about-section-copy"><a class="about-link" href="assets/fonts/LucidaGrande-COPYRIGHT.txt">Lucida Grande copyright note</a></p>
           </section>
 
-          <section class="about-section">
+          <section class="aqua-container about-block">
             <h2 class="about-section-title">Aqua2</h2>
             <p class="about-section-copy">Interactive controls are styled with the Aqua2 library, used here as the base for the Aqua-era visual language.</p>
             <p class="about-section-copy"><a class="about-link" href="https://thatdhruv.github.io/aqua2/">Aqua2</a></p>
           </section>
         </div>
-      </section>
+      </div>
     </main>
   </div>
 </body>

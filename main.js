@@ -52,9 +52,7 @@ function renderFilters() {
     filterOptions[key].forEach((value) => {
       const pill = document.createElement("button");
       pill.type = "button";
-      pill.className = selectedFilters[key].has(value)
-        ? "filter-pill aqua-button aqua-button-focused"
-        : "filter-pill aqua-button";
+      pill.className = "aqua-toggle-button";
       pill.textContent = value;
       pill.setAttribute("aria-pressed", String(selectedFilters[key].has(value)));
       pill.addEventListener("click", () => {
@@ -89,7 +87,7 @@ function renderCards() {
 
   visibleTools.forEach((tool) => {
     const card = document.createElement("a");
-    card.className = "tool-card aqua-button";
+    card.className = "tool-card aqua-container";
     card.href = tool.url;
 
     const title = document.createElement("h2");
@@ -103,9 +101,9 @@ function renderCards() {
     const meta = document.createElement("div");
     meta.className = "tool-card-meta";
 
-    meta.appendChild(createBadge("tool-chip", tool.course));
-    meta.appendChild(createBadge("tool-chip", tool.type));
-    meta.appendChild(createBadge("tool-term", tool.term));
+    meta.appendChild(createAquaChip(tool.course, "course"));
+    meta.appendChild(createAquaChip(tool.type, "type"));
+    meta.appendChild(createAquaChip(tool.term, "term"));
 
     card.append(title, description, meta);
     fragment.appendChild(card);
@@ -125,28 +123,28 @@ function renderHomeHighlights() {
 
   sortedTools.slice(0, 4).forEach((tool, index) => {
     const card = document.createElement("a");
-    card.className = "tool-card home-highlight-card";
+    card.className = "home-highlight-card aqua-container";
     card.href = tool.url;
     card.setAttribute("aria-labelledby", `home-new-heading home-highlight-title-${index}`);
 
     const badgeRow = document.createElement("div");
     badgeRow.className = "home-new-row";
-    badgeRow.appendChild(createBadge("home-new-badge", "New!"));
+    badgeRow.appendChild(createAquaChip("New!", "new"));
 
     const title = document.createElement("h3");
     title.id = `home-highlight-title-${index}`;
-    title.className = "tool-card-title";
+    title.className = "home-highlight-title";
     title.textContent = tool.name;
 
     const description = document.createElement("p");
-    description.className = "tool-card-description";
+    description.className = "home-highlight-description";
     description.textContent = tool.description;
 
     const meta = document.createElement("div");
-    meta.className = "tool-card-meta";
-    meta.appendChild(createBadge("tool-chip", tool.course));
-    meta.appendChild(createBadge("tool-chip", tool.type));
-    meta.appendChild(createBadge("tool-term", tool.term));
+    meta.className = "home-highlight-meta";
+    meta.appendChild(createAquaChip(tool.course, "course"));
+    meta.appendChild(createAquaChip(tool.type, "type"));
+    meta.appendChild(createAquaChip(tool.term, "term"));
 
     card.append(badgeRow, title, description, meta);
     fragment.appendChild(card);
@@ -213,6 +211,19 @@ function createBadge(className, text) {
   badge.className = className;
   badge.textContent = text;
   return badge;
+}
+
+function createAquaChip(text, tone) {
+  const chip = document.createElement("span");
+  const useGraphite = tone === "type";
+  chip.className = useGraphite ? "graphite-chip site-chip" : "aqua-chip site-chip";
+
+  if (tone) {
+    chip.classList.add(`site-chip--${tone}`);
+  }
+
+  chip.textContent = text;
+  return chip;
 }
 
 function compareDate(left, right) {

@@ -1197,7 +1197,7 @@
 
     refs.playButton.textContent = state.playing ? "Pause" : (isLast ? "Replay" : "Play");
     refs.playButton.setAttribute("aria-label", state.playing ? "Pause" : (isLast ? "Replay" : "Play"));
-    refs.playButton.dataset.playing = String(state.playing);
+    refs.playButton.classList.toggle("aqua-button-focused", state.playing);
 
     refs.stepBackButton.disabled = isFirst;
     refs.stepForwardButton.disabled = isLast;

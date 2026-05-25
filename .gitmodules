@@ -1,0 +1,3 @@
+[submodule "vendor/aqua-neo"]
+	path = vendor/aqua-neo
+	url = https://github.com/say-no-to-sleep/aqua-neo.git

@@ -7,6 +7,59 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function bindCheckboxChipInteractions(chip) {
+  if (!chip || chip.dataset.autograderChipBound === "true") {
+    return;
+  }
+
+  chip.dataset.autograderChipBound = "true";
+
+  const input = chip.querySelector('input[type="checkbox"]');
+  const control = input?.nextElementSibling;
+
+  if (input && control?.classList.contains("aqua-checkbox-control")) {
+    input.addEventListener("change", () => {
+      control.classList.remove("settling");
+      void control.offsetWidth;
+      control.classList.add("settling");
+    });
+
+    control.addEventListener("animationend", (event) => {
+      if (event.animationName === "checkbox-settle") {
+        control.classList.remove("settling");
+      }
+    });
+  }
+
+  function releasePress() {
+    chip.classList.remove("pressing");
+  }
+
+  chip.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    chip.classList.add("pressing");
+  });
+
+  chip.addEventListener("pointerup", releasePress);
+  chip.addEventListener("pointercancel", releasePress);
+  chip.addEventListener("pointerleave", (event) => {
+    if (event.buttons === 1) {
+      releasePress();
+    }
+  });
+}
+
+function bindAutograderTestCheckboxChips(container) {
+  if (!container) {
+    return;
+  }
+
+  container.querySelectorAll(".aqua-checkbox-chip").forEach(bindCheckboxChipInteractions);
+}
+
 function formatTestLabel(testNumber) {
   return `test${String(testNumber).padStart(2, "0")}`;
 }
@@ -160,7 +213,25 @@ function createAutograderAnalyzer({
   }
 
   function renderCommandBadge(command) {
-    return `<span class="autograder-command-badge" data-command="${escapeHtml(command)}">${escapeHtml(command)}</span>`;
+    const chipClass = command === "UNKNOWN" ? "graphite-chip" : "aqua-chip";
+
+    return `<span class="${chipClass}">${escapeHtml(command)}</span>`;
+  }
+
+  function renderAquaCodeBlock(source) {
+    const text = String(source ?? "").trim();
+
+    if (!text) {
+      return "";
+    }
+
+    const lines = text.split("\n").map((line) => `<span class="aqua-code-line">${escapeHtml(line)}</span>`);
+
+    return `
+      <div class="aqua-code-block autograder-edge-case-input">
+        <pre><code>${lines.join("")}</code></pre>
+      </div>
+    `;
   }
 
   function renderNoteCard(note) {
@@ -178,24 +249,17 @@ function createAutograderAnalyzer({
     return TEST_NUMBERS.map((testNumber) => {
       const isFailed = state.failed.has(testNumber);
 
+      const testLabel = `Test ${String(testNumber).padStart(2, "0")}`;
+
       return `
-        <div
-          class="autograder-test-toggle"
-          data-on="${isFailed}"
-          role="checkbox"
-          aria-checked="${isFailed ? "true" : "false"}"
-          aria-label="Test ${String(testNumber).padStart(2, "0")}"
-          tabindex="0"
-        >
-          <label class="aqua-checkbox">
-            <input type="checkbox" data-test-index="${testNumber}" ${isFailed ? "checked" : ""} aria-label="Toggle Test ${String(testNumber).padStart(2, "0")} failure">
-            <span class="aqua-checkbox-control"><span class="aqua-checkbox-left"></span><span class="aqua-checkbox-right"></span></span>
-          </label>
-          <div class="autograder-test-toggle-layout">
-            <span class="autograder-test-toggle-index">${String(testNumber).padStart(2, "0")}</span>
-            <span class="autograder-test-toggle-label">Test ${String(testNumber).padStart(2, "0")}</span>
-          </div>
-        </div>
+        <label class="aqua-checkbox-chip">
+          <input type="checkbox" data-test-index="${testNumber}" ${isFailed ? "checked" : ""} aria-label="${escapeHtml(testLabel)} failed">
+          <span class="aqua-checkbox-control">
+            <span class="aqua-checkbox-left"></span>
+            <span class="aqua-checkbox-right"></span>
+          </span>
+          <span class="aqua-checkbox-label">${escapeHtml(testLabel)}</span>
+        </label>
       `;
     }).join("");
   }
@@ -233,10 +297,10 @@ function createAutograderAnalyzer({
       .join("");
 
     return `
-      <section class="autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-commands-heading">
+      <section class="aqua-container autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-commands-heading">
         <div class="autograder-section-header">
           <div>
-            <p class="content-page-eyebrow">Breakdown</p>
+            <p class="autograder-eyebrow">Breakdown</p>
             <h3 id="${sectionPrefix}-commands-heading" class="autograder-panel-title autograder-panel-title-small">Commands in failed tests</h3>
           </div>
         </div>
@@ -263,7 +327,7 @@ function createAutograderAnalyzer({
               <span class="autograder-edge-case-tests">affects ${escapeHtml(tests)}</span>
               <span class="autograder-edge-case-source">${escapeHtml(edgeCase.source)}</span>
             </div>
-            <pre class="autograder-edge-case-input">${escapeHtml(edgeCase.input)}</pre>
+            ${renderAquaCodeBlock(edgeCase.input)}
             <p class="autograder-edge-case-description">${escapeHtml(edgeCase.description)}</p>
           </article>
         `;
@@ -271,10 +335,10 @@ function createAutograderAnalyzer({
       .join("");
 
     return `
-      <section class="autograder-panel autograder-panel-section autograder-panel-warning" aria-labelledby="${sectionPrefix}-edge-cases-heading">
+      <section class="aqua-container autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-edge-cases-heading">
         <div class="autograder-section-header">
           <div>
-            <p class="content-page-eyebrow">Known Edge Cases</p>
+            <p class="autograder-eyebrow">Known Edge Cases</p>
             <h3 id="${sectionPrefix}-edge-cases-heading" class="autograder-panel-title autograder-panel-title-small">Reports from other students</h3>
           </div>
         </div>
@@ -293,10 +357,10 @@ function createAutograderAnalyzer({
       : `appears in ${failedLabel}, also in ${passingCount} passing`;
 
     return `
-      <article class="autograder-suspect-card${rank === 0 ? " autograder-suspect-card-top" : ""}">
+      <article class="autograder-suspect-card">
         <div class="autograder-suspect-header">
           <div class="autograder-suspect-title-row">
-            ${rank === 0 ? '<span class="autograder-suspect-rank">Top Suspect</span>' : ""}
+            ${rank === 0 ? '<span class="aqua-chip">Top Suspect</span>' : ""}
             ${renderCommandBadge(command)}
             <span class="autograder-suspect-coverage">${coverageText}</span>
           </div>
@@ -336,10 +400,10 @@ function createAutograderAnalyzer({
     }
 
     return `
-      <section class="autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-diagnosis-heading">
+      <section class="aqua-container autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-diagnosis-heading">
         <div class="autograder-section-header">
           <div>
-            <p class="content-page-eyebrow">Diagnosis</p>
+            <p class="autograder-eyebrow">Diagnosis</p>
             <h3 id="${sectionPrefix}-diagnosis-heading" class="autograder-panel-title autograder-panel-title-small">${state.failed.size === 0 ? "Waiting for failed tests" : "Most likely culprits"}</h3>
           </div>
         </div>
@@ -350,10 +414,10 @@ function createAutograderAnalyzer({
 
   function renderContributors() {
     return `
-      <section class="autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-contributors-heading">
+      <section class="aqua-container autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-contributors-heading">
         <div class="autograder-section-header">
           <div>
-            <p class="content-page-eyebrow">Contributors</p>
+            <p class="autograder-eyebrow">Contributors</p>
             <h3 id="${sectionPrefix}-contributors-heading" class="autograder-panel-title autograder-panel-title-small">Community contributors</h3>
           </div>
         </div>
@@ -361,7 +425,7 @@ function createAutograderAnalyzer({
           CONTRIBUTORS.length > 0
             ? `
               <div class="autograder-contributor-list">
-                ${CONTRIBUTORS.map((contributor) => `<span class="autograder-contributor-chip">${escapeHtml(contributor)}</span>`).join("")}
+                ${CONTRIBUTORS.map((contributor) => `<span class="aqua-chip">${escapeHtml(contributor)}</span>`).join("")}
               </div>
             `
             : `
@@ -375,10 +439,10 @@ function createAutograderAnalyzer({
   function renderShell() {
     refs.root.innerHTML = `
       <div class="autograder-project-layout">
-        <section class="autograder-panel autograder-panel-section autograder-panel-intro" aria-labelledby="${sectionPrefix}-heading">
+        <section class="aqua-container autograder-panel autograder-panel-section autograder-panel-intro" aria-labelledby="${sectionPrefix}-heading">
           <div class="autograder-section-header">
             <div>
-              <p class="content-page-eyebrow">${escapeHtml(projectLabel)}</p>
+              <p class="autograder-eyebrow">${escapeHtml(projectLabel)}</p>
               <h2 id="${sectionPrefix}-heading" class="autograder-panel-title">${escapeHtml(analyzerTitle)}</h2>
             </div>
           </div>
@@ -387,15 +451,15 @@ function createAutograderAnalyzer({
 
         ${renderContributors()}
 
-        <section class="autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-tests-heading">
+        <section class="aqua-container autograder-panel autograder-panel-section" aria-labelledby="${sectionPrefix}-tests-heading">
           <div class="autograder-section-header autograder-section-header-split">
             <div>
-              <p class="content-page-eyebrow">Failed Tests</p>
+              <p class="autograder-eyebrow">Failed Tests</p>
               <h3 id="${sectionPrefix}-tests-heading" class="autograder-panel-title autograder-panel-title-small">Mark the cases that failed</h3>
             </div>
             <div class="autograder-test-actions">
-              <button class="autograder-toolbar-button" type="button" data-action="select-all" data-tone="primary">Select all</button>
-              <button class="autograder-toolbar-button" type="button" data-action="clear-all" data-tone="danger">Clear all</button>
+              <button class="aqua-button aqua-button-focused" type="button" data-action="select-all">Select all</button>
+              <button class="graphite-button" type="button" data-action="clear-all">Clear all</button>
             </div>
           </div>
           <div class="autograder-test-grid" data-autograder-test-grid></div>
@@ -416,29 +480,14 @@ function createAutograderAnalyzer({
     refs.footer = refs.root.querySelector("[data-autograder-footer]");
   }
 
-  function syncTestToggleElement(toggle, testNumber) {
-    const isFailed = state.failed.has(testNumber);
-    const input = toggle.querySelector("input[data-test-index]");
-
-    toggle.dataset.on = String(isFailed);
-    toggle.setAttribute("aria-checked", String(isFailed));
-
-    if (input) {
-      input.checked = isFailed;
-    }
-  }
-
   function syncRenderedTestToggles() {
     if (!refs.testGrid) {
       return;
     }
 
     refs.testGrid.querySelectorAll("input[data-test-index]").forEach((input) => {
-      const toggle = input.closest(".autograder-test-toggle");
-
-      if (toggle) {
-        syncTestToggleElement(toggle, Number(input.dataset.testIndex));
-      }
+      const testNumber = Number(input.dataset.testIndex);
+      input.checked = state.failed.has(testNumber);
     });
   }
 
@@ -462,6 +511,7 @@ function createAutograderAnalyzer({
 
     if (refs.testGrid && refs.testGrid.childElementCount === 0) {
       refs.testGrid.innerHTML = renderTestGrid();
+      bindAutograderTestCheckboxChips(refs.testGrid);
     }
 
     syncRenderedTestToggles();
@@ -497,12 +547,6 @@ function createAutograderAnalyzer({
       }
 
       state.failed = next;
-
-      const toggle = input.closest(".autograder-test-toggle");
-      if (toggle) {
-        syncTestToggleElement(toggle, testNumber);
-      }
-
       renderDerivedSections();
     }
   }
@@ -524,43 +568,10 @@ function createAutograderAnalyzer({
       }
     }
 
-    const toggle = event.target.closest(".autograder-test-toggle");
-
-    if (!toggle) {
-      return;
-    }
-
-    if (event.target.closest(".aqua-checkbox")) {
-      return;
-    }
-
-    const input = toggle.querySelector("input[data-test-index]");
-
-    if (input) {
-      input.click();
-    }
-  }
-
-  function handleKeydown(event) {
-    const toggle = event.target.closest(".autograder-test-toggle");
-
-    if (!toggle) {
-      return;
-    }
-
-    if (event.key === " " || event.key === "Enter") {
-      event.preventDefault();
-      const input = toggle.querySelector("input[data-test-index]");
-
-      if (input) {
-        input.click();
-      }
-    }
   }
 
   root.addEventListener("click", handleClick);
   root.addEventListener("change", handleTestToggleChange);
-  root.addEventListener("keydown", handleKeydown);
   render();
 
   return {

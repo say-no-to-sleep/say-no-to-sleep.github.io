@@ -18,7 +18,7 @@
   </script>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="tool.css">
-  <script src="../../aqua2.js" defer></script>
+  <script src="../../vendor/aqua-neo/aqua2.js" defer></script>
   <script src="../../storage.js" defer></script>
   <script src="tool.js" defer></script>
 </head>
@@ -28,9 +28,11 @@
       <div class="top-bar">
         <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
         <nav class="menu-bar" aria-label="Primary">
-          <a class="menu-link" href="/" data-local-home>Home</a>
-          <a class="menu-link menu-link-current" href="/tools.html" data-local-tools aria-current="page">Tools</a>
-          <a class="menu-link" href="/about.html" data-local-about>About</a>
+          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
+            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
+            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+          </div>
         </nav>
         <a
           class="tool-feedback-link"

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex</title>
   <link rel="stylesheet" href="style.css">
-  <script src="aqua2.js" defer></script>
+  <script src="vendor/aqua-neo/aqua2.js" defer></script>
   <script src="storage.js" defer></script>
   <script src="tools.js" defer></script>
   <script src="main.js" defer></script>
@@ -16,9 +16,11 @@
       <div class="top-bar">
         <h1 class="site-title">WatTheHex</h1>
         <nav class="menu-bar" aria-label="Primary">
-          <a class="menu-link menu-link-current" href="index.html" aria-current="page">Home</a>
-          <a class="menu-link" href="tools.html">Tools</a>
-          <a class="menu-link" href="about.html">About</a>
+          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
+            <a class="aqua-text-button" href="index.html" aria-pressed="true" aria-current="page">Home</a>
+            <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
+            <a class="aqua-text-button" href="about.html" aria-pressed="false">About</a>
+          </div>
         </nav>
         <a
           class="tool-feedback-link"
@@ -31,17 +33,17 @@
     <main class="home-page-main home-empty-main">
       <section class="home-landing">
         <div class="home-stage">
-          <section class="home-panel home-copy-panel" aria-labelledby="home-welcome-heading">
+          <section class="home-copy-panel" aria-labelledby="home-welcome-heading">
             <p class="home-eyebrow">Welcome</p>
             <h2 id="home-welcome-heading" class="home-title">Welcome</h2>
             <p class="home-lede">WatTheHex???</p>
             <p class="home-lede">You can find useful/useless tools here.</p>
           </section>
 
-          <section class="home-panel" aria-labelledby="home-new-heading">
+          <div class="home-new-section" aria-labelledby="home-new-heading">
             <p id="home-new-heading" class="home-eyebrow">Newly Added</p>
             <div id="home-highlights" class="home-highlights" aria-live="polite"></div>
-          </section>
+          </div>
         </div>
       </section>
     </main>

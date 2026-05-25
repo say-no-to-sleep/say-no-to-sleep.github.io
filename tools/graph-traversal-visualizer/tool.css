@@ -14,12 +14,6 @@
 .gt-tool {
   color: var(--text);
   color-scheme: light;
-  --aqua-color: #2a6fd4;
-  --graphite-color: #888888;
-  --aqua-foreground: #0f2230;
-  --aqua-foreground-muted: rgba(15, 34, 48, 0.45);
-  --aqua-background: #8aaec8;
-  --aqua-border: rgba(90, 110, 130, 0.48);
   --gt-panel-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   --gt-panel-noise-size: 176px 176px;
   display: grid;
@@ -177,54 +171,13 @@
 }
 
 .gt-tabview {
-  display: flex;
   width: min(16rem, 100%);
-  min-height: 2.7rem;
-  padding: 4px;
-  border: 1px solid rgba(122, 141, 158, 0.48);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.04) 58%, rgba(0, 0, 0, 0.02) 100%),
-    linear-gradient(180deg, #d7e0e7 0%, #c7d1da 54%, #b8c3cd 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    inset 0 -1px 0 rgba(80, 96, 111, 0.12),
-    0 2px 0 rgba(0, 0, 0, 0.05),
-    0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-.gt-tabview .aqua-tabview-indicator {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.34) 42%, rgba(255, 255, 255, 0.1) 100%),
-    linear-gradient(180deg, #f5f8fb 0%, #e2e8ee 58%, #d2dae2 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(95, 111, 126, 0.12),
-    0 1px 4px rgba(0, 0, 0, 0.14);
 }
 
 .gt-tabview .aqua-tabview-tab {
   flex: 1 1 0;
   min-width: 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: rgba(15, 34, 48, 0.58);
   text-align: center;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-.gt-tabview .aqua-tabview-tab.active {
-  color: #0f2230;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78);
-}
-
-.gt-tabview .aqua-tabview-tab:focus-visible,
-.gt-select .aqua-select-trigger:focus-visible,
-.gt-select .aqua-select-option:focus-visible,
-.gt-slider:focus-visible,
-.gt-play-button:focus-visible,
-.gt-custom-textarea:focus-visible {
-  outline: 3px solid rgba(71, 189, 219, 0.35);
-  outline-offset: 3px;
 }
 
 .gt-stage-toolbar {
@@ -450,15 +403,8 @@
   letter-spacing: 0.03em;
 }
 
-.gt-progress,
-.gt-progress.aqua-progress {
+.gt-progress {
   width: 100%;
-  height: 18px !important;
-  border-radius: var(--radius-pill) !important;
-}
-
-.gt-progress .aqua-progress-fill {
-  border-radius: inherit;
 }
 
 .gt-narration-panel {
@@ -639,37 +585,16 @@
 .gt-select .aqua-select-trigger,
 .gt-select .aqua-select-panel {
   width: 100%;
-  border-radius: 18px;
 }
 
-.gt-select .aqua-select-trigger {
-  min-width: 0;
-  min-height: 2.7rem;
-  outline: none;
+.gt-select .aqua-select-panel {
+  z-index: 20;
 }
 
 .gt-select .aqua-select-value {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-.gt-select .aqua-select-panel {
-  padding-bottom: 0.35rem;
-  z-index: 20;
-}
-
-.gt-select .aqua-select-panel-header .aqua-select-value {
-  color: var(--aqua-foreground-muted);
-}
-
-.gt-select .aqua-select-option {
-  font-size: 0.82rem;
-  outline: none;
 }
 
 .gt-slider-field {
@@ -706,32 +631,7 @@
 
 .gt-button-grid .aqua-button,
 .gt-button-grid .graphite-button {
-  display: inline-flex !important;
   width: 100%;
-  min-height: 2.7rem;
-  padding: 0.62rem 0.9rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--aqua-button-text) !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78) !important;
-}
-
-.gt-play-button[data-playing="true"] {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.08) 44%, transparent 45%),
-    linear-gradient(180deg, var(--aqua-button-blue-top) 0%, var(--aqua-button-blue-mid) 52%, var(--aqua-button-blue-bottom) 100%) !important;
-  border-color: var(--aqua-button-blue-border) !important;
-  color: #ffffff !important;
-  text-shadow: 0 -1px 0 rgba(13, 49, 110, 0.42);
-}
-
-.gt-button-grid button:disabled,
-.gt-custom-actions button:disabled {
-  opacity: 0.48;
-  cursor: default;
-  transform: none !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-  color: rgba(15, 34, 48, 0.42) !important;
 }
 
 .gt-kb-hint {
@@ -765,14 +665,6 @@
 .gt-custom-actions {
   display: flex;
   justify-content: flex-start;
-}
-
-.gt-custom-actions .aqua-button {
-  min-height: 2.6rem;
-  padding-inline: 1rem;
-  font-weight: 700;
-  color: var(--aqua-button-text) !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78) !important;
 }
 
 .gt-custom-error {

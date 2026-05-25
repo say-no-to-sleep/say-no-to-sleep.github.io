@@ -15,6 +15,7 @@ WatTheHex is a static educational web tool library for Waterloo ECE students. It
 Serve any static file server from the repo root:
 
 ```bash
+git submodule update --init --recursive
 python3 -m http.server 8000
 ```
 
@@ -28,7 +29,7 @@ Then open `http://localhost:8000`. The site also works by opening `index.html` d
 
 The repo uses `<script defer>` tags and global variables — no ES modules, no imports/exports. Script order matters:
 
-- `aqua2.js` — Aqua-style UI controls (tabs, sliders, selects, progress bars, scrollbars); injects control CSS and attaches behavior to `.aqua-*` markup
+- `vendor/aqua-neo/aqua2.js` — Aqua-style UI from [aqua-neo](https://github.com/say-no-to-sleep/aqua-neo) (git submodule); injects control CSS and attaches behavior to `.aqua-*` markup
 - `storage.js` — IndexedDB wrapper at `window.WatTheHex.storage`; also applies `overflow-x: clip` as a side effect
 - `tools.js` — tool registry at `window.WatTheHex.tools`
 - `main.js` — populates `#home-highlights` on `index.html` and `#filters`/`#tool-grid` on `tools.html`
@@ -49,7 +50,7 @@ tools/<tool-name>/
 
 Tool pages load shared assets in this order:
 1. `../../style.css`
-2. `../../aqua2.js`
+2. `../../vendor/aqua-neo/aqua2.js`
 3. `../../storage.js`
 4. Optional: KaTeX CSS + JS + `../../assets/render-katex.js`
 5. Optional: local `tool.css`
@@ -108,14 +109,14 @@ Use `data-katex="<expression>"` on elements with readable fallback text content.
 
 - `assets/vendor/katex/` — vendored third-party, treat as read-only
 - `assets/fonts/` — binary assets
-- `aqua2.js` — shared control system; any change affects every page
+- `vendor/aqua-neo/` — shared Aqua control system (submodule); any change affects every page
 - Shared tokens and layout in `style.css` — wide blast radius
 - Autograder dataset shape — `tool.js` assumes the exact contract
 - Tool registry keys in `tools.js` — `main.js` depends on them directly
 
 ## Known Debt (don't silently normalize)
 
-- `tools/autograder-reverse-engineering/` keeps styles in `style.css` instead of a local `tool.css`
+- `tools/autograder-reverse-engineering/tool.css` — tool-local styles (moved out of `style.css`)
 - `storage.js` mixes persistence logic with overflow clipping
 - `tools/tool-template/` still contains Red-Black Tree placeholder text
 - Some tools use cache-busting query params on `tool.js` (`?v=20260318`); others don't
