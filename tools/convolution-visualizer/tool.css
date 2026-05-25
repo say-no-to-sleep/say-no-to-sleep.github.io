@@ -159,14 +159,6 @@
 .conv-controls-panel {
   display: grid;
   gap: 1rem;
-  max-height: calc(100vh - var(--conv-rail-top) - var(--conv-rail-bottom-gap));
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(118, 141, 156, 0.7) rgba(255, 255, 255, 0.18);
-  padding: 1.75rem;
 }
 
 .conv-controls-panel::-webkit-scrollbar {
@@ -305,6 +297,10 @@
 .conv-stage-panel {
   display: grid;
   gap: 0.95rem;
+}
+
+.conv-stage-panel[aria-labelledby="conv-inputs-heading"] .conv-panel-header {
+  margin: 10px 0 0 0;
 }
 
 .conv-stage-panel + .conv-stage-panel {
