@@ -3,8 +3,8 @@
 
   const VIEWBOX_WIDTH = 760;
   const VIEWBOX_HEIGHT = 220;
-  const PAD_X = 34;
-  const PAD_Y = 24;
+  const PAD_X = 0;
+  const PAD_Y = 16;
   const DOMAIN_MIN = -6;
   const DOMAIN_MAX = 6;
   const SAMPLE_COUNT = 600;
@@ -64,14 +64,23 @@
   function init() {
     refs.tool = document.getElementById("conv-tool");
     refs.presetList = document.getElementById("conv-preset-list");
+    refs.drawerPresetList = document.getElementById("conv-preset-list-drawer");
     refs.fInput = document.getElementById("conv-f-input");
+    refs.drawerFInput = document.getElementById("conv-f-input-drawer");
     refs.gInput = document.getElementById("conv-g-input");
+    refs.drawerGInput = document.getElementById("conv-g-input-drawer");
     refs.fWrap = document.getElementById("conv-f-wrap");
+    refs.drawerFWrap = document.getElementById("conv-f-wrap-drawer");
     refs.gWrap = document.getElementById("conv-g-wrap");
+    refs.drawerGWrap = document.getElementById("conv-g-wrap-drawer");
     refs.fError = document.getElementById("conv-f-error");
+    refs.drawerFError = document.getElementById("conv-f-error-drawer");
     refs.gError = document.getElementById("conv-g-error");
+    refs.drawerGError = document.getElementById("conv-g-error-drawer");
     refs.scrub = document.getElementById("conv-time-scrub");
+    refs.drawerScrub = document.getElementById("conv-time-scrub-drawer");
     refs.scrubValue = document.getElementById("conv-scrub-value");
+    refs.drawerScrubValue = document.getElementById("conv-scrub-value-drawer");
     refs.fPlot = document.getElementById("conv-f-plot");
     refs.gPlot = document.getElementById("conv-g-plot");
     refs.overlapPlot = document.getElementById("conv-overlap-plot");
@@ -80,14 +89,23 @@
     if (
       !refs.tool ||
       !refs.presetList ||
+      !refs.drawerPresetList ||
       !refs.fInput ||
+      !refs.drawerFInput ||
       !refs.gInput ||
+      !refs.drawerGInput ||
       !refs.fWrap ||
+      !refs.drawerFWrap ||
       !refs.gWrap ||
+      !refs.drawerGWrap ||
       !refs.fError ||
+      !refs.drawerFError ||
       !refs.gError ||
+      !refs.drawerGError ||
       !refs.scrub ||
+      !refs.drawerScrub ||
       !refs.scrubValue ||
+      !refs.drawerScrubValue ||
       !refs.fPlot ||
       !refs.gPlot ||
       !refs.overlapPlot ||
@@ -97,12 +115,18 @@
     }
 
     refs.fInput.value = state.fExpr;
+    refs.drawerFInput.value = state.fExpr;
     refs.gInput.value = state.gExpr;
+    refs.drawerGInput.value = state.gExpr;
 
     refs.presetList.addEventListener("click", handlePresetClick);
+    refs.drawerPresetList.addEventListener("click", handlePresetClick);
     refs.fInput.addEventListener("input", handleExpressionInput);
+    refs.drawerFInput.addEventListener("input", handleExpressionInput);
     refs.gInput.addEventListener("input", handleExpressionInput);
+    refs.drawerGInput.addEventListener("input", handleExpressionInput);
     bindScrubSlider(refs.scrub);
+    bindScrubSlider(refs.drawerScrub);
     refs.overlapPlot.addEventListener("pointerdown", handlePointerDown);
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -115,7 +139,7 @@
   function handlePresetClick(event) {
     const button = event.target.closest("[data-preset-key]");
 
-    if (!button || !refs.presetList.contains(button)) {
+    if (!button || (!refs.presetList.contains(button) && !refs.drawerPresetList.contains(button))) {
       return;
     }
 
@@ -131,24 +155,26 @@
     state.activePresetKey = preset.key;
 
     refs.fInput.value = state.fExpr;
+    refs.drawerFInput.value = state.fExpr;
     refs.gInput.value = state.gExpr;
+    refs.drawerGInput.value = state.gExpr;
 
     renderAll();
   }
 
   function handleExpressionInput(event) {
-    if (event.target === refs.fInput) {
-      state.fExpr = refs.fInput.value;
-    } else if (event.target === refs.gInput) {
-      state.gExpr = refs.gInput.value;
+    if (event.target === refs.fInput || event.target === refs.drawerFInput) {
+      state.fExpr = event.target.value;
+    } else if (event.target === refs.gInput || event.target === refs.drawerGInput) {
+      state.gExpr = event.target.value;
     }
 
     state.activePresetKey = findMatchingPresetKey(state.fExpr, state.gExpr);
     renderAll();
   }
 
-  function handleScrubInput() {
-    state.cursorT = clamp(scrubValueFromInternal(getSliderIntegerValue(refs.scrub)), DOMAIN_MIN, DOMAIN_MAX);
+  function handleScrubInput(slider) {
+    state.cursorT = clamp(scrubValueFromInternal(getSliderIntegerValue(slider)), DOMAIN_MIN, DOMAIN_MAX);
     renderDynamicViews();
   }
 
@@ -204,6 +230,7 @@
     syncScrubPresentation();
     refs.overlapPlot.innerHTML = createOverlapPlotMarkup(shiftedSamples, productSamples);
     refs.outputPlot.innerHTML = createOutputPlotMarkup(cache.convViewSamples, currentIndex, currentOutput);
+    syncGraphTooltips(currentOutput);
   }
 
   function updateSignalCache() {
@@ -225,14 +252,29 @@
   }
 
   function renderPresetButtons() {
-    refs.presetList.innerHTML = PRESETS.map((preset) => {
-      return `<button type="button" class="conv-preset-button" data-preset-key="${preset.key}" data-selected="${preset.key === state.activePresetKey}">${preset.label}</button>`;
-    }).join("");
+    if (!refs.drawerPresetList.children.length) {
+      refs.drawerPresetList.append(...Array.from(refs.presetList.children).map((button) => button.cloneNode(true)));
+    }
+
+    PRESETS.forEach((preset) => {
+      const button = refs.presetList.querySelector(`[data-preset-key="${preset.key}"]`);
+      const drawerButton = refs.drawerPresetList.querySelector(`[data-preset-key="${preset.key}"]`);
+      if (button) {
+        button.setAttribute("aria-pressed", String(preset.key === state.activePresetKey));
+      }
+      if (drawerButton) {
+        drawerButton.setAttribute("aria-pressed", String(preset.key === state.activePresetKey));
+      }
+    });
   }
 
   function syncExpressionState() {
     syncExpressionField(refs.fWrap, refs.fError, cache.fCompiled);
+    syncExpressionField(refs.drawerFWrap, refs.drawerFError, cache.fCompiled);
     syncExpressionField(refs.gWrap, refs.gError, cache.gCompiled);
+    syncExpressionField(refs.drawerGWrap, refs.drawerGError, cache.gCompiled);
+    refs.drawerFInput.value = state.fExpr;
+    refs.drawerGInput.value = state.gExpr;
   }
 
   function syncExpressionField(wrap, errorNode, compiled) {
@@ -243,8 +285,11 @@
 
   function syncScrubPresentation() {
     setSliderValue(refs.scrub, scrubInternalFromValue(state.cursorT));
+    setSliderValue(refs.drawerScrub, scrubInternalFromValue(state.cursorT));
     refs.scrubValue.textContent = formatSigned(state.cursorT, 2);
+    refs.drawerScrubValue.textContent = formatSigned(state.cursorT, 2);
     updateSliderA11y(refs.scrub, state.cursorT);
+    updateSliderA11y(refs.drawerScrub, state.cursorT);
   }
 
   function scrubInternalFromValue(value) {
@@ -292,7 +337,7 @@
 
       slider._syncFrame = requestAnimationFrame(() => {
         slider._syncFrame = 0;
-        handleScrubInput();
+        handleScrubInput(slider);
       });
     };
 
@@ -333,7 +378,7 @@
 
       event.preventDefault();
       setSliderValue(slider, next);
-      handleScrubInput();
+      handleScrubInput(slider);
     });
   }
 
@@ -382,8 +427,7 @@
         glowWidth: 7.1,
         glowOpacity: 0.32
       }) +
-      `<line class="conv-cursor-line" x1="${cursorX}" y1="${PAD_Y}" x2="${cursorX}" y2="${VIEWBOX_HEIGHT - PAD_Y}" />` +
-      createValueChipMarkup(ids, cursorX, PAD_Y + 16, `t ${formatSigned(state.cursorT, 2)}`),
+      `<line class="conv-cursor-line" x1="${cursorX}" y1="${PAD_Y}" x2="${cursorX}" y2="${VIEWBOX_HEIGHT - PAD_Y}" />`,
       grid.labels,
       "Overlap plot"
     );
@@ -396,8 +440,6 @@
     const fillPath = buildAreaPath(samples, bounds, currentIndex);
     const cursorX = timeToViewX(state.cursorT);
     const dotY = valueToViewY(currentOutput, bounds);
-    const chipX = clamp(cursorX + 56, PAD_X + 64, VIEWBOX_WIDTH - PAD_X - 64);
-    const chipY = clamp(dotY - 18, PAD_Y + 14, VIEWBOX_HEIGHT - PAD_Y - 14);
     const grid = createGridMarkup(bounds);
     const ids = getPlotPaintIds("output");
 
@@ -419,24 +461,17 @@
       }) +
       `<line class="conv-cursor-line" x1="${cursorX}" y1="${PAD_Y}" x2="${cursorX}" y2="${VIEWBOX_HEIGHT - PAD_Y}" />` +
       `<circle class="conv-output-dot-halo" cx="${cursorX}" cy="${dotY}" r="10.5" fill="${applyAlpha(COLORS.output, 0.18)}" filter="url(#${ids.softGlow})" />` +
-      `<circle class="conv-output-dot" cx="${cursorX}" cy="${dotY}" r="5.8" fill="${COLORS.output}" />` +
-      createValueChipMarkup(ids, chipX, chipY, `y(t) ${formatSigned(currentOutput, 3)}`),
+      `<circle class="conv-output-dot" cx="${cursorX}" cy="${dotY}" r="5.8" fill="${COLORS.output}" />`,
       grid.labels,
       "Convolution output plot"
     );
   }
 
   function createSvgMarkup(ids, plotContent, overlayContent, label) {
-    const screenWidth = VIEWBOX_WIDTH - PAD_X * 2;
-    const screenHeight = VIEWBOX_HEIGHT - PAD_Y * 2;
-
     return [
-      `<svg class="conv-plot-svg" viewBox="0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}" role="img" aria-label="${label}">`,
+      `<svg class="conv-plot-svg" viewBox="0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}" preserveAspectRatio="none" role="img" aria-label="${label}">`,
       createPlotDefsMarkup(ids),
-      `<rect class="conv-screen-shell" x="${PAD_X}" y="${PAD_Y}" width="${screenWidth}" height="${screenHeight}" rx="${SCREEN_RADIUS}" fill="url(#${ids.screenFill})" />`,
-      `<rect class="conv-screen-gloss" x="${PAD_X}" y="${PAD_Y}" width="${screenWidth}" height="${screenHeight}" rx="${SCREEN_RADIUS}" fill="url(#${ids.screenGloss})" />`,
-      `<rect class="conv-screen-stroke" x="${PAD_X}" y="${PAD_Y}" width="${screenWidth}" height="${screenHeight}" rx="${SCREEN_RADIUS}" />`,
-      `<g clip-path="url(#${ids.screenClip})">${plotContent}</g>`,
+      `<g>${plotContent}</g>`,
       overlayContent || "",
       "</svg>"
     ].join("");
@@ -465,53 +500,49 @@
         "<g>",
         X_TICKS.map((tick) => {
           const x = timeToViewX(tick);
-          return `<text class="conv-axis-label" x="${x}" y="${VIEWBOX_HEIGHT - 8}" text-anchor="middle">${tick}</text>`;
+          return `<text class="conv-axis-label" x="${x}" y="${VIEWBOX_HEIGHT - 4}" text-anchor="middle">${tick}</text>`;
         }).join(""),
         "</g>"
       ].join("")
     };
   }
 
-  function createValueChipMarkup(ids, centerX, centerY, label) {
-    const width = Math.max(96, label.length * 7.4 + 18);
-    const x = clamp(centerX - width / 2, PAD_X + 4, VIEWBOX_WIDTH - PAD_X - width - 4);
-    const y = clamp(centerY - 14, PAD_Y + 4, VIEWBOX_HEIGHT - PAD_Y - 32);
-    const textX = x + width / 2;
-    const textY = y + 18.2;
+  function syncGraphTooltips(currentOutput) {
+    const overlapText = `t ${formatSigned(state.cursorT, 2)}`;
+    const outputText = `y(t) ${formatSigned(currentOutput, 3)}`;
 
-    return [
-      `<g filter="url(#${ids.chipShadow})">`,
-      `<rect class="conv-value-chip" x="${x}" y="${y}" width="${width}" height="28" rx="14" fill="url(#${ids.chipFill})" />`,
-      `<rect class="conv-value-chip-gloss" x="${x}" y="${y}" width="${width}" height="28" rx="14" fill="url(#${ids.chipGloss})" />`,
-      "</g>",
-      `<text class="conv-value-text" x="${textX}" y="${textY}" text-anchor="middle">${label}</text>`
-    ].join("");
+    refs.overlapPlot.dataset.aquaTooltip = overlapText;
+    refs.outputPlot.dataset.aquaTooltip = outputText;
+
+    const overlapTooltip = document.getElementById(`${refs.overlapPlot.id}-tooltip`);
+    if (overlapTooltip) {
+      overlapTooltip.textContent = overlapText;
+    }
+
+    const outputTooltip = document.getElementById(`${refs.outputPlot.id}-tooltip`);
+    if (outputTooltip) {
+      outputTooltip.textContent = outputText;
+    }
   }
 
   function createPlotDefsMarkup(ids) {
     return [
       "<defs>",
       `<linearGradient id="${ids.screenFill}" x1="0" y1="0" x2="0" y2="1">`,
-      '<stop offset="0%" stop-color="#fcfdff" />',
-      '<stop offset="54%" stop-color="#edf2f6" />',
-      '<stop offset="100%" stop-color="#dde5ec" />',
+      '<stop offset="0%" stop-color="transparent" />',
+      '<stop offset="100%" stop-color="transparent" />',
       "</linearGradient>",
       `<linearGradient id="${ids.screenGloss}" x1="0" y1="0" x2="0" y2="1">`,
-      '<stop offset="0%" stop-color="#ffffff" stop-opacity="0.68" />',
-      '<stop offset="22%" stop-color="#ffffff" stop-opacity="0.18" />',
-      '<stop offset="23%" stop-color="#ffffff" stop-opacity="0" />',
-      '<stop offset="100%" stop-color="#ffffff" stop-opacity="0" />',
+      '<stop offset="0%" stop-color="transparent" />',
+      '<stop offset="100%" stop-color="transparent" />',
       "</linearGradient>",
       `<linearGradient id="${ids.chipFill}" x1="0" y1="0" x2="0" y2="1">`,
-      '<stop offset="0%" stop-color="#fdfefe" stop-opacity="0.95" />',
-      '<stop offset="52%" stop-color="#edf2f6" stop-opacity="0.94" />',
-      '<stop offset="100%" stop-color="#dbe4ec" stop-opacity="0.96" />',
+      '<stop offset="0%" stop-color="transparent" />',
+      '<stop offset="100%" stop-color="transparent" />',
       "</linearGradient>",
       `<linearGradient id="${ids.chipGloss}" x1="0" y1="0" x2="0" y2="1">`,
-      '<stop offset="0%" stop-color="#ffffff" stop-opacity="0.74" />',
-      '<stop offset="48%" stop-color="#ffffff" stop-opacity="0.12" />',
-      '<stop offset="49%" stop-color="#ffffff" stop-opacity="0" />',
-      '<stop offset="100%" stop-color="#ffffff" stop-opacity="0" />',
+      '<stop offset="0%" stop-color="transparent" />',
+      '<stop offset="100%" stop-color="transparent" />',
       "</linearGradient>",
       `<filter id="${ids.softGlow}" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB">`,
       '<feGaussianBlur in="SourceGraphic" stdDeviation="3.2" />',
@@ -520,11 +551,8 @@
       '<feGaussianBlur in="SourceGraphic" stdDeviation="4.6" />',
       "</filter>",
       `<filter id="${ids.chipShadow}" x="-22%" y="-50%" width="144%" height="200%" color-interpolation-filters="sRGB">`,
-      '<feDropShadow dx="0" dy="1.2" stdDeviation="1.8" flood-color="#697d8f" flood-opacity="0.22" />',
+      '<feDropShadow dx="0" dy="1.2" stdDeviation="1.8" flood-color="rgba(0,0,0,0.15)" flood-opacity="0.22" />',
       "</filter>",
-      `<clipPath id="${ids.screenClip}">`,
-      `<rect x="${PAD_X}" y="${PAD_Y}" width="${VIEWBOX_WIDTH - PAD_X * 2}" height="${VIEWBOX_HEIGHT - PAD_Y * 2}" rx="${SCREEN_RADIUS}" />`,
-      "</clipPath>",
       "</defs>"
     ].join("");
   }

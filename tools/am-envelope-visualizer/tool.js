@@ -357,7 +357,7 @@
 
   function renderCompactSummary(statusModel) {
     refs.compactSummary.innerHTML = [
-      '<div class="am-panel am-compact-summary-panel" aria-label="Floating operating window summary">',
+      '<div class="aqua-container am-compact-summary-panel" aria-label="Floating operating window summary">',
       '<div class="am-compact-summary-layout">',
       '<div class="am-compact-summary-copy">',
       '<p class="am-eyebrow">Live Checks</p>',
@@ -375,7 +375,7 @@
 
   function createCompactStatusCardMarkup(label, status) {
     return [
-      `<article class="am-compact-status-card" data-tone="${status.tone}">`,
+      `<article class="aqua-container am-compact-status-card" data-tone="${status.tone}">`,
       `<p class="am-compact-status-label">${label}</p>`,
       `<p class="am-compact-status-value">${status.value}</p>`,
       `<p class="am-compact-status-meta">${status.meta}</p>`,

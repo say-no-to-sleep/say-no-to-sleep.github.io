@@ -6,12 +6,12 @@
   <title>WatTheHex | Convolution Visualizer</title>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
-  <link rel="stylesheet" href="tool.css?v=20260318">
-  <script src="../../vendor/aqua-neo/aqua2.js" defer></script>
+  <link rel="stylesheet" href="tool.css?v=20260525-aqua2-2">
+  <script src="../../vendor/aqua-neo/aqua2.js?v=20260525-aqua2" defer></script>
   <script src="../../storage.js" defer></script>
   <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
   <script src="../../assets/render-katex.js" defer></script>
-  <script src="tool.js?v=20260318" defer></script>
+  <script src="tool.js?v=20260525-aqua2-2" defer></script>
 </head>
 <body>
   <div class="page-shell tool-page">
@@ -49,11 +49,11 @@
 
     <main class="tool-page-main conv-tool-main">
       <div id="conv-tool" class="conv-tool">
-        <section class="conv-hero" aria-labelledby="conv-hero-heading">
+        <section class="aqua-container conv-hero" aria-labelledby="conv-hero-heading">
           <div class="conv-hero-copy">
             <p class="conv-eyebrow">ECE 205 / 2A</p>
             <h2 id="conv-hero-heading" class="conv-hero-title">Multiply the overlap, then accumulate the area.</h2>
-            <p class="conv-hero-text">Use presets or enter your own expressions for f(t) and g(t). The visualizer flips and shifts g, shades the pointwise product, and traces the final convolution output at the selected time.</p>
+            <p class="conv-hero-text">Use presets or enter your own expressions for <span data-katex="f(t)">f(t)</span> and <span data-katex="g(t)">g(t)</span>. The visualizer flips and shifts <span data-katex="g">g</span>, shades the pointwise product, and traces the final convolution output at the selected time.</p>
           </div>
 
           <div class="conv-formula-card" aria-label="Convolution formula">
@@ -64,74 +64,72 @@
         </section>
 
         <div class="conv-layout">
-          <div class="conv-stage-stack">
-            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-inputs-heading">
+          <div class="aqua-container conv-stage-stack">
+            <section class="conv-stage-panel" aria-labelledby="conv-inputs-heading">
+              <br>
               <div class="conv-panel-header">
                 <div>
-                  <p class="conv-eyebrow">Stage 01</p>
                   <h2 id="conv-inputs-heading" class="conv-section-title">Input Signals</h2>
                 </div>
-                <p class="conv-panel-note">Sample f(t) and g(t) across the same time window before the convolution sweep begins.</p>
+                <p class="conv-panel-note">Sample <span data-katex="f(t)">f(t)</span> and <span data-katex="g(t)">g(t)</span> across the same time window before the convolution sweep begins.</p>
               </div>
 
               <div class="conv-signal-grid">
                 <article class="conv-plot-card" aria-labelledby="conv-f-heading">
                   <div class="conv-plot-card-header">
-                    <h3 id="conv-f-heading" class="conv-plot-card-title">f(t)</h3>
+                    <h3 id="conv-f-heading" class="conv-plot-card-title"><span data-katex="f(t)">f(t)</span></h3>
                     <p class="conv-plot-card-copy">First signal</p>
                   </div>
-                  <div id="conv-f-plot" class="conv-plot-host"></div>
+                  <div id="conv-f-plot" class="conv-plot-host aqua-graph"></div>
                 </article>
 
                 <article class="conv-plot-card" aria-labelledby="conv-g-heading">
                   <div class="conv-plot-card-header">
-                    <h3 id="conv-g-heading" class="conv-plot-card-title">g(t)</h3>
+                    <h3 id="conv-g-heading" class="conv-plot-card-title"><span data-katex="g(t)">g(t)</span></h3>
                     <p class="conv-plot-card-copy">Second signal</p>
                   </div>
-                  <div id="conv-g-plot" class="conv-plot-host"></div>
+                  <div id="conv-g-plot" class="conv-plot-host aqua-graph"></div>
                 </article>
               </div>
             </section>
 
-            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-overlap-heading">
+            <section class="conv-stage-panel" aria-labelledby="conv-overlap-heading">
               <div class="conv-panel-header">
                 <div>
-                  <p class="conv-eyebrow">Stage 02</p>
                   <h2 id="conv-overlap-heading" class="conv-section-title">Flip, Shift, and Multiply</h2>
                 </div>
-                <p class="conv-panel-note">Drag across the chart or use the scrubber to position t. The gold fill shows the current product f(tau) g(t - tau).</p>
+                <p class="conv-panel-note">Drag across the chart or use the scrubber to position <span data-katex="t">t</span>. The gold fill shows the current product <span data-katex="f(\tau)\,g(t-\tau)">f(tau) g(t - tau)</span>.</p>
               </div>
 
               <div class="conv-legend" aria-hidden="true">
-                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-f"></span>f(tau)</span>
-                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-g"></span>g(t - tau)</span>
-                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-product"></span>Product area</span>
+                <span class="aqua-chip conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-f"></span><span data-katex="f(\tau)">f(tau)</span></span>
+                <span class="aqua-chip conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-g"></span><span data-katex="g(t - \tau)">g(t - tau)</span></span>
+                <span class="aqua-chip conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-product"></span>Product area</span>
               </div>
 
-              <div id="conv-overlap-plot" class="conv-plot-host conv-plot-host-interactive" aria-label="Interactive overlap plot"></div>
+              <div id="conv-overlap-plot" class="conv-plot-host aqua-graph aqua-interactive-graph" data-aqua-tooltip="t = 0.00" data-aqua-tooltip-mode="follow" aria-label="Interactive overlap plot"></div>
               <p class="conv-stage-footnote">The vertical marker sets the output time. When the overlap is large, the convolution value at that time grows.</p>
             </section>
 
-            <section class="conv-panel conv-stage-panel" aria-labelledby="conv-output-heading">
+            <section class="conv-stage-panel" aria-labelledby="conv-output-heading">
               <div class="conv-panel-header">
                 <div>
-                  <p class="conv-eyebrow">Stage 03</p>
                   <h2 id="conv-output-heading" class="conv-section-title">Convolution Output</h2>
                 </div>
-                <p class="conv-panel-note">The faint path shows the full numerical convolution, while the highlighted trace fills in up to the current t.</p>
+                <p class="conv-panel-note">The faint path shows the full numerical convolution, while the highlighted trace fills in up to the current <span data-katex="t">t</span>.</p>
               </div>
 
               <div class="conv-legend" aria-hidden="true">
-                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-output"></span>Traced output</span>
-                <span class="conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-ghost"></span>Full response</span>
+                <span class="aqua-chip conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-output"></span>Traced output</span>
+                <span class="aqua-chip conv-legend-chip"><span class="conv-legend-dot conv-legend-dot-ghost"></span>Full response</span>
               </div>
 
-              <div id="conv-output-plot" class="conv-plot-host"></div>
+              <div id="conv-output-plot" class="conv-plot-host aqua-graph" data-aqua-tooltip="y(t) 0.00" data-aqua-tooltip-mode="follow" aria-label="Convolution output plot"></div>
             </section>
           </div>
 
           <aside class="conv-control-rail" aria-labelledby="conv-controls-heading">
-            <section class="conv-panel conv-controls-panel">
+            <section class="aqua-container conv-controls-panel">
               <div class="conv-panel-header">
                 <div>
                   <p class="conv-eyebrow">Controls</p>
@@ -142,9 +140,15 @@
               <section class="conv-control-group" aria-labelledby="conv-presets-heading">
                 <div class="conv-control-group-header">
                   <h3 id="conv-presets-heading" class="conv-control-group-title">Presets</h3>
-                  <p class="conv-control-group-copy">Use common textbook pairs to jump directly into a known response.</p>
                 </div>
-                <div id="conv-preset-list" class="conv-preset-list"></div>
+                <div id="conv-preset-list" class="conv-preset-list" role="group" aria-label="Presets">
+                  <button type="button" class="aqua-toggle-button" data-preset-key="rect-rect" aria-pressed="true">rect * rect</button>
+                  <button type="button" class="aqua-toggle-button" data-preset-key="exp-rect" aria-pressed="false">exp * rect</button>
+                  <button type="button" class="aqua-toggle-button" data-preset-key="exp-exp" aria-pressed="false">exp * exp</button>
+                  <button type="button" class="aqua-toggle-button" data-preset-key="sin-rect" aria-pressed="false">sin * rect</button>
+                  <button type="button" class="aqua-toggle-button" data-preset-key="tri-rect" aria-pressed="false">tri * rect</button>
+                  <button type="button" class="aqua-toggle-button" data-preset-key="gauss-gauss" aria-pressed="false">gauss * gauss</button>
+                </div>
               </section>
 
               <section class="conv-control-group" aria-labelledby="conv-expressions-heading">
@@ -155,7 +159,7 @@
 
                 <label class="conv-expression-field" for="conv-f-input">
                   <span class="conv-expression-row">
-                    <span class="conv-expression-label">f(t)</span>
+                    <span class="conv-expression-label" data-katex="f(t)">f(t)</span>
                     <span class="conv-expression-tag">Input A</span>
                   </span>
                   <div id="conv-f-wrap" class="aqua-input-wrap conv-expression-wrap">
@@ -166,7 +170,7 @@
 
                 <label class="conv-expression-field" for="conv-g-input">
                   <span class="conv-expression-row">
-                    <span class="conv-expression-label">g(t)</span>
+                    <span class="conv-expression-label" data-katex="g(t)">g(t)</span>
                     <span class="conv-expression-tag">Input B</span>
                   </span>
                   <div id="conv-g-wrap" class="aqua-input-wrap conv-expression-wrap">
@@ -176,7 +180,7 @@
                 </label>
               </section>
 
-              <label class="conv-scrub-field" for="conv-time-scrub" style="--conv-range-color: #d39b2d;">
+              <label class="conv-scrub-field" for="conv-time-scrub" style="--aqua-color: #d39b2d;">
                 <span class="conv-scrub-row">
                   <span class="conv-scrub-label">Time Sweep</span>
                   <output id="conv-scrub-value" class="conv-scrub-value" for="conv-time-scrub">0.00</output>
@@ -192,12 +196,76 @@
             </section>
           </aside>
         </div>
+
+        <aside class="aqua-floating-control-panel conv-floating-control-panel" id="conv-controls-drawer" data-side="right" aria-label="Convolution controls">
+          <button type="button" class="aqua-floating-control-panel-tab" data-aqua-floating-control-panel-toggle aria-label="Expand controls"></button>
+          <div class="aqua-floating-control-panel-surface">
+            <section class="conv-controls-panel conv-controls-panel-drawer" aria-labelledby="conv-controls-heading-drawer">
+              <div class="conv-panel-header">
+                <div>
+                  <p class="conv-eyebrow">Controls</p>
+                  <h2 id="conv-controls-heading-drawer" class="conv-section-title">Signal Editor</h2>
+                </div>
+              </div>
+
+              <section class="conv-control-group" aria-labelledby="conv-presets-heading-drawer">
+                <div class="conv-control-group-header">
+                  <h3 id="conv-presets-heading-drawer" class="conv-control-group-title">Presets</h3>
+                </div>
+                <div id="conv-preset-list-drawer" class="conv-preset-list" role="group" aria-label="Presets"></div>
+              </section>
+
+              <section class="conv-control-group" aria-labelledby="conv-expressions-heading-drawer">
+                <div class="conv-control-group-header">
+                  <h3 id="conv-expressions-heading-drawer" class="conv-control-group-title">Expressions</h3>
+                  <p class="conv-control-group-copy">Supported tokens: t, x, pi, e, u(), rect(), tri(), sin(), cos(), exp(), abs().</p>
+                </div>
+
+                <label class="conv-expression-field" for="conv-f-input-drawer">
+                  <span class="conv-expression-row">
+                    <span class="conv-expression-label" data-katex="f(t)">f(t)</span>
+                    <span class="conv-expression-tag">Input A</span>
+                  </span>
+                  <div id="conv-f-wrap-drawer" class="aqua-input-wrap conv-expression-wrap">
+                    <input id="conv-f-input-drawer" class="aqua-input conv-expression-input" type="text" value="rect(t)" spellcheck="false" autocomplete="off">
+                  </div>
+                  <span id="conv-f-error-drawer" class="conv-input-error" hidden>Invalid expression. Plotting 0 until the syntax is fixed.</span>
+                </label>
+
+                <label class="conv-expression-field" for="conv-g-input-drawer">
+                  <span class="conv-expression-row">
+                    <span class="conv-expression-label" data-katex="g(t)">g(t)</span>
+                    <span class="conv-expression-tag">Input B</span>
+                  </span>
+                  <div id="conv-g-wrap-drawer" class="aqua-input-wrap conv-expression-wrap">
+                    <input id="conv-g-input-drawer" class="aqua-input conv-expression-input" type="text" value="rect(t)" spellcheck="false" autocomplete="off">
+                  </div>
+                  <span id="conv-g-error-drawer" class="conv-input-error" hidden>Invalid expression. Plotting 0 until the syntax is fixed.</span>
+                </label>
+              </section>
+
+              <label class="conv-scrub-field" for="conv-time-scrub-drawer" style="--aqua-color: #d39b2d;">
+                <span class="conv-scrub-row">
+                  <span class="conv-scrub-label">Time Sweep</span>
+                  <output id="conv-scrub-value-drawer" class="conv-scrub-value" for="conv-time-scrub-drawer">0.00</output>
+                </span>
+                <div id="conv-time-scrub-drawer" class="aqua-slider conv-slider" data-min="-300" data-max="300" data-value="0" tabindex="0" role="slider" aria-label="Time Sweep" aria-valuemin="-6" aria-valuemax="6" aria-valuenow="0">
+                  <div class="aqua-slider-track">
+                    <div class="aqua-slider-fill"></div>
+                    <div class="aqua-slider-thumb"></div>
+                  </div>
+                </div>
+                <span class="conv-range-scale"><span>-6</span><span>0</span><span>6</span></span>
+              </label>
+            </section>
+          </div>
+        </aside>
       </div>
     </main>
 
     <footer class="tool-page-footer">
-      <a class="tool-chip tool-footer-link" href="../../tools.html?course=ECE+205">ECE 205</a>
-      <a class="tool-term tool-footer-link" href="../../tools.html?term=2A">2A</a>
+      <a class="aqua-chip site-chip site-chip--course tool-footer-link" href="../../tools.html?course=ECE+205">ECE 205</a>
+      <a class="graphite-chip site-chip site-chip--term tool-footer-link" href="../../tools.html?term=2A">2A</a>
     </footer>
   </div>
 
