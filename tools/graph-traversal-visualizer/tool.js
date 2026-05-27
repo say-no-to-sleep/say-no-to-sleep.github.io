@@ -123,6 +123,7 @@
   };
 
   var refs = {};
+  var selectPanels = new WeakMap();
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -284,6 +285,30 @@
     window.addEventListener("load", reveal, { once: true });
   }
 
+  function getControlSetRefs(suffix) {
+    var id = function (name) {
+      return "gt-" + name + suffix;
+    };
+
+    return {
+      presetSelect: document.getElementById(id("preset-select")),
+      startSelect: document.getElementById(id("start-select")),
+      targetSelect: document.getElementById(id("target-select")),
+      speedSlider: document.getElementById(id("speed-slider")),
+      speedLabel: document.getElementById(id("speed-label")),
+      playButton: document.getElementById(id("play-button")),
+      stepBackButton: document.getElementById(id("step-back-button")),
+      stepForwardButton: document.getElementById(id("step-forward-button")),
+      resetButton: document.getElementById(id("reset-button"))
+    };
+  }
+
+  function isCompleteControlSet(controlSet) {
+    return Object.keys(controlSet).every(function (key) {
+      return Boolean(controlSet[key]);
+    });
+  }
+
   function setActiveAlgorithmTab(algorithm) {
     var tabs = Array.prototype.slice.call(refs.algoTabs.querySelectorAll(".aqua-tabview-tab"));
     var indicator = refs.algoTabs.querySelector(".aqua-tabview-indicator");
@@ -350,19 +375,33 @@
     });
   }
 
-  function openSelect(select) {
-    Array.prototype.slice.call(document.querySelectorAll(".aqua-select.open")).forEach(function (openEl) {
-      if (openEl !== select) {
-        closeSelect(openEl);
-      }
-    });
+  function getSelectPanel(select) {
+    return selectPanels.get(select) || select.querySelector(".aqua-select-panel");
+  }
 
-    select.classList.add("open");
+  function getSelectOptions(select) {
+    return Array.prototype.slice.call(getSelectPanel(select)?.querySelectorAll(".aqua-select-option") || []);
+  }
+
+  function openSelect(select) {
+    var trigger = select.querySelector(".aqua-select-trigger");
+
+    if (!select.classList.contains("open")) {
+      trigger?.click();
+    }
+
     syncSelectExpansion(select);
   }
 
   function closeSelect(select) {
-    select.classList.remove("open");
+    var trigger = select.querySelector(".aqua-select-trigger");
+    var panel = getSelectPanel(select);
+    var isOpen = select.classList.contains("open") || panel?.classList.contains("aqua-select-panel-open");
+
+    if (isOpen) {
+      trigger?.click();
+    }
+
     syncSelectExpansion(select);
   }
 
@@ -375,22 +414,21 @@
   }
 
   function getVisibleOptions(select) {
-    return Array.prototype.slice.call(select.querySelectorAll(".aqua-select-option")).filter(function (option) {
+    return getSelectOptions(select).filter(function (option) {
       return !option.hidden;
     });
   }
 
   function setSelectValue(select, value) {
     var triggerValue = select.querySelector(".aqua-select-trigger .aqua-select-value");
-    var panelValue = select.querySelector(".aqua-select-panel-header .aqua-select-value");
-    var options = Array.prototype.slice.call(select.querySelectorAll(".aqua-select-option"));
+    var options = getSelectOptions(select);
     var target = options.find(function (option) {
       return option.dataset.value === value && !option.hidden;
     }) || options.find(function (option) {
       return option.dataset.value === value;
     });
 
-    if (!target || !triggerValue || !panelValue) {
+    if (!target || !triggerValue) {
       return;
     }
 
@@ -402,7 +440,6 @@
     });
 
     triggerValue.textContent = target.textContent || "";
-    panelValue.textContent = target.textContent || "";
     triggerValue.classList.add("selected");
     select.dataset.value = value;
     closeSelect(select);
@@ -428,7 +465,7 @@
   }
 
   function decorateSelectOptions(select) {
-    Array.prototype.slice.call(select.querySelectorAll(".aqua-select-option")).forEach(function (option) {
+    getSelectOptions(select).forEach(function (option) {
       option.tabIndex = -1;
       option.setAttribute("role", "option");
     });
@@ -437,12 +474,12 @@
   function bindSelect(select, onChange) {
     var trigger = select.querySelector(".aqua-select-trigger");
     var panel = select.querySelector(".aqua-select-panel");
-    var panelHeader = select.querySelector(".aqua-select-panel-header");
 
-    if (!trigger || !panel || !panelHeader) {
+    if (!trigger || !panel) {
       return;
     }
 
+    selectPanels.set(select, panel);
     trigger.tabIndex = 0;
     trigger.setAttribute("role", "button");
     trigger.setAttribute("aria-haspopup", "listbox");
@@ -450,22 +487,8 @@
     panel.setAttribute("role", "listbox");
     decorateSelectOptions(select);
 
-    panelHeader.addEventListener("click", function (event) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      closeSelect(select);
-    }, true);
-
     trigger.addEventListener("click", function () {
       requestAnimationFrame(function () {
-        if (select.classList.contains("open")) {
-          Array.prototype.slice.call(document.querySelectorAll(".aqua-select.open")).forEach(function (openEl) {
-            if (openEl !== select) {
-              closeSelect(openEl);
-            }
-          });
-        }
-
         syncSelectExpansion(select);
       });
     });
@@ -978,7 +1001,7 @@
         continue;
       }
 
-      html += "<path class=\"gt-svg-edge\" id=\"gt-edge-" + escapeHtml(edge.key) + "\" d=\"" + pathData + "\""
+      html += "<path class=\"graphite-svg-edge gt-svg-edge\" id=\"gt-edge-" + escapeHtml(edge.key) + "\" d=\"" + pathData + "\""
         + (edge.bidirectional ? " marker-start=\"url(#gt-arrowhead)\"" : "")
         + " marker-end=\"url(#gt-arrowhead)\" />";
     }
@@ -995,8 +1018,8 @@
 
       html += "<g class=\"gt-svg-node\" id=\"gt-node-" + escapeHtml(node) + "\" transform=\"translate(" + point.x + "," + point.y + ")\" role=\"img\" aria-label=\"Node " + escapeHtml(node) + "\">"
         + "<circle class=\"gt-svg-node-ring\" r=\"30\"></circle>"
-        + "<circle class=\"gt-svg-node-bg\" r=\"22\"></circle>"
-        + "<text class=\"gt-svg-node-label\" dy=\"0.35em\">" + escapeHtml(node) + "</text>"
+        + "<circle class=\"aqua-svg-node gt-svg-node-bg\" r=\"22\"></circle>"
+        + "<text class=\"aqua-svg-label gt-svg-node-label\" dy=\"0.30em\">" + escapeHtml(node) + "</text>"
         + "</g>";
     }
 
@@ -1009,8 +1032,6 @@
     var meta = ALGORITHM_META[state.algorithm];
 
     refs.stageNote.textContent = meta.stageNote;
-    refs.phaseChip.textContent = meta.chip;
-    refs.phaseChip.dataset.tone = state.algorithm;
     refs.summaryIdea.textContent = meta.summaryIdea;
     refs.summaryFrontier.textContent = meta.summaryFrontier;
     refs.summaryPattern.textContent = meta.summaryPattern;
@@ -1048,10 +1069,12 @@
       return { value: node, label: node };
     });
 
-    setSelectOptions(refs.startSelect, entries);
-    setSelectOptions(refs.targetSelect, entries);
-    setSelectValue(refs.startSelect, state.start);
-    setSelectValue(refs.targetSelect, state.target);
+    refs.controlSets.forEach(function (controlSet) {
+      setSelectOptions(controlSet.startSelect, entries);
+      setSelectOptions(controlSet.targetSelect, entries);
+      setSelectValue(controlSet.startSelect, state.start);
+      setSelectValue(controlSet.targetSelect, state.target);
+    });
   }
 
   function renderGraph(step) {
@@ -1093,7 +1116,7 @@
         return;
       }
 
-      edgeEl.setAttribute("class", "gt-svg-edge" + (highlight ? " gt-svg-edge--" + highlight : ""));
+      edgeEl.setAttribute("class", "graphite-svg-edge gt-svg-edge" + (highlight ? " gt-svg-edge--" + highlight : ""));
     });
   }
 
@@ -1195,13 +1218,14 @@
     var isLast = state.stepIdx === state.steps.length - 1;
     var pct = state.steps.length > 1 ? (state.stepIdx / (state.steps.length - 1)) * 100 : 100;
 
-    refs.playButton.textContent = state.playing ? "Pause" : (isLast ? "Replay" : "Play");
-    refs.playButton.setAttribute("aria-label", state.playing ? "Pause" : (isLast ? "Replay" : "Play"));
-    refs.playButton.classList.toggle("aqua-button-focused", state.playing);
-
-    refs.stepBackButton.disabled = isFirst;
-    refs.stepForwardButton.disabled = isLast;
-    refs.resetButton.disabled = isFirst;
+    refs.controlSets.forEach(function (controlSet) {
+      controlSet.playButton.textContent = state.playing ? "Pause" : (isLast ? "Replay" : "Play");
+      controlSet.playButton.setAttribute("aria-label", state.playing ? "Pause" : (isLast ? "Replay" : "Play"));
+      controlSet.playButton.setAttribute("aria-pressed", state.playing ? "true" : "false");
+      controlSet.stepBackButton.disabled = state.playing || isFirst;
+      controlSet.stepForwardButton.disabled = state.playing || isLast;
+      controlSet.resetButton.disabled = isFirst;
+    });
 
     refs.stepNum.textContent = state.stepIdx + 1;
     refs.stepTotal.textContent = state.steps.length;
@@ -1266,10 +1290,20 @@
   function togglePlay() {
     if (state.playing) {
       pause();
+      collapseFloatingControls();
       return;
     }
 
     play();
+    collapseFloatingControls();
+  }
+
+  function collapseFloatingControls() {
+    if (!refs.controlsDrawer?.classList.contains("aqua-floating-control-panel-open")) {
+      return;
+    }
+
+    refs.controlsDrawer.querySelector("[data-aqua-floating-control-panel-toggle], .aqua-floating-control-panel-tab")?.click();
   }
 
   function stepForward() {
@@ -1311,8 +1345,10 @@
       state.target = state.nodes[state.nodes.length - 1] || state.nodes[0];
     }
 
-    setSelectValue(refs.startSelect, state.start);
-    setSelectValue(refs.targetSelect, state.target);
+    refs.controlSets.forEach(function (controlSet) {
+      setSelectValue(controlSet.startSelect, state.start);
+      setSelectValue(controlSet.targetSelect, state.target);
+    });
 
     state.steps = generateSteps(state.adjacency, state.start, state.target, state.algorithm);
     state.stepIdx = 0;
@@ -1335,7 +1371,7 @@
     state.target = preset.defaultTarget;
     refs.customText.value = formatAdjacencyText(state.adjacency, state.nodes);
     buildNodeSelectors();
-    setSelectValue(refs.presetSelect, key);
+    setPresetSelectValue(key);
     regenerate();
   }
 
@@ -1357,7 +1393,7 @@
     state.target = result.nodes.length > 1 ? result.nodes[result.nodes.length - 1] : result.nodes[0];
     refs.customText.value = formatAdjacencyText(state.adjacency, state.nodes);
     buildNodeSelectors();
-    setSelectValue(refs.presetSelect, "custom");
+    setPresetSelectValue("custom");
     toggleCustomPanel(true);
     regenerate();
   }
@@ -1378,7 +1414,7 @@
   }
 
   function handlePresetSelect(value) {
-    setSelectValue(refs.presetSelect, value);
+    setPresetSelectValue(value);
 
     if (value === "custom") {
       if (state.preset !== "custom" && !refs.customText.value.trim()) {
@@ -1402,7 +1438,9 @@
     }
 
     state.start = value;
-    setSelectValue(refs.startSelect, value);
+    refs.controlSets.forEach(function (controlSet) {
+      setSelectValue(controlSet.startSelect, value);
+    });
     regenerate();
   }
 
@@ -1412,13 +1450,15 @@
     }
 
     state.target = value;
-    setSelectValue(refs.targetSelect, value);
+    refs.controlSets.forEach(function (controlSet) {
+      setSelectValue(controlSet.targetSelect, value);
+    });
     regenerate();
   }
 
   function handleSpeedChange(value) {
     state.speedIdx = value;
-    refs.speedLabel.textContent = SPEED_LABELS[state.speedIdx];
+    syncSpeedControl();
 
     if (state.playing) {
       clearInterval(state.timer);
@@ -1426,21 +1466,36 @@
     }
   }
 
+  function setPresetSelectValue(value) {
+    refs.controlSets.forEach(function (controlSet) {
+      setSelectValue(controlSet.presetSelect, value);
+    });
+  }
+
+  function syncSpeedControl() {
+    refs.controlSets.forEach(function (controlSet) {
+      controlSet.speedLabel.textContent = SPEED_LABELS[state.speedIdx];
+      setSliderValue(controlSet.speedSlider, state.speedIdx);
+      updateSliderA11y(controlSet.speedSlider, state.speedIdx);
+    });
+  }
+
   function isInteractiveFocusTarget(target) {
-    return Boolean(closestWithin(target, "button, textarea, .aqua-select, .gt-slider, .aqua-tabview-tab", refs.tool));
+    return Boolean(closestWithin(target, "textarea, .aqua-select, .gt-slider, .aqua-tabview-tab", refs.tool));
   }
 
   function bindEvents() {
     bindAlgorithmTabs();
-    bindSelect(refs.presetSelect, handlePresetSelect);
-    bindSelect(refs.startSelect, handleStartSelect);
-    bindSelect(refs.targetSelect, handleTargetSelect);
-    bindSlider(refs.speedSlider, handleSpeedChange);
-
-    refs.playButton.addEventListener("click", togglePlay);
-    refs.stepForwardButton.addEventListener("click", stepForward);
-    refs.stepBackButton.addEventListener("click", stepBack);
-    refs.resetButton.addEventListener("click", resetToStart);
+    refs.controlSets.forEach(function (controlSet) {
+      bindSelect(controlSet.presetSelect, handlePresetSelect);
+      bindSelect(controlSet.startSelect, handleStartSelect);
+      bindSelect(controlSet.targetSelect, handleTargetSelect);
+      bindSlider(controlSet.speedSlider, handleSpeedChange);
+      controlSet.playButton.addEventListener("click", togglePlay);
+      controlSet.stepForwardButton.addEventListener("click", stepForward);
+      controlSet.stepBackButton.addEventListener("click", stepBack);
+      controlSet.resetButton.addEventListener("click", resetToStart);
+    });
 
     refs.applyButton.addEventListener("click", function () {
       applyCustomGraph(refs.customText.value);
@@ -1495,7 +1550,6 @@
     refs.tool = tool;
     refs.algoTabs = document.getElementById("gt-algo-tabs");
     refs.stageNote = document.getElementById("gt-stage-note");
-    refs.phaseChip = document.getElementById("gt-phase-chip");
     refs.svg = document.getElementById("gt-svg");
     refs.frontierItems = document.getElementById("gt-frontier-items");
     refs.frontierLabel = document.getElementById("gt-frontier-label");
@@ -1511,15 +1565,12 @@
     refs.stepTotal = document.getElementById("gt-step-total");
     refs.progress = document.getElementById("gt-progress");
     refs.progressFill = refs.progress.querySelector(".aqua-progress-fill");
-    refs.presetSelect = document.getElementById("gt-preset-select");
-    refs.startSelect = document.getElementById("gt-start-select");
-    refs.targetSelect = document.getElementById("gt-target-select");
-    refs.speedSlider = document.getElementById("gt-speed-slider");
-    refs.speedLabel = document.getElementById("gt-speed-label");
-    refs.playButton = document.getElementById("gt-play-button");
-    refs.stepBackButton = document.getElementById("gt-step-back-button");
-    refs.stepForwardButton = document.getElementById("gt-step-forward-button");
-    refs.resetButton = document.getElementById("gt-reset-button");
+    refs.controlsDrawer = document.getElementById("gt-controls-drawer");
+    refs.controlSets = [
+      getControlSetRefs(""),
+      getControlSetRefs("-drawer")
+    ];
+    Object.assign(refs, refs.controlSets[0]);
     refs.customPanel = document.getElementById("gt-custom-panel");
     refs.customText = document.getElementById("gt-custom-text");
     refs.customError = document.getElementById("gt-custom-error");
@@ -1529,12 +1580,18 @@
     refs.summaryPattern = document.getElementById("gt-summary-pattern");
     refs.summaryStrength = document.getElementById("gt-summary-strength");
     refs.summaryTradeoff = document.getElementById("gt-summary-tradeoff");
-    refs.selectRoots = [refs.presetSelect, refs.startSelect, refs.targetSelect];
+    refs.selectRoots = [];
+    refs.controlSets.forEach(function (controlSet) {
+      refs.selectRoots.push(controlSet.presetSelect, controlSet.startSelect, controlSet.targetSelect);
+    });
+
+    if (refs.controlSets.some(function (controlSet) { return !isCompleteControlSet(controlSet); })) {
+      return;
+    }
 
     state.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     buildCodePanel();
-    setSliderValue(refs.speedSlider, state.speedIdx);
-    refs.speedLabel.textContent = SPEED_LABELS[state.speedIdx];
+    syncSpeedControl();
     bindEvents();
     toggleCustomPanel(false);
     loadPreset("lecture");

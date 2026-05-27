@@ -33,7 +33,6 @@
       algorithms: ["radix"]
     }
   };
-
   const DATASET_META = {
     random: { label: "Random" },
     sorted: { label: "Already Sorted" },
@@ -220,25 +219,8 @@
     }
   };
 
-  const PHASE_META = {
-    setup: { label: "Setup", tone: "structure" },
-    compare: { label: "Compare", tone: "compare" },
-    swap: { label: "Swap", tone: "action" },
-    write: { label: "Write", tone: "action" },
-    extract: { label: "Extract", tone: "action" },
-    divide: { label: "Divide", tone: "structure" },
-    merge: { label: "Merge", tone: "structure" },
-    partition: { label: "Partition", tone: "structure" },
-    pivot: { label: "Pivot", tone: "structure" },
-    distribute: { label: "Distribute", tone: "action" },
-    gather: { label: "Gather", tone: "structure" },
-    "pass-complete": { label: "Pass Done", tone: "done" },
-    "sign-gather": { label: "Sign Gather", tone: "structure" },
-    finalize: { label: "Settle", tone: "done" },
-    done: { label: "Done", tone: "done" }
-  };
-
   const refs = {};
+  const selectPanels = new WeakMap();
 
   const state = {
     family: "iterative",
@@ -263,6 +245,8 @@
   function init() {
     refs.tool = document.getElementById("sort-tool");
     refs.familyTabs = document.getElementById("sort-family-tabs");
+    refs.familyStageBody = document.getElementById("sort-family-stage-body");
+    refs.controlsDrawer = document.getElementById("sort-controls-drawer");
     refs.stageNote = document.getElementById("sort-stage-note");
     refs.stageToolbar = document.getElementById("sort-stage-toolbar");
     refs.algoField = document.getElementById("sort-algo-field");
@@ -270,32 +254,12 @@
     refs.heapVariantField = document.getElementById("sort-heap-variant-field");
     refs.heapVariantSelect = document.getElementById("sort-heap-variant-select");
     refs.heapCopy = document.getElementById("sort-heap-copy");
-    refs.presetSelect = document.getElementById("sort-preset-select");
-    refs.sizeSlider = document.getElementById("sort-size-slider");
-    refs.speedSlider = document.getElementById("sort-speed-slider");
-    refs.sizeOutput = document.getElementById("sort-size-output");
-    refs.sizeMin = document.getElementById("sort-size-min");
-    refs.sizeMax = document.getElementById("sort-size-max");
-    refs.speedOutput = document.getElementById("sort-speed-output");
-    refs.playButton = document.getElementById("sort-play-button");
-    refs.stepBackButton = document.getElementById("sort-step-back-button");
-    refs.stepForwardButton = document.getElementById("sort-step-forward-button");
-    refs.resetButton = document.getElementById("sort-reset-button");
-    refs.shuffleButton = document.getElementById("sort-shuffle-button");
     refs.plot = document.getElementById("sort-plot");
     refs.mergePanel = document.getElementById("sort-merge-panel");
     refs.mergeAux = document.getElementById("sort-merge-aux");
     refs.heapPanel = document.getElementById("sort-heap-panel");
     refs.heapTree = document.getElementById("sort-heap-tree");
     refs.narration = document.getElementById("sort-narration");
-    refs.phaseChip = document.getElementById("sort-phase-chip");
-    refs.stepLabel = document.getElementById("sort-step-label");
-    refs.progress = document.getElementById("sort-progress");
-    refs.progressFill = refs.progress?.querySelector(".aqua-progress-fill") ?? null;
-    refs.primaryMetricLabel = document.getElementById("sort-primary-metric-label");
-    refs.comparisons = document.getElementById("sort-comparisons");
-    refs.operationsLabel = document.getElementById("sort-operations-label");
-    refs.operations = document.getElementById("sort-operations");
     refs.summaryIdea = document.getElementById("sort-summary-idea");
     refs.best = document.getElementById("sort-best");
     refs.average = document.getElementById("sort-average");
@@ -303,28 +267,29 @@
     refs.space = document.getElementById("sort-space");
     refs.summaryTradeoff = document.getElementById("sort-summary-tradeoff");
     refs.watchList = document.getElementById("sort-watch-list");
+    refs.controlSets = [
+      getControlSetRefs(""),
+      getControlSetRefs("-drawer")
+    ];
+
+    Object.assign(refs, refs.controlSets[0]);
 
     if (
       !refs.tool ||
       !refs.familyTabs ||
+      !refs.familyStageBody ||
+      !refs.controlsDrawer ||
       !refs.stageToolbar ||
       !refs.algoField ||
       !refs.algoSelect ||
       !refs.heapVariantField ||
       !refs.heapVariantSelect ||
-      !refs.presetSelect ||
-      !refs.sizeSlider ||
-      !refs.sizeMin ||
-      !refs.sizeMax ||
-      !refs.speedSlider ||
-      !refs.playButton ||
+      refs.controlSets.some((controlSet) => !isCompleteControlSet(controlSet)) ||
       !refs.plot ||
       !refs.mergePanel ||
       !refs.mergeAux ||
       !refs.heapPanel ||
-      !refs.heapTree ||
-      !refs.progressFill ||
-      !refs.primaryMetricLabel
+      !refs.heapTree
     ) {
       return;
     }
@@ -332,30 +297,32 @@
     bindFamilyTabs();
     bindSelect(refs.algoSelect, handleAlgorithmSelect);
     bindSelect(refs.heapVariantSelect, handleHeapVariantSelect);
-    bindSelect(refs.presetSelect, handlePresetSelect);
-    bindSlider(refs.sizeSlider, handleSizeChange);
-    bindSlider(refs.speedSlider, handleSpeedChange);
-
-    refs.playButton.addEventListener("click", togglePlayback);
-    refs.stepBackButton.addEventListener("click", stepBackward);
-    refs.stepForwardButton.addEventListener("click", stepForward);
-    refs.resetButton.addEventListener("click", resetRun);
-    refs.shuffleButton.addEventListener("click", shuffleRun);
+    refs.controlSets.forEach((controlSet) => {
+      bindSelect(controlSet.presetSelect, handlePresetSelect);
+      bindSlider(controlSet.sizeSlider, handleSizeChange);
+      bindSlider(controlSet.speedSlider, handleSpeedChange);
+      controlSet.playButton.addEventListener("click", togglePlayback);
+      controlSet.stepBackButton.addEventListener("click", stepBackward);
+      controlSet.stepForwardButton.addEventListener("click", stepForward);
+      controlSet.resetButton.addEventListener("click", resetRun);
+      controlSet.shuffleButton.addEventListener("click", shuffleRun);
+    });
 
     state.runSeed = nextSeed();
     state.baseArray = buildBaseArray(state.size, state.preset, state.runSeed, state.algorithm);
     syncReducedMotionPreference();
     bindReducedMotionPreference();
 
+    attachFamilyStageBody(state.family);
     setActiveFamilyTab(state.family);
     filterAlgorithmOptions();
     filterPresetOptions();
     setSelectValue(refs.algoSelect, state.algorithm);
     setSelectValue(refs.heapVariantSelect, state.heapVariant);
     syncHeapVariantField();
-    setSelectValue(refs.presetSelect, state.preset);
+    setPresetSelectValue(state.preset);
     syncSizeControl();
-    setSliderValue(refs.speedSlider, state.speed);
+    syncSpeedControl();
     syncStaticPanels();
     rebuildSteps({ regenerateArray: false, newSeed: false });
 
@@ -370,6 +337,37 @@
     }
 
     revealPageWhenReady();
+  }
+
+  function getControlSetRefs(suffix) {
+    const id = (name) => `sort-${name}${suffix}`;
+    const progress = document.getElementById(id("progress"));
+
+    return {
+      presetSelect: document.getElementById(id("preset-select")),
+      sizeSlider: document.getElementById(id("size-slider")),
+      speedSlider: document.getElementById(id("speed-slider")),
+      sizeOutput: document.getElementById(id("size-output")),
+      sizeMin: document.getElementById(id("size-min")),
+      sizeMax: document.getElementById(id("size-max")),
+      speedOutput: document.getElementById(id("speed-output")),
+      playButton: document.getElementById(id("play-button")),
+      stepBackButton: document.getElementById(id("step-back-button")),
+      stepForwardButton: document.getElementById(id("step-forward-button")),
+      resetButton: document.getElementById(id("reset-button")),
+      shuffleButton: document.getElementById(id("shuffle-button")),
+      stepLabel: document.getElementById(id("step-label")),
+      progress,
+      progressFill: progress?.querySelector(".aqua-progress-fill") ?? null,
+      primaryMetricLabel: document.getElementById(id("primary-metric-label")),
+      comparisons: document.getElementById(id("comparisons")),
+      operationsLabel: document.getElementById(id("operations-label")),
+      operations: document.getElementById(id("operations"))
+    };
+  }
+
+  function isCompleteControlSet(controlSet) {
+    return Object.values(controlSet).every(Boolean);
   }
 
   function syncReducedMotionPreference() {
@@ -439,7 +437,7 @@
         return;
       }
 
-      handleFamilySelect(activeTab.dataset.tab);
+      handleFamilySelect(activeTab.dataset.tab, { tabViewAlreadyUpdated: true });
     });
 
     tabs.forEach((tab, index) => {
@@ -472,28 +470,18 @@
   function bindSelect(select, onChange) {
     const trigger = select.querySelector(".aqua-select-trigger");
     const panel = select.querySelector(".aqua-select-panel");
-    const panelHeader = select.querySelector(".aqua-select-panel-header");
-    const options = Array.from(select.querySelectorAll(".aqua-select-option"));
+    const options = Array.from(panel?.querySelectorAll(".aqua-select-option") || []);
 
-    if (!trigger || !panel || !panelHeader || options.length === 0) {
+    if (!trigger || !panel || options.length === 0) {
       return;
     }
 
+    selectPanels.set(select, panel);
     trigger.tabIndex = 0;
     trigger.setAttribute("role", "button");
     trigger.setAttribute("aria-haspopup", "listbox");
     trigger.setAttribute("aria-expanded", "false");
     panel.setAttribute("role", "listbox");
-
-    panelHeader.addEventListener(
-      "click",
-      (event) => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        closeSelect(select);
-      },
-      true
-    );
 
     trigger.addEventListener("click", () => {
       requestAnimationFrame(() => {
@@ -506,6 +494,10 @@
       option.setAttribute("role", "option");
 
       option.addEventListener("click", () => {
+        if (option.hidden) {
+          return;
+        }
+
         onChange(option.dataset.value || "");
         syncSelectExpansion(select);
       });
@@ -544,8 +536,10 @@
       if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         openSelect(select);
-        const chosen = select.querySelector(".aqua-select-option.chosen:not([hidden])");
-        (chosen || visibleOptions[0])?.focus();
+        requestAnimationFrame(() => {
+          const activeChoice = getVisibleOptions(select).find((option) => option.classList.contains("chosen"));
+          (activeChoice || visibleOptions[0])?.focus();
+        });
         return;
       }
 
@@ -623,14 +617,21 @@
     });
   }
 
-  function handleFamilySelect(family) {
+  function handleFamilySelect(family, options = {}) {
     if (!FAMILY_META[family]) {
       return;
     }
 
+    closeSelect(refs.algoSelect);
+    closeSelect(refs.heapVariantSelect);
+    closePresetSelects();
+
     const previousAlgorithm = state.algorithm;
     state.family = family;
-    setActiveFamilyTab(family);
+    setActiveFamilyTab(family, {
+      syncIndicator: !options.tabViewAlreadyUpdated,
+      syncPanes: !options.tabViewAlreadyUpdated
+    });
     const algorithmChanged = filterAlgorithmOptions();
     const presetChanged = filterPresetOptions();
     const sizeChanged = syncSizeControl();
@@ -692,7 +693,7 @@
     }
 
     state.preset = value;
-    setSelectValue(refs.presetSelect, value);
+    setPresetSelectValue(value);
     syncSizeControl();
     syncStaticPanels();
     rebuildSteps({ regenerateArray: true, newSeed: true });
@@ -700,17 +701,17 @@
 
   function handleSizeChange(value) {
     if (refs.sizeSlider.dataset.disabled === "true") {
-      refs.sizeOutput.textContent = String(state.size);
+      syncSizeControl();
       return;
     }
 
     if (!Number.isFinite(value) || value === state.size) {
-      refs.sizeOutput.textContent = String(state.size);
+      syncSizeControl();
       return;
     }
 
     state.size = value;
-    refs.sizeOutput.textContent = String(value);
+    syncSizeControl();
     rebuildSteps({ regenerateArray: true, newSeed: true });
   }
 
@@ -720,8 +721,7 @@
     }
 
     state.speed = value;
-    refs.speedOutput.textContent = `${value} ms`;
-    updateSliderA11y(refs.speedSlider, value);
+    syncSpeedControl();
 
     if (animationsDisabled() && state.transition?.active) {
       settleTransition({ commitTarget: true });
@@ -737,6 +737,7 @@
     if (state.playing) {
       stopPlayback({ settle: true });
       render();
+      collapseFloatingControls();
       return;
     }
 
@@ -748,7 +749,16 @@
 
     state.playing = true;
     render();
+    collapseFloatingControls();
     scheduleAutoplayAdvance(0);
+  }
+
+  function collapseFloatingControls() {
+    if (!refs.controlsDrawer?.classList.contains("aqua-floating-control-panel-open")) {
+      return;
+    }
+
+    refs.controlsDrawer.querySelector("[data-aqua-floating-control-panel-toggle], .aqua-floating-control-panel-tab")?.click();
   }
 
   function stepBackward() {
@@ -976,16 +986,18 @@
     renderComplexityNode(refs.worst, algorithmMeta.worst);
     renderComplexityNode(refs.space, algorithmMeta.space);
     refs.summaryTradeoff.textContent = `Tradeoff: ${algorithmMeta.tradeoff}`;
-    refs.primaryMetricLabel.textContent = algorithmMeta.primaryMetricLabel || "Comparisons";
-    refs.operationsLabel.textContent = algorithmMeta.operationLabel;
+    refs.controlSets.forEach((controlSet) => {
+      controlSet.primaryMetricLabel.textContent = algorithmMeta.primaryMetricLabel || "Comparisons";
+      controlSet.operationsLabel.textContent = algorithmMeta.operationLabel;
+      controlSet.sizeOutput.textContent = String(state.size);
+      controlSet.speedOutput.textContent = `${state.speed} ms`;
+    });
     if (refs.heapCopy) {
       refs.heapCopy.textContent = algorithmMeta.heapCopy || "";
     }
     if (refs.watchList) {
       refs.watchList.innerHTML = algorithmMeta.watch.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     }
-    refs.sizeOutput.textContent = String(state.size);
-    refs.speedOutput.textContent = `${state.speed} ms`;
   }
 
   function renderComplexityNode(node, value) {
@@ -1028,23 +1040,23 @@
 
   function render() {
     const step = getDisplayStep();
-    const phaseMeta = PHASE_META[step.phase] || PHASE_META.setup;
     const progress = state.steps.length === 0 ? 0 : ((state.stepIndex + 1) / state.steps.length) * 100;
     const isAnimating = Boolean(state.transition?.active);
     const primaryMetricValue = state.algorithm === "radix" ? step.radixPassIndex : step.comparisons;
     const operationMetricValue = state.algorithm === "radix" ? step.radixMoves : step.writesOrSwaps;
 
-    refs.phaseChip.textContent = phaseMeta.label;
-    refs.phaseChip.dataset.tone = phaseMeta.tone;
     refs.narration.textContent = step.description;
-    refs.comparisons.textContent = String(primaryMetricValue);
-    refs.operations.textContent = String(operationMetricValue);
-    refs.stepLabel.textContent = `Step ${Math.min(state.stepIndex + 1, state.steps.length)} / ${state.steps.length}`;
-    refs.progress.dataset.value = String(Math.round(progress));
-    refs.progressFill.style.width = `${progress}%`;
-    refs.playButton.textContent = state.playing ? "Pause" : state.stepIndex >= state.steps.length - 1 ? "Replay" : "Play";
-    refs.stepBackButton.disabled = isAnimating || state.stepIndex === 0;
-    refs.stepForwardButton.disabled = isAnimating || state.stepIndex >= state.steps.length - 1;
+    refs.controlSets.forEach((controlSet) => {
+      controlSet.comparisons.textContent = String(primaryMetricValue);
+      controlSet.operations.textContent = String(operationMetricValue);
+      controlSet.stepLabel.textContent = `Step ${Math.min(state.stepIndex + 1, state.steps.length)} / ${state.steps.length}`;
+      controlSet.progress.dataset.value = String(Math.round(progress));
+      controlSet.progressFill.style.width = `${progress}%`;
+      controlSet.playButton.textContent = state.playing ? "Pause" : state.stepIndex >= state.steps.length - 1 ? "Replay" : "Play";
+      controlSet.playButton.setAttribute("aria-pressed", state.playing ? "true" : "false");
+      controlSet.stepBackButton.disabled = state.playing || isAnimating || state.stepIndex === 0;
+      controlSet.stepForwardButton.disabled = state.playing || isAnimating || state.stepIndex >= state.steps.length - 1;
+    });
 
     syncAlgorithmField();
     syncHeapVariantField();
@@ -1054,11 +1066,22 @@
   }
 
   function syncHeapVariantField() {
-    refs.heapVariantField.hidden = state.algorithm !== "heap";
+    const shouldHide = state.algorithm !== "heap";
+
+    if (shouldHide) {
+      closeSelect(refs.heapVariantSelect);
+    }
+
+    refs.heapVariantField.hidden = shouldHide;
   }
 
   function syncAlgorithmField() {
     const hideAlgorithmField = state.family === "radix";
+
+    if (hideAlgorithmField) {
+      closeSelect(refs.algoSelect);
+    }
+
     refs.algoField.hidden = hideAlgorithmField;
     refs.stageToolbar.classList.toggle("is-radix-only", hideAlgorithmField);
   }
@@ -1241,7 +1264,7 @@
         const stroke = edgePulse > 0 ? mixColor("rgba(59, 83, 100, 0.26)", getPhaseColor(toStep.phase), edgePulse * 0.8) : "rgba(59, 83, 100, 0.26)";
 
         lineMarkup.push(
-          `<line class="sort-heap-edge${edgePulse > 0 ? " sort-heap-edge-active" : ""}" x1="${point.x}" y1="${point.y}" x2="${childPoint.x}" y2="${childPoint.y}" stroke="${stroke}" stroke-width="${2 + edgePulse * 1.4}" opacity="${opacity + edgePulse * 0.18}" />`
+          `<line class="graphite-svg-edge sort-heap-edge${edgePulse > 0 ? " sort-heap-edge-active is-active" : ""}" x1="${point.x}" y1="${point.y}" x2="${childPoint.x}" y2="${childPoint.y}" style="${getSvgMarkStyle(stroke, stroke, 1)} --aqua-mark-stroke-width: ${2 + edgePulse * 1.4};" opacity="${opacity + edgePulse * 0.18}" />`
         );
       });
     }
@@ -1270,7 +1293,7 @@
         y,
         markup: `
           <g opacity="${opacity}">
-            <circle class="sort-heap-node${highlighted ? " sort-heap-node-active" : ""}" cx="${x}" cy="${y}" r="${nodeRadius}" fill="${fill}" stroke="rgba(18, 44, 62, 0.2)" stroke-width="${1.4 + nodePulse * 0.3}" />
+            <circle class="aqua-svg-node sort-heap-node${highlighted ? " sort-heap-node-active is-current" : ""}" cx="${x}" cy="${y}" r="${nodeRadius}" style="${getSvgMarkStyle(fill, "rgba(18, 44, 62, 0.2)", 1 + nodePulse * 0.35)} --aqua-mark-stroke-width: ${1.4 + nodePulse * 0.3};" />
             <text x="${x}" y="${y + 4}" text-anchor="middle" fill="#102838" font-family="monospace" font-size="${radius - 2}" font-weight="700">${value}</text>
           </g>
         `
@@ -1432,19 +1455,9 @@
     const placeLabel = step.radixDigitLabel
       ? `Pass ${step.radixPassIndex || 0} • ${capitalize(step.radixDigitLabel)} digit`
       : "Radix setup";
-    const detail = step.phase === "sign-gather"
-      ? "Final sign-aware gather"
-      : step.phase === "distribute"
-        ? "Distribute into buckets"
-        : step.phase === "gather"
-          ? "Gather buckets back into the main array"
-          : step.phase === "pass-complete"
-            ? "Digit pass complete"
-            : "Digit buckets";
 
     return `
       <text x="${geometry.padLeft}" y="18" class="sort-radix-pass-note">${escapeHtml(placeLabel)}</text>
-      <text x="${geometry.padLeft}" y="38" class="sort-radix-pass-note" opacity="0.78">${escapeHtml(detail)}</text>
     `;
   }
 
@@ -1506,7 +1519,7 @@
     const labelMeta = getRadixCardLabelMeta(entry.value, step.radixPlace);
     const fontSize = getRadixCardFontSize(labelMeta.measureLabel, width, height);
     const glow = highlighted
-      ? `<rect class="sort-radix-card-glow" x="${x - 2}" y="${y - 2}" width="${width + 4}" height="${height + 4}" rx="${radius + 2}" ry="${radius + 2}" fill="${fill}" opacity="${0.08 + emphasis * 0.14}" />`
+      ? `<rect class="aqua-svg-glow sort-radix-card-glow" x="${x - 2}" y="${y - 2}" width="${width + 4}" height="${height + 4}" rx="${radius + 2}" ry="${radius + 2}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis)}" opacity="${0.08 + emphasis * 0.14}" />`
       : "";
 
     return {
@@ -1516,7 +1529,7 @@
       markup: `
         <g>
           ${glow}
-          <rect x="${x}" y="${y - emphasis * 3}" width="${width}" height="${height + emphasis * 2}" rx="${radius}" ry="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${1.2 + emphasis * 0.2}" />
+          <rect class="aqua-svg-node sort-radix-card${highlighted ? " is-current" : ""}" x="${x}" y="${y - emphasis * 3}" width="${width}" height="${height + emphasis * 2}" rx="${radius}" ry="${radius}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis * 0.45)} --aqua-mark-stroke-width: ${1.2 + emphasis * 0.2};" />
           ${buildRadixCardLabelMarkup(labelMeta.parts, x + width / 2, y + height / 2 + fontSize * 0.34 - emphasis * 3, fontSize)}
         </g>
       `
@@ -1773,13 +1786,13 @@
       const y = currentY - emphasis * 3;
       const radius = Math.min(8, width / 4);
       const glow = isActive
-        ? `<rect class="sort-merge-entry-glow" x="${currentX - 1.5}" y="${y - 2}" width="${width + 3}" height="${height + 4}" rx="${radius + 1.5}" ry="${radius + 1.5}" fill="${fill}" opacity="${0.08 + emphasis * 0.16}" />`
+        ? `<rect class="aqua-svg-glow sort-merge-entry-glow" x="${currentX - 1.5}" y="${y - 2}" width="${width + 3}" height="${height + 4}" rx="${radius + 1.5}" ry="${radius + 1.5}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis)}" opacity="${0.08 + emphasis * 0.16}" />`
         : "";
 
       return `
         <g aria-label="${escapeHtml(side)} temp entry ${escapeHtml(String((toEntry || fromEntry).value))}">
           ${glow}
-          <rect x="${currentX}" y="${y}" width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${1.1 + emphasis * 0.2}" opacity="${opacity}" />
+          <rect class="aqua-svg-node sort-merge-entry${isActive ? " is-current" : ""}" x="${currentX}" y="${y}" width="${width}" height="${height}" rx="${radius}" ry="${radius}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis * 0.35)} --aqua-mark-stroke-width: ${1.1 + emphasis * 0.2};" opacity="${opacity}" />
           <text x="${currentX + width / 2}" y="${y + 15}" text-anchor="middle" class="sort-merge-entry-label" opacity="${Math.min(1, opacity + 0.12)}">${escapeHtml(String((toEntry || fromEntry).value))}</text>
         </g>
       `;
@@ -1843,7 +1856,7 @@
 
       return `
         <g class="sort-merge-entry-ghost" opacity="${opacity}">
-          <rect x="${currentX - width / 2}" y="${currentY - height / 2}" width="${width}" height="${height}" rx="${Math.min(8, width / 4)}" ry="${Math.min(8, width / 4)}" fill="${motion.fill}" stroke="rgba(18, 44, 62, 0.24)" stroke-width="1.1" />
+          <rect class="aqua-svg-node sort-merge-entry-ghost-mark is-ghost" x="${currentX - width / 2}" y="${currentY - height / 2}" width="${width}" height="${height}" rx="${Math.min(8, width / 4)}" ry="${Math.min(8, width / 4)}" style="${getSvgMarkStyle(motion.fill, "rgba(18, 44, 62, 0.24)", 1)} --aqua-mark-stroke-width: 1.1;" />
           <text x="${currentX}" y="${currentY + 4}" text-anchor="middle" class="sort-merge-entry-label">${escapeHtml(String(motion.value))}</text>
         </g>
       `;
@@ -2006,7 +2019,7 @@
       ? `<text x="${x + geometry.barWidth / 2}" y="${textY}" text-anchor="middle" class="sort-plot-bar-value" opacity="${holdOpacity}">${escapeHtml(String(Math.round(labelValue)))}</text>`
       : "";
     const glow = isHighlighted
-      ? `<rect class="sort-plot-bar-glow" x="${x - 2}" y="${y - 3}" width="${geometry.barWidth + 4}" height="${barHeight + 6}" rx="${radius + 2}" ry="${radius + 2}" fill="${fill}" opacity="${0.09 + emphasis * 0.16}" />`
+      ? `<rect class="aqua-svg-glow sort-plot-bar-glow" x="${x - 2}" y="${y - 3}" width="${geometry.barWidth + 4}" height="${barHeight + 6}" rx="${radius + 2}" ry="${radius + 2}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis)}" opacity="${0.09 + emphasis * 0.16}" />`
       : "";
     const rectOpacity = holdOpacity;
 
@@ -2016,7 +2029,7 @@
       markup: `
         <g class="sort-plot-bar">
           ${glow}
-          <rect x="${x}" y="${y}" width="${geometry.barWidth}" height="${barHeight}" rx="${radius}" ry="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${1.2 + emphasis * 0.25}" opacity="${rectOpacity}" />
+          <rect class="aqua-svg-node sort-plot-bar-rect${isHighlighted ? " is-current" : ""}" x="${x}" y="${y}" width="${geometry.barWidth}" height="${barHeight}" rx="${radius}" ry="${radius}" style="${getSvgMarkStyle(fill, stroke, 1 + emphasis * 0.45)} --aqua-mark-stroke-width: ${1.2 + emphasis * 0.25};" opacity="${rectOpacity}" />
           ${valueLabel}
         </g>
       `
@@ -2364,6 +2377,10 @@
       : `rgba(${Math.round(color.r)}, ${Math.round(color.g)}, ${Math.round(color.b)}, ${color.a.toFixed(3)})`;
   }
 
+  function getSvgMarkStyle(fill, stroke, depth = 1) {
+    return `--aqua-mark-color: ${fill}; --aqua-mark-stroke: ${stroke}; --aqua-mark-depth: ${depth};`;
+  }
+
   function parseColor(value) {
     if (typeof value !== "string") {
       return null;
@@ -2402,7 +2419,8 @@
     };
   }
 
-  function setActiveFamilyTab(family) {
+  function setActiveFamilyTab(family, options = {}) {
+    const { syncIndicator = true, syncPanes = true } = options;
     const tabs = Array.from(refs.familyTabs.querySelectorAll(".aqua-tabview-tab"));
 
     tabs.forEach((tab) => {
@@ -2411,18 +2429,22 @@
       tab.setAttribute("aria-selected", String(isActive));
     });
 
-    ["iterative", "divide", "radix"].forEach((name) => {
-      const pane = document.getElementById(`sort-family-${name}`);
+    if (syncPanes) {
+      ["iterative", "divide", "radix"].forEach((name) => {
+        const pane = document.getElementById(`sort-family-${name}`);
 
-      if (pane) {
-        pane.classList.toggle("active", name === family);
-      }
-    });
+        if (pane) {
+          pane.classList.toggle("active", name === family);
+        }
+      });
+    }
+
+    attachFamilyStageBody(family);
 
     const indicator = refs.familyTabs.querySelector(".aqua-tabview-indicator");
     const activeTab = refs.familyTabs.querySelector(`.aqua-tabview-tab[data-tab="${family}"]`);
 
-    if (indicator && activeTab) {
+    if (syncIndicator && indicator && activeTab) {
       indicator.style.left = `${activeTab.offsetLeft}px`;
       indicator.style.width = `${activeTab.offsetWidth}px`;
     }
@@ -2430,8 +2452,22 @@
     refs.stageNote.textContent = FAMILY_META[family].note;
   }
 
+  function getFamilyPane(family) {
+    return document.getElementById(`sort-family-${family}`);
+  }
+
+  function attachFamilyStageBody(family) {
+    const pane = getFamilyPane(family);
+
+    if (!pane || !refs.familyStageBody || refs.familyStageBody.parentElement === pane) {
+      return;
+    }
+
+    pane.appendChild(refs.familyStageBody);
+  }
+
   function filterAlgorithmOptions() {
-    const options = Array.from(refs.algoSelect.querySelectorAll(".aqua-select-option"));
+    const options = getSelectOptions(refs.algoSelect);
     const previousAlgorithm = state.algorithm;
 
     options.forEach((option) => {
@@ -2448,12 +2484,13 @@
   }
 
   function filterPresetOptions() {
-    const options = Array.from(refs.presetSelect.querySelectorAll(".aqua-select-option"));
     const previousPreset = state.preset;
 
-    options.forEach((option) => {
-      const meta = DATASET_META[option.dataset.value || ""];
-      option.hidden = Boolean(meta?.algorithms && !meta.algorithms.includes(state.algorithm));
+    refs.controlSets.forEach((controlSet) => {
+      getSelectOptions(controlSet.presetSelect).forEach((option) => {
+        const meta = DATASET_META[option.dataset.value || ""];
+        option.hidden = Boolean(meta?.algorithms && !meta.algorithms.includes(state.algorithm));
+      });
     });
 
     const visibleOptions = getVisibleOptions(refs.presetSelect);
@@ -2462,17 +2499,41 @@
       state.preset = visibleOptions[0]?.dataset.value || state.preset;
     }
 
-    setSelectValue(refs.presetSelect, state.preset);
+    setPresetSelectValue(state.preset);
     return previousPreset !== state.preset;
   }
 
+  function closePresetSelects() {
+    refs.controlSets.forEach((controlSet) => {
+      closeSelect(controlSet.presetSelect);
+    });
+  }
+
+  function setPresetSelectValue(value) {
+    refs.controlSets.forEach((controlSet) => {
+      setSelectValue(controlSet.presetSelect, value);
+    });
+  }
+
   function openSelect(select) {
-    select.classList.add("open");
+    const trigger = select.querySelector(".aqua-select-trigger");
+
+    if (!select.classList.contains("open")) {
+      trigger?.click();
+    }
+
     syncSelectExpansion(select);
   }
 
   function closeSelect(select) {
-    select.classList.remove("open");
+    const trigger = select.querySelector(".aqua-select-trigger");
+    const panel = getSelectPanel(select);
+    const isOpen = select.classList.contains("open") || panel?.classList.contains("aqua-select-panel-open");
+
+    if (isOpen) {
+      trigger?.click();
+    }
+
     syncSelectExpansion(select);
   }
 
@@ -2485,16 +2546,23 @@
   }
 
   function getVisibleOptions(select) {
-    return Array.from(select.querySelectorAll(".aqua-select-option")).filter((option) => !option.hidden);
+    return getSelectOptions(select).filter((option) => !option.hidden);
+  }
+
+  function getSelectPanel(select) {
+    return selectPanels.get(select) || select.querySelector(".aqua-select-panel");
+  }
+
+  function getSelectOptions(select) {
+    return Array.from(getSelectPanel(select)?.querySelectorAll(".aqua-select-option") || []);
   }
 
   function setSelectValue(select, value) {
     const triggerValue = select.querySelector(".aqua-select-trigger .aqua-select-value");
-    const panelValue = select.querySelector(".aqua-select-panel-header .aqua-select-value");
-    const options = Array.from(select.querySelectorAll(".aqua-select-option"));
+    const options = getSelectOptions(select);
     const target = options.find((option) => option.dataset.value === value && !option.hidden) || options.find((option) => option.dataset.value === value);
 
-    if (!target || !triggerValue || !panelValue) {
+    if (!target || !triggerValue) {
       return;
     }
 
@@ -2504,7 +2572,6 @@
     });
 
     triggerValue.textContent = target.textContent || "";
-    panelValue.textContent = target.textContent || "";
     triggerValue.classList.add("selected");
     select.dataset.value = value;
     closeSelect(select);
@@ -2565,17 +2632,27 @@
     const sizeChanged = nextSize !== state.size;
 
     state.size = nextSize;
-    refs.sizeSlider.dataset.min = String(config.min);
-    refs.sizeSlider.dataset.max = String(config.max);
-    refs.sizeSlider.setAttribute("aria-valuemin", String(config.min));
-    refs.sizeSlider.setAttribute("aria-valuemax", String(config.max));
-    refs.sizeMin.textContent = String(config.min);
-    refs.sizeMax.textContent = String(config.max);
-    refs.sizeOutput.textContent = String(state.size);
-    setSliderDisabledState(refs.sizeSlider, config.disabled);
-    setSliderValue(refs.sizeSlider, state.size);
+    refs.controlSets.forEach((controlSet) => {
+      controlSet.sizeSlider.dataset.min = String(config.min);
+      controlSet.sizeSlider.dataset.max = String(config.max);
+      controlSet.sizeSlider.setAttribute("aria-valuemin", String(config.min));
+      controlSet.sizeSlider.setAttribute("aria-valuemax", String(config.max));
+      controlSet.sizeMin.textContent = String(config.min);
+      controlSet.sizeMax.textContent = String(config.max);
+      controlSet.sizeOutput.textContent = String(state.size);
+      setSliderDisabledState(controlSet.sizeSlider, config.disabled);
+      setSliderValue(controlSet.sizeSlider, state.size);
+    });
 
     return sizeChanged;
+  }
+
+  function syncSpeedControl() {
+    refs.controlSets.forEach((controlSet) => {
+      controlSet.speedOutput.textContent = `${state.speed} ms`;
+      setSliderValue(controlSet.speedSlider, state.speed);
+      updateSliderA11y(controlSet.speedSlider, state.speed);
+    });
   }
 
   function getCurrentStep() {
