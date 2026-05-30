@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-label="Dark Frutiger Aero abstract background">
+  <defs>
+    <radialGradient id="skyGlow" cx="34%" cy="18%" r="72%">
+      <stop offset="0%" stop-color="#173f57"/>
+      <stop offset="42%" stop-color="#07324a"/>
+      <stop offset="74%" stop-color="#042437"/>
+      <stop offset="100%" stop-color="#01151f"/>
+    </radialGradient>
+    <linearGradient id="horizon" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#2ce6cf"/>
+      <stop offset="36%" stop-color="#0d9fb7"/>
+      <stop offset="70%" stop-color="#075a8e"/>
+      <stop offset="100%" stop-color="#03263f"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#d7ff83"/>
+      <stop offset="48%" stop-color="#4be58d"/>
+      <stop offset="100%" stop-color="#06967d"/>
+    </linearGradient>
+    <linearGradient id="ribbonBlue" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#bff7ff" stop-opacity="0"/>
+      <stop offset="32%" stop-color="#9af8ff" stop-opacity="0.42"/>
+      <stop offset="64%" stop-color="#2f9dff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#9af8ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ribbonGreen" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#bcff74" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#a9ff61" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#24f0c0" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="bubble" cx="34%" cy="25%" r="64%">
+      <stop offset="0%" stop-color="#e8ffff" stop-opacity="0.72"/>
+      <stop offset="42%" stop-color="#83edff" stop-opacity="0.18"/>
+      <stop offset="73%" stop-color="#2f9dff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#d8ffff" stop-opacity="0.03"/>
+    </radialGradient>
+    <filter id="softBlur" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="glassShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#00131f" flood-opacity="0.48"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#skyGlow)"/>
+  <path d="M0 760 C270 610 430 700 650 565 C920 400 1140 475 1365 350 C1585 230 1770 260 1920 160 L1920 1080 L0 1080 Z" fill="url(#horizon)" opacity="0.42"/>
+  <path d="M-180 1000 C240 700 640 810 930 620 C1180 455 1435 455 2060 190" fill="none" stroke="url(#ribbonBlue)" stroke-width="120" stroke-linecap="round" opacity="0.82"/>
+  <path d="M-120 900 C260 820 500 590 790 650 C1115 720 1325 470 1610 410 C1770 378 1875 405 2040 305" fill="none" stroke="url(#ribbonGreen)" stroke-width="72" stroke-linecap="round" opacity="0.6"/>
+  <path d="M-60 700 C250 525 480 510 710 420 C980 314 1230 300 1530 155 C1670 88 1790 70 1980 82" fill="none" stroke="#ccfcff" stroke-width="8" stroke-linecap="round" opacity="0.28"/>
+
+  <g filter="url(#softBlur)" opacity="0.26">
+    <circle cx="1540" cy="210" r="180" fill="#71efff"/>
+    <circle cx="305" cy="210" r="150" fill="#97ff8a"/>
+    <circle cx="1090" cy="800" r="220" fill="#00a9c5"/>
+  </g>
+
+  <g filter="url(#glassShadow)">
+    <circle cx="1460" cy="310" r="132" fill="url(#bubble)" stroke="#c4fbff" stroke-opacity="0.32" stroke-width="3"/>
+    <circle cx="1582" cy="466" r="58" fill="url(#bubble)" stroke="#c4fbff" stroke-opacity="0.24" stroke-width="2"/>
+    <circle cx="363" cy="350" r="92" fill="url(#bubble)" stroke="#c4fbff" stroke-opacity="0.28" stroke-width="2.5"/>
+    <circle cx="525" cy="250" r="38" fill="url(#bubble)" stroke="#c4fbff" stroke-opacity="0.3" stroke-width="1.5"/>
+  </g>
+
+  <path d="M1280 745 C1398 618 1518 596 1668 626 C1540 705 1412 782 1280 745 Z" fill="url(#leaf)" opacity="0.42"/>
+  <path d="M790 850 C930 705 1125 685 1300 735 C1125 865 955 918 790 850 Z" fill="url(#leaf)" opacity="0.34"/>
+  <path d="M1245 735 C1380 705 1530 670 1670 626" fill="none" stroke="#ebffb5" stroke-width="5" stroke-linecap="round" opacity="0.28"/>
+  <path d="M770 855 C940 815 1130 770 1302 735" fill="none" stroke="#ebffb5" stroke-width="5" stroke-linecap="round" opacity="0.22"/>
+
+  <circle cx="260" cy="785" r="2.5" fill="#ccfcff" opacity="0.46"/>
+  <circle cx="430" cy="705" r="3" fill="#ccfcff" opacity="0.42"/>
+  <circle cx="670" cy="805" r="2.5" fill="#ccfcff" opacity="0.34"/>
+  <circle cx="1188" cy="555" r="3" fill="#ccfcff" opacity="0.44"/>
+  <circle cx="1720" cy="610" r="2.5" fill="#ccfcff" opacity="0.36"/>
+</svg>

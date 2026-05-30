@@ -80,15 +80,13 @@ body {
   font-family: var(--font-sans);
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(185, 233, 245, 0.5), transparent 36%),
-    radial-gradient(circle at top right, rgba(222, 237, 242, 0.55), transparent 32%),
+    url("./assets/backgrounds/frutiger-aero-light.webp") center / cover fixed,
     linear-gradient(180deg, #f8fbfc 0%, var(--bg-base) 100%);
 }
 
 [data-theme="dark"] body {
   background:
-    radial-gradient(circle at top left, rgba(61, 149, 176, 0.28), transparent 36%),
-    radial-gradient(circle at top right, rgba(56, 112, 138, 0.22), transparent 32%),
+    url("./assets/backgrounds/frutiger-aero-dark.webp") center / cover fixed,
     linear-gradient(180deg, #0a202b 0%, var(--bg-base) 100%);
 }
 
@@ -97,15 +95,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.26), transparent 48%),
-    linear-gradient(315deg, rgba(142, 214, 232, 0.08), transparent 42%);
-}
-
-[data-theme="dark"] body::before {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 44%),
-    linear-gradient(315deg, rgba(104, 214, 242, 0.08), transparent 42%);
+  background: transparent;
 }
 
 .site-theme-transitioning *,
