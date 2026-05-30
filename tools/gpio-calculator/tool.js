@@ -414,7 +414,10 @@
   function handleDocumentClick(event) {
     const actionButton = event.target.closest("[data-action]");
 
-    if (actionButton && refs.scope.contains(actionButton)) {
+    if (
+      actionButton &&
+      (refs.scope.contains(actionButton) || refs.mobileActionsPanel.contains(actionButton))
+    ) {
       handleAction(actionButton.dataset.action);
     }
   }

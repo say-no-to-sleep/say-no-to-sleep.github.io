@@ -58,7 +58,7 @@
       return;
     }
 
-    refs.tool.querySelectorAll("[data-control]").forEach((input) => {
+    document.querySelectorAll("#am-tool [data-control], #am-controls-drawer [data-control]").forEach((input) => {
       const control = input.dataset.control;
       refs.inputs[control] ||= [];
       refs.outputs[control] ||= [];
