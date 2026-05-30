@@ -5,23 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex | About</title>
   <link rel="stylesheet" href="style.css">
-  <script src="vendor/aqua-neo/aqua2.js" defer></script>
+  <script src="vendor/aqua-neo/aqua-neo.js" defer></script>
   <script src="storage.js" defer></script>
+  <script src="site-transitions.js" defer></script>
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <div class="top-bar">
-        <a class="site-title-link" href="index.html">WatTheHex</a>
-        <nav class="menu-bar" aria-label="Primary">
-          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
-            <a class="aqua-text-button" href="index.html" aria-pressed="false">Home</a>
-            <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
-            <a class="aqua-text-button" href="about.html" aria-pressed="true" aria-current="page">About</a>
-          </div>
-        </nav>
+    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="index.html">
+        <span class="aqua-top-bar-title">WatTheHex</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
+        <a class="aqua-text-button" href="index.html" aria-pressed="false">Home</a>
+        <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
+        <a class="aqua-text-button" href="about.html" aria-pressed="true" aria-current="page">About</a>
+      </nav>
+      <div class="aqua-top-bar-actions">
         <a
-          class="tool-feedback-link"
+          class="graphite-button site-feedback-link"
           href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
           target="_blank"
           rel="noopener noreferrer"
@@ -42,12 +43,6 @@
             <h2 class="about-section-title">Fonts</h2>
             <p class="about-section-copy">The main UI uses Lucida Grande. Code-like numeric readouts use Andale Mono.</p>
             <p class="about-section-copy"><a class="about-link" href="assets/fonts/LucidaGrande-COPYRIGHT.txt">Lucida Grande copyright note</a></p>
-          </section>
-
-          <section class="aqua-container about-block">
-            <h2 class="about-section-title">Aqua2</h2>
-            <p class="about-section-copy">Interactive controls are styled with the Aqua2 library, used here as the base for the Aqua-era visual language.</p>
-            <p class="about-section-copy"><a class="about-link" href="https://thatdhruv.github.io/aqua2/">Aqua2</a></p>
           </section>
         </div>
       </div>

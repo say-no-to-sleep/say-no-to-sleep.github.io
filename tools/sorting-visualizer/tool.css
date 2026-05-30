@@ -6,7 +6,6 @@
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  color-scheme: light;
   --sort-rail-top: clamp(5rem, 9vh, 8.5rem);
   --sort-rail-bottom-gap: 1rem;
 }
@@ -15,7 +14,13 @@
   display: grid;
   gap: 1.25rem;
   color: var(--text);
-  color-scheme: light;
+  --sort-grid-line: rgba(59, 83, 100, 0.18);
+  --sort-axis-line: rgba(59, 83, 100, 0.28);
+}
+
+[data-theme="dark"] .sort-tool {
+  --sort-grid-line: rgba(214, 238, 247, 0.16);
+  --sort-axis-line: rgba(214, 238, 247, 0.28);
 }
 
 .sort-tool.sort-tool-pending {
@@ -45,6 +50,10 @@
   text-transform: uppercase;
 }
 
+[data-theme="dark"] .sort-eyebrow {
+  color: rgba(214, 238, 247, 0.52);
+}
+
 .sort-hero-title {
   margin: 0;
   color: var(--text);
@@ -58,6 +67,7 @@
 .sort-panel-note,
 .sort-subpanel-copy,
 .sort-family-copy,
+.sort-kb-hint,
 .sort-summary-tradeoff {
   margin: 0.42rem 0 0;
   color: var(--text-muted);
@@ -164,6 +174,11 @@
 .sort-field-label,
 .sort-progress-label {
   color: rgba(19, 50, 70, 0.66);
+}
+
+[data-theme="dark"] .sort-field-label,
+[data-theme="dark"] .sort-progress-label {
+  color: rgba(214, 238, 247, 0.52);
 }
 
 .sort-tabview-wrap {
@@ -304,15 +319,27 @@
   text-transform: uppercase;
 }
 
+[data-theme="dark"] .sort-merge-label {
+  fill: rgba(214, 238, 247, 0.58);
+}
+
 .sort-merge-note {
   fill: rgba(19, 50, 70, 0.54);
   font-size: 11px;
+}
+
+[data-theme="dark"] .sort-merge-note {
+  fill: rgba(214, 238, 247, 0.46);
 }
 
 .sort-merge-entry-label {
   fill: #102838;
   font-size: 12px;
   font-weight: 700;
+}
+
+[data-theme="dark"] .sort-merge-entry-label {
+  fill: #eef8fc;
 }
 
 .sort-merge-entry-glow {
@@ -377,6 +404,10 @@
   font-size: 0.72rem;
 }
 
+[data-theme="dark"] .sort-slider-scale {
+  color: rgba(214, 238, 247, 0.34);
+}
+
 .sort-slider-field.is-disabled .sort-slider-output,
 .sort-slider-field.is-disabled .sort-slider-scale {
   opacity: 0.55;
@@ -397,6 +428,11 @@
 .sort-button-grid button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.sort-kb-hint {
+  margin-top: 0.95rem;
+  font-size: 0.72rem;
 }
 
 .sort-progress-block {
@@ -429,6 +465,10 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+[data-theme="dark"] .sort-metric-label {
+  color: rgba(214, 238, 247, 0.46);
 }
 
 .sort-metric-value {
@@ -470,6 +510,10 @@
   color: rgba(19, 50, 70, 0.58);
 }
 
+[data-theme="dark"] .sort-summary-row > span:first-child {
+  color: rgba(214, 238, 247, 0.5);
+}
+
 .sort-summary-row > span:last-child {
   color: var(--text);
   font-weight: 700;
@@ -500,6 +544,10 @@
   font-size: 12px;
 }
 
+[data-theme="dark"] .sort-plot-axis-label {
+  fill: rgba(214, 238, 247, 0.5);
+}
+
 .sort-plot-bar-value,
 .sort-plot-index-label {
   font-family: var(--font-mono);
@@ -525,6 +573,12 @@
   fill: rgba(19, 50, 70, 0.62);
 }
 
+[data-theme="dark"] .sort-radix-pass-note,
+[data-theme="dark"] .sort-radix-lane-label,
+[data-theme="dark"] .sort-radix-bucket-count {
+  fill: rgba(214, 238, 247, 0.52);
+}
+
 .sort-radix-pass-note,
 .sort-radix-bucket-label {
   font-size: 12px;
@@ -542,6 +596,10 @@
   fill: rgba(19, 50, 70, 0.72);
 }
 
+[data-theme="dark"] .sort-radix-bucket-label {
+  fill: rgba(214, 238, 247, 0.62);
+}
+
 .sort-radix-bucket-count {
   font-size: 10px;
 }
@@ -552,17 +610,33 @@
   font-weight: 700;
 }
 
+[data-theme="dark"] .sort-radix-card-label {
+  fill: #eef8fc;
+}
+
 .sort-radix-card-digit-active {
   fill: #102838;
   font-weight: 800;
+}
+
+[data-theme="dark"] .sort-radix-card-digit-active {
+  fill: #eef8fc;
 }
 
 .sort-radix-card-digit-placeholder {
   fill: rgba(16, 40, 56, 0.34);
 }
 
+[data-theme="dark"] .sort-radix-card-digit-placeholder {
+  fill: rgba(238, 248, 252, 0.4);
+}
+
 .sort-radix-card-digit-active.sort-radix-card-digit-placeholder {
   fill: rgba(16, 40, 56, 0.82);
+}
+
+[data-theme="dark"] .sort-radix-card-digit-active.sort-radix-card-digit-placeholder {
+  fill: rgba(238, 248, 252, 0.84);
 }
 
 .sort-radix-card-digit-badge {
@@ -581,9 +655,17 @@
   font-weight: 700;
 }
 
+[data-theme="dark"] .sort-plot-bar-value {
+  fill: #eef8fc;
+}
+
 .sort-plot-index-label {
   fill: rgba(19, 50, 70, 0.56);
   font-size: 11px;
+}
+
+[data-theme="dark"] .sort-plot-index-label {
+  fill: rgba(214, 238, 247, 0.42);
 }
 
 .sort-plot-pointer {
@@ -603,6 +685,10 @@
   fill: rgba(19, 50, 70, 0.68);
   font-size: 12px;
   font-weight: 700;
+}
+
+[data-theme="dark"] .sort-plot-note {
+  fill: rgba(214, 238, 247, 0.58);
 }
 
 .sort-plot-pointer-label {

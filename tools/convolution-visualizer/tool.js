@@ -34,6 +34,13 @@
     output: "#59a06e",
     ghost: "#59a06e"
   };
+  const COLOR_VAR_NAMES = {
+    f: "--conv-color-f",
+    g: "--conv-color-g",
+    product: "--conv-color-product",
+    output: "--conv-color-output",
+    ghost: "--conv-color-ghost"
+  };
 
   const state = {
     fExpr: PRESETS[0].f,
@@ -217,20 +224,36 @@
   }
 
   function renderStaticViews() {
-    refs.fPlot.innerHTML = createSignalPlotMarkup("signal-f", "f(t)", cache.fViewSamples, COLORS.f);
-    refs.gPlot.innerHTML = createSignalPlotMarkup("signal-g", "g(t)", cache.gViewSamples, COLORS.g);
+    const colors = getPlotColors();
+
+    refs.fPlot.innerHTML = createSignalPlotMarkup("signal-f", "f(t)", cache.fViewSamples, colors.f);
+    refs.gPlot.innerHTML = createSignalPlotMarkup("signal-g", "g(t)", cache.gViewSamples, colors.g);
   }
 
   function renderDynamicViews() {
+    const colors = getPlotColors();
     const shiftedSamples = buildShiftedSignal(cache.gSamples, state.cursorT);
     const productSamples = cache.fViewSamples.map((value, index) => value * shiftedSamples[index]);
     const currentIndex = timeToSampleIndex(state.cursorT);
     const currentOutput = cache.convViewSamples[currentIndex] || 0;
 
     syncScrubPresentation();
-    refs.overlapPlot.innerHTML = createOverlapPlotMarkup(shiftedSamples, productSamples);
-    refs.outputPlot.innerHTML = createOutputPlotMarkup(cache.convViewSamples, currentIndex, currentOutput);
+    refs.overlapPlot.innerHTML = createOverlapPlotMarkup(shiftedSamples, productSamples, colors);
+    refs.outputPlot.innerHTML = createOutputPlotMarkup(cache.convViewSamples, currentIndex, currentOutput, colors);
     syncGraphTooltips(currentOutput);
+  }
+
+  function getPlotColors() {
+    if (!refs.tool) {
+      return COLORS;
+    }
+
+    const styles = getComputedStyle(refs.tool);
+
+    return Object.fromEntries(Object.entries(COLOR_VAR_NAMES).map(([key, varName]) => {
+      const value = styles.getPropertyValue(varName).trim();
+      return [key, value || COLORS[key]];
+    }));
   }
 
   function updateSignalCache() {
@@ -403,7 +426,7 @@
     );
   }
 
-  function createOverlapPlotMarkup(shiftedSamples, productSamples) {
+  function createOverlapPlotMarkup(shiftedSamples, productSamples, colors) {
     const bounds = getSeriesBounds([cache.fViewSamples, shiftedSamples, productSamples]);
     const fPath = buildSeriesPath(cache.fViewSamples, bounds);
     const gPath = buildSeriesPath(shiftedSamples, bounds);
@@ -415,14 +438,14 @@
     return createSvgMarkup(
       ids,
       grid.plot +
-      createAreaLayerMarkup(areaPath, COLORS.product, 0.16, "conv-product-fill") +
-      createTraceMarkup(fPath, COLORS.f, ids, {
+      createAreaLayerMarkup(areaPath, colors.product, 0.16, "conv-product-fill") +
+      createTraceMarkup(fPath, colors.f, ids, {
         mainWidth: 2.1,
         glowWidth: 6.2,
         glowOpacity: 0.18,
         mainOpacity: 0.7
       }) +
-      createTraceMarkup(gPath, COLORS.g, ids, {
+      createTraceMarkup(gPath, colors.g, ids, {
         mainWidth: 2.45,
         glowWidth: 7.1,
         glowOpacity: 0.32
@@ -433,7 +456,7 @@
     );
   }
 
-  function createOutputPlotMarkup(samples, currentIndex, currentOutput) {
+  function createOutputPlotMarkup(samples, currentIndex, currentOutput, colors) {
     const bounds = getSeriesBounds([samples]);
     const ghostPath = buildSeriesPath(samples, bounds);
     const tracePath = buildSeriesPath(samples, bounds, currentIndex);
@@ -446,22 +469,22 @@
     return createSvgMarkup(
       ids,
       grid.plot +
-      createAreaLayerMarkup(fillPath, COLORS.output, 0.1, "conv-output-fill") +
-      createTraceMarkup(ghostPath, COLORS.ghost, ids, {
+      createAreaLayerMarkup(fillPath, colors.output, 0.1, "conv-output-fill") +
+      createTraceMarkup(ghostPath, colors.ghost, ids, {
         mainWidth: 2.15,
         glowWidth: 5.6,
         glowOpacity: 0.08,
         mainOpacity: 0.22
       }) +
-      createTraceMarkup(tracePath, COLORS.output, ids, {
+      createTraceMarkup(tracePath, colors.output, ids, {
         mainWidth: 3.35,
         glowWidth: 8.8,
         glowOpacity: 0.36,
         strongGlow: true
       }) +
       `<line class="conv-cursor-line" x1="${cursorX}" y1="${PAD_Y}" x2="${cursorX}" y2="${VIEWBOX_HEIGHT - PAD_Y}" />` +
-      `<circle class="conv-output-dot-halo" cx="${cursorX}" cy="${dotY}" r="10.5" fill="${applyAlpha(COLORS.output, 0.18)}" filter="url(#${ids.softGlow})" />` +
-      `<circle class="conv-output-dot" cx="${cursorX}" cy="${dotY}" r="5.8" fill="${COLORS.output}" />`,
+      `<circle class="conv-output-dot-halo" cx="${cursorX}" cy="${dotY}" r="10.5" fill="${applyAlpha(colors.output, 0.18)}" filter="url(#${ids.softGlow})" />` +
+      `<circle class="conv-output-dot" cx="${cursorX}" cy="${dotY}" r="5.8" fill="${colors.output}" />`,
       grid.labels,
       "Convolution output plot"
     );

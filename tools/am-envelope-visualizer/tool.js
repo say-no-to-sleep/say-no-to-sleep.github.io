@@ -42,8 +42,8 @@
     detectorNote: document.getElementById("am-detector-note"),
     envelopeInlineNote: document.getElementById("am-envelope-inline-note"),
     controlWraps: {
-      m: document.getElementById("am-m-control-wrap"),
-      tau: document.getElementById("am-tau-control-wrap")
+      m: Array.from(document.querySelectorAll("#am-m-control-wrap, #am-m-control-wrap-drawer")),
+      tau: Array.from(document.querySelectorAll("#am-tau-control-wrap, #am-tau-control-wrap-drawer"))
     },
     inputs: {},
     outputs: {},
@@ -60,8 +60,10 @@
 
     refs.tool.querySelectorAll("[data-control]").forEach((input) => {
       const control = input.dataset.control;
-      refs.inputs[control] = input;
-      refs.outputs[control] = document.getElementById(`am-${control}-value`);
+      refs.inputs[control] ||= [];
+      refs.outputs[control] ||= [];
+      refs.inputs[control].push(input);
+      refs.outputs[control].push(...Array.from(document.querySelectorAll(`#am-${control}-value, #am-${control}-value-drawer`)));
       bindSlider(input, control);
     });
 
@@ -70,7 +72,7 @@
     });
 
     Object.keys(refs.inputs).forEach((control) => {
-      state[control] = controlValueFromInternal(control, getSliderIntegerValue(refs.inputs[control]));
+      state[control] = controlValueFromInternal(control, getSliderIntegerValue(refs.inputs[control][0]));
       syncControlPresentation(control);
     });
 
@@ -90,19 +92,22 @@
   }
 
   function syncControlPresentation(control) {
-    const input = refs.inputs[control];
-    const output = refs.outputs[control];
+    const inputs = refs.inputs[control] || [];
+    const outputs = refs.outputs[control] || [];
 
-    if (!input) {
+    if (!inputs.length) {
       return;
     }
 
-    const value = controlValueFromInternal(control, getSliderIntegerValue(input));
-    updateSliderA11y(input, control, value);
+    const value = state[control];
 
-    if (output) {
+    inputs.forEach((input) => {
+      updateSliderA11y(input, control, value);
+    });
+
+    outputs.forEach((output) => {
       output.textContent = formatControlValue(control, value);
-    }
+    });
   }
 
   function formatControlValue(control, value) {
@@ -145,8 +150,13 @@
 
   function bindSlider(slider, control) {
     const syncFromDom = () => {
-      const value = getSliderIntegerValue(slider);
-      state[control] = controlValueFromInternal(control, value);
+      const rawValue = getSliderIntegerValue(slider);
+      state[control] = controlValueFromInternal(control, rawValue);
+      (refs.inputs[control] || []).forEach((input) => {
+        if (input !== slider) {
+          setSliderValue(input, rawValue);
+        }
+      });
       syncControlPresentation(control);
       queueRender();
     };
@@ -313,8 +323,12 @@
       : "Envelope remains above zero.";
     refs.envelopeInlineNote.dataset.tone = signals.overmod ? "bad" : "good";
 
-    refs.controlWraps.m.dataset.warning = String(signals.overmod);
-    refs.controlWraps.tau.dataset.warning = String(!signals.tauOk);
+    refs.controlWraps.m.forEach((wrap) => {
+      wrap.dataset.warning = String(signals.overmod);
+    });
+    refs.controlWraps.tau.forEach((wrap) => {
+      wrap.dataset.warning = String(!signals.tauOk);
+    });
     renderCompactSummary(statusModel);
   }
 
@@ -386,6 +400,7 @@
   function syncCompactSummaryVisibility() {
     refs.compactSummary.classList.toggle("is-visible", state.isCompactSummaryVisible);
     refs.compactSummary.setAttribute("aria-hidden", String(!state.isCompactSummaryVisible));
+    document.body.classList.toggle("am-compact-summary-active", state.isCompactSummaryVisible);
   }
 
   function setCompactSummaryVisible(visible) {

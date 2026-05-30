@@ -17,25 +17,26 @@
     document.documentElement.classList.add("gt-page-pending");
   </script>
   <link rel="stylesheet" href="../../style.css">
-  <link rel="stylesheet" href="tool.css?v=aqua2-refresh-v6">
-  <script src="../../vendor/aqua-neo/aqua2.js?v=aqua2-refresh-v6" defer></script>
+  <link rel="stylesheet" href="tool.css?v=aqua-neo-refresh-v7">
+  <script src="../../vendor/aqua-neo/aqua-neo.js?v=aqua-neo-refresh-v6" defer></script>
   <script src="../../storage.js" defer></script>
-  <script src="tool.js?v=aqua2-refresh-v6" defer></script>
+  <script src="../../site-transitions.js" defer></script>
+  <script src="tool.js?v=aqua-neo-refresh-v7" defer></script>
 </head>
 <body class="gt-page-loading">
   <div class="page-shell tool-page">
-    <header class="site-header">
-      <div class="top-bar">
-        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
-        <nav class="menu-bar" aria-label="Primary">
-          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
-            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
-            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
-            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
-          </div>
-        </nav>
+    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="/" data-local-home>
+        <span class="aqua-top-bar-title">WatTheHex</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
+        <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+        <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
+        <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+      </nav>
+      <div class="aqua-top-bar-actions">
         <a
-          class="tool-feedback-link"
+          class="graphite-button site-feedback-link"
           href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
           target="_blank"
           rel="noopener noreferrer"

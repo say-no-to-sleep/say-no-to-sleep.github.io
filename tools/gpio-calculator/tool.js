@@ -316,10 +316,15 @@
   function syncCompactSummaryVisibility() {
     refs.compactSummary.classList.toggle("is-visible", state.isCompactSummaryVisible);
     refs.compactSummary.setAttribute("aria-hidden", String(!state.isCompactSummaryVisible));
+    document.body.classList.toggle("gpio-compact-summary-active", state.isCompactSummaryVisible);
   }
 
   function closeMobileActionsPanel() {
-    refs.mobileActionsPanel?.querySelector("[data-aqua-floating-panel-dismiss]")?.click();
+    if (!refs.mobileActionsPanel?.classList.contains("aqua-floating-control-panel-open")) {
+      return;
+    }
+
+    refs.mobileActionsPanel.querySelector("[data-aqua-floating-control-panel-toggle], .aqua-floating-control-panel-tab")?.click();
   }
 
   function setCompactSummaryVisible(visible) {
@@ -339,9 +344,7 @@
   }
 
   function getSummaryVisibilityTarget() {
-    const hexValue = refs.valueStack?.querySelector(".gpio-value-code[data-kind='hex']");
-
-    return hexValue?.closest(".gpio-value-row") || refs.summaryPanel;
+    return refs.summaryPanel;
   }
 
   function syncSummaryObserverTarget() {

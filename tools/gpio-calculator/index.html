@@ -5,25 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex | GPIO Bitmask Builder</title>
   <link rel="stylesheet" href="../../style.css">
-  <link rel="stylesheet" href="tool.css">
-  <script src="../../vendor/aqua-neo/aqua2.js" defer></script>
+  <link rel="stylesheet" href="tool.css?v=aqua-neo-refresh-v1">
+  <script src="../../vendor/aqua-neo/aqua-neo.js?v=aqua-neo-refresh-v1" defer></script>
   <script src="../../storage.js" defer></script>
-  <script src="tool.js" defer></script>
+  <script src="../../site-transitions.js" defer></script>
+  <script src="tool.js?v=aqua-neo-refresh-v1" defer></script>
 </head>
 <body>
   <div class="page-shell tool-page">
-    <header class="site-header">
-      <div class="top-bar">
-        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
-        <nav class="menu-bar" aria-label="Primary">
-          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
-            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
-            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
-            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
-          </div>
-        </nav>
+    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="/" data-local-home>
+        <span class="aqua-top-bar-title">WatTheHex</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
+        <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+        <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true" aria-current="page">Tools</a>
+        <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+      </nav>
+      <div class="aqua-top-bar-actions">
         <a
-          class="tool-feedback-link"
+          class="graphite-button site-feedback-link"
           href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
           target="_blank"
           rel="noopener noreferrer"
@@ -102,37 +103,28 @@
             <div id="gpio-compact-values" class="gpio-compact-values" aria-live="polite"></div>
             <div class="gpio-compact-actions">
               <button type="button" class="aqua-button aqua-button-focused gpio-copy-button" data-action="copy-hex">Copy</button>
-              <button
-                type="button"
-                class="aqua-button gpio-compact-menu-button"
-                data-aqua-floating-panel-toggle="gpio-mobile-actions-panel"
-                aria-controls="gpio-mobile-actions-panel"
-                aria-pressed="false"
-                aria-expanded="false"
-              >Actions</button>
             </div>
           </div>
         </div>
       </div>
 
-      <div
+      <aside
         id="gpio-mobile-actions-panel"
-        class="aqua-floating-panel gpio-mobile-actions-panel"
-        role="complementary"
+        class="aqua-floating-control-panel gpio-mobile-actions-panel"
+        data-side="right"
         aria-label="Quick Actions"
-        aria-hidden="true"
-        inert
-        data-anchor="top-right"
       >
-        <div class="aqua-container">
-          <p class="aqua-floating-panel-title" id="gpio-mobile-actions-heading">Quick Actions</p>
-          <p class="aqua-floating-panel-body gpio-panel-note">Apply grouped bit operations in one step.</p>
-          <div id="gpio-mobile-actions-grid" class="gpio-actions-grid"></div>
-          <div class="aqua-floating-panel-actions">
-            <button type="button" class="graphite-button" data-aqua-floating-panel-dismiss>Close</button>
-          </div>
+        <button type="button" class="aqua-floating-control-panel-tab" data-aqua-floating-control-panel-toggle aria-label="Expand quick actions"></button>
+        <div class="aqua-floating-control-panel-surface">
+          <section class="gpio-actions-panel gpio-actions-panel-drawer" aria-labelledby="gpio-mobile-actions-heading">
+            <div class="gpio-panel-header">
+              <h2 id="gpio-mobile-actions-heading" class="gpio-panel-title">Quick Actions</h2>
+              <p class="gpio-panel-note">Apply grouped bit operations in one step.</p>
+            </div>
+            <div id="gpio-mobile-actions-grid" class="gpio-actions-grid gpio-actions-grid-drawer"></div>
+          </section>
         </div>
-      </div>
+      </aside>
 
       <div id="gpio-toast" class="gpio-toast aqua-container" role="status" aria-live="polite" aria-atomic="true" hidden></div>
     </main>

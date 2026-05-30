@@ -7,28 +7,29 @@
   <title>WatTheHex | AM Envelope Visualizer</title>
   <link rel="stylesheet" href="../../style.css">
   <link rel="stylesheet" href="../../assets/vendor/katex/dist/katex.min.css">
-  <link class="cache-buster-css" rel="stylesheet" href="tool.css?v=aqua2-refresh-v4">
-  <script src="../../vendor/aqua-neo/aqua2.js?v=aqua2-refresh-v4" defer></script>
+  <link class="cache-buster-css" rel="stylesheet" href="tool.css?v=aqua-neo-refresh-v7">
+  <script src="../../vendor/aqua-neo/aqua-neo.js?v=aqua-neo-refresh-v4" defer></script>
   <script src="../../storage.js" defer></script>
+  <script src="../../site-transitions.js" defer></script>
   <script src="../../assets/vendor/katex/dist/katex.min.js" defer></script>
   <script src="../../assets/render-katex.js" defer></script>
-  <script src="tool.js?v=aqua2-refresh-v4" defer></script>
+  <script src="tool.js?v=aqua-neo-refresh-v7" defer></script>
 </head>
 
 <body>
   <div class="page-shell tool-page">
-    <header class="site-header">
-      <div class="top-bar">
-        <a class="site-title-link" href="/" data-local-home>WatTheHex</a>
-        <nav class="menu-bar" aria-label="Primary">
-          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
-            <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
-            <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true"
-              aria-current="page">Tools</a>
-            <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
-          </div>
-        </nav>
-        <a class="tool-feedback-link"
+    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="/" data-local-home>
+        <span class="aqua-top-bar-title">WatTheHex</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
+        <a class="aqua-text-button" href="/" data-local-home aria-pressed="false">Home</a>
+        <a class="aqua-text-button" href="/tools.html" data-local-tools aria-pressed="true"
+          aria-current="page">Tools</a>
+        <a class="aqua-text-button" href="/about.html" data-local-about aria-pressed="false">About</a>
+      </nav>
+      <div class="aqua-top-bar-actions">
+        <a class="graphite-button site-feedback-link"
           href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
           target="_blank" rel="noopener noreferrer">Feedback</a>
       </div>
@@ -259,6 +260,91 @@
             </section>
           </aside>
         </div>
+
+        <aside class="aqua-floating-control-panel am-floating-control-panel" id="am-controls-drawer" data-side="right"
+          aria-label="AM envelope controls">
+          <button type="button" class="aqua-floating-control-panel-tab" data-aqua-floating-control-panel-toggle
+            aria-label="Expand controls"></button>
+          <div class="aqua-floating-control-panel-surface">
+            <section class="am-controls-panel am-controls-panel-drawer" aria-labelledby="am-controls-heading-drawer">
+              <div class="am-panel-header">
+                <div>
+                  <p class="am-eyebrow">Controls</p>
+                  <h2 id="am-controls-heading-drawer" class="am-section-title">Tune the Signal</h2>
+                </div>
+              </div>
+
+              <div class="am-control-list">
+                <label class="am-control" for="am-fm-control-drawer" style="--am-control-color: #7a5cc4;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Message Frequency fm</span>
+                    <output class="am-control-value" id="am-fm-value-drawer" for="am-fm-control-drawer">3.0 Hz</output>
+                  </span>
+                  <div class="aqua-slider am-slider" id="am-fm-control-drawer" data-control="fm" data-min="2"
+                    data-max="20" data-value="6" tabindex="0" role="slider" aria-label="Message Frequency fm"
+                    aria-valuemin="1" aria-valuemax="10" aria-valuenow="3.0">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="am-control-scale"><span>1 Hz</span><span>10 Hz</span></span>
+                </label>
+
+                <label class="am-control" for="am-fc-control-drawer" style="--am-control-color: #d48a2c;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Carrier Frequency fc</span>
+                    <output class="am-control-value" id="am-fc-value-drawer" for="am-fc-control-drawer">40 Hz</output>
+                  </span>
+                  <div class="aqua-slider am-slider" id="am-fc-control-drawer" data-control="fc" data-min="2"
+                    data-max="20" data-value="8" tabindex="0" role="slider" aria-label="Carrier Frequency fc"
+                    aria-valuemin="10" aria-valuemax="100" aria-valuenow="40">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="am-control-scale"><span>10 Hz</span><span>100 Hz</span></span>
+                </label>
+
+                <label class="am-control" id="am-m-control-wrap-drawer" for="am-m-control-drawer"
+                  style="--am-control-color: #4aa3c8;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Modulation Index m</span>
+                    <output class="am-control-value" id="am-m-value-drawer" for="am-m-control-drawer">0.70</output>
+                  </span>
+                  <div class="aqua-slider am-slider" id="am-m-control-drawer" data-control="m" data-min="0"
+                    data-max="30" data-value="14" tabindex="0" role="slider" aria-label="Modulation Index m"
+                    aria-valuemin="0" aria-valuemax="1.5" aria-valuenow="0.70">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="am-control-scale"><span>0.00</span><span>1.50</span></span>
+                </label>
+
+                <label class="am-control" id="am-tau-control-wrap-drawer" for="am-tau-control-drawer"
+                  style="--am-control-color: #5aa56f;">
+                  <span class="am-control-row">
+                    <span class="am-control-label">Detector Time Constant tau</span>
+                    <output class="am-control-value" id="am-tau-value-drawer" for="am-tau-control-drawer">0.080 s</output>
+                  </span>
+                  <div class="aqua-slider am-slider" id="am-tau-control-drawer" data-control="tau" data-min="1"
+                    data-max="100" data-value="16" tabindex="0" role="slider"
+                    aria-label="Detector Time Constant tau" aria-valuemin="0.005" aria-valuemax="0.5"
+                    aria-valuenow="0.080">
+                    <div class="aqua-slider-track">
+                      <div class="aqua-slider-fill"></div>
+                      <div class="aqua-slider-thumb"></div>
+                    </div>
+                  </div>
+                  <span class="am-control-scale"><span>0.005 s</span><span>0.500 s</span></span>
+                </label>
+              </div>
+            </section>
+          </div>
+        </aside>
       </div>
 
       <div id="am-compact-summary" class="am-compact-summary" aria-hidden="true"></div>

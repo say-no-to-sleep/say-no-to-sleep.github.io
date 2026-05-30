@@ -307,6 +307,7 @@
       controlSet.resetButton.addEventListener("click", resetRun);
       controlSet.shuffleButton.addEventListener("click", shuffleRun);
     });
+    bindKeyboardShortcuts();
 
     state.runSeed = nextSeed();
     state.baseArray = buildBaseArray(state.size, state.preset, state.runSeed, state.algorithm);
@@ -368,6 +369,45 @@
 
   function isCompleteControlSet(controlSet) {
     return Object.values(controlSet).every(Boolean);
+  }
+
+  function isInteractiveFocusTarget(target) {
+    return Boolean(
+      target &&
+      refs.tool.contains(target) &&
+      target.closest("input, textarea, select, [contenteditable='true'], .aqua-select, .sort-slider, .aqua-tabview-tab")
+    );
+  }
+
+  function bindKeyboardShortcuts() {
+    document.addEventListener("keydown", (event) => {
+      if (isInteractiveFocusTarget(document.activeElement)) {
+        return;
+      }
+
+      if (event.key === "ArrowRight" || event.key === "l") {
+        event.preventDefault();
+        stepForward();
+        return;
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "h") {
+        event.preventDefault();
+        stepBackward();
+        return;
+      }
+
+      if (event.key === " ") {
+        event.preventDefault();
+        togglePlayback();
+        return;
+      }
+
+      if (event.key === "r" || event.key === "R") {
+        event.preventDefault();
+        resetRun();
+      }
+    });
   }
 
   function syncReducedMotionPreference() {
@@ -1117,6 +1157,8 @@
     const fromState = getStepStateSets(fromStep);
     const toState = getStepStateSets(toStep);
     const maxValue = Math.max(...toStep.array, 1);
+    const lineColor = getToolCssValue("--sort-grid-line", COLORS.line);
+    const axisColor = getToolCssValue("--sort-axis-line", COLORS.axis);
     const canAnimateByValue = canAnimateByValueIdentity(fromStep.array, toStep.array);
     const useInsertionOverlay = state.algorithm === "insertion" && (hasInsertionHold(fromStep) || hasInsertionHold(toStep));
 
@@ -1144,8 +1186,8 @@
     refs.plot.dataset.animating = String(Boolean(transition?.active));
     refs.plot.innerHTML = `
       <svg viewBox="0 0 ${geometry.width} ${geometry.height}" role="img" aria-label="${escapeHtml(ALGORITHM_META[state.algorithm].name)} visualization">
-        ${createGridMarkup(geometry)}
-        <line x1="${geometry.padLeft}" y1="${geometry.padTop + geometry.plotHeight}" x2="${geometry.width - geometry.padRight}" y2="${geometry.padTop + geometry.plotHeight}" stroke="${COLORS.axis}" stroke-width="1.2" />
+        ${createGridMarkup(geometry, lineColor)}
+        <line x1="${geometry.padLeft}" y1="${geometry.padTop + geometry.plotHeight}" x2="${geometry.width - geometry.padRight}" y2="${geometry.padTop + geometry.plotHeight}" stroke="${axisColor}" stroke-width="1.2" />
         ${createMergeMarkup(fromStep, toStep, geometry, motionProgress, pulse)}
         ${[
           createAnimatedPointerMarkup(fromStep.pivot, toStep.pivot, "pivot", 18, COLORS.pivot, geometry, motionProgress, pulse),
@@ -2122,11 +2164,19 @@
     return hasInsertionHold(step) && step.insertionHoleIndex === index;
   }
 
-  function createGridMarkup(geometry) {
+  function createGridMarkup(geometry, color = COLORS.line) {
     return [0.25, 0.5, 0.75, 1].map((ratio) => {
       const y = geometry.padTop + geometry.plotHeight - geometry.plotHeight * ratio;
-      return `<line x1="${geometry.padLeft}" y1="${y}" x2="${geometry.width - geometry.padRight}" y2="${y}" stroke="${COLORS.line}" stroke-width="1" />`;
+      return `<line x1="${geometry.padLeft}" y1="${y}" x2="${geometry.width - geometry.padRight}" y2="${y}" stroke="${color}" stroke-width="1" />`;
     }).join("");
+  }
+
+  function getToolCssValue(name, fallback) {
+    if (!refs.tool) {
+      return fallback;
+    }
+
+    return getComputedStyle(refs.tool).getPropertyValue(name).trim() || fallback;
   }
 
   function createMergeMarkup(fromStep, toStep, geometry, progress, pulse) {

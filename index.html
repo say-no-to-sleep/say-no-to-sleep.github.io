@@ -5,25 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatTheHex</title>
   <link rel="stylesheet" href="style.css">
-  <script src="vendor/aqua-neo/aqua2.js" defer></script>
+  <script src="vendor/aqua-neo/aqua-neo.js" defer></script>
   <script src="storage.js" defer></script>
   <script src="tools.js" defer></script>
   <script src="main.js" defer></script>
+  <script src="site-transitions.js" defer></script>
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <div class="top-bar">
-        <h1 class="site-title">WatTheHex</h1>
-        <nav class="menu-bar" aria-label="Primary">
-          <div class="aqua-text-button-group" role="group" aria-label="Site sections">
-            <a class="aqua-text-button" href="index.html" aria-pressed="true" aria-current="page">Home</a>
-            <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
-            <a class="aqua-text-button" href="about.html" aria-pressed="false">About</a>
-          </div>
-        </nav>
+    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
+      <div class="aqua-top-bar-brand">
+        <h1 class="aqua-top-bar-title site-title">WatTheHex</h1>
+      </div>
+      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
+        <a class="aqua-text-button" href="index.html" aria-pressed="true" aria-current="page">Home</a>
+        <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
+        <a class="aqua-text-button" href="about.html" aria-pressed="false">About</a>
+      </nav>
+      <div class="aqua-top-bar-actions">
         <a
-          class="tool-feedback-link"
+          class="graphite-button site-feedback-link"
           href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
           target="_blank"
           rel="noopener noreferrer"

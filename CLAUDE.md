@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-WatTheHex is a static educational web tool library for Waterloo ECE students. It is pure HTML, CSS, and vanilla JavaScript — no framework, no build step, no bundler, no package manager, no test harness. Three names coexist deliberately and should not be casually normalized:
+WatTheHex is a static educational web tool library for Waterloo ECE students. It is pure HTML, CSS, and vanilla JavaScript — no framework, no build step, no bundler, no package manager, no test harness. The project name is used consistently as:
 
-- `WhatTheHex` — the local folder name
-- `WatTheHex` — the product/UI name, global namespace, storage keys
+- `WatTheHex` — the product/UI name and global namespace
+- `watthehex` — lowercase storage keys
 - `say-no-to-sleep.github.io` — the Git remote name
 
 ## Running Locally
@@ -29,7 +29,7 @@ Then open `http://localhost:8000`. The site also works by opening `index.html` d
 
 The repo uses `<script defer>` tags and global variables — no ES modules, no imports/exports. Script order matters:
 
-- `vendor/aqua-neo/aqua2.js` — Aqua-style UI from [aqua-neo](https://github.com/say-no-to-sleep/aqua-neo) (git submodule); injects control CSS and attaches behavior to `.aqua-*` markup
+- `vendor/aqua-neo/aqua-neo.js` — Aqua-style UI from [aqua-neo](https://github.com/say-no-to-sleep/aqua-neo) (git submodule); injects control CSS and attaches behavior to `.aqua-*` markup
 - `storage.js` — IndexedDB wrapper at `window.WatTheHex.storage`; also applies `overflow-x: clip` as a side effect
 - `tools.js` — tool registry at `window.WatTheHex.tools`
 - `main.js` — populates `#home-highlights` on `index.html` and `#filters`/`#tool-grid` on `tools.html`
@@ -50,7 +50,7 @@ tools/<tool-name>/
 
 Tool pages load shared assets in this order:
 1. `../../style.css`
-2. `../../vendor/aqua-neo/aqua2.js`
+2. `../../vendor/aqua-neo/aqua-neo.js`
 3. `../../storage.js`
 4. Optional: KaTeX CSS + JS + `../../assets/render-katex.js`
 5. Optional: local `tool.css`

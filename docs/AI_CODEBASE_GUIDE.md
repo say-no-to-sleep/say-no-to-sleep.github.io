@@ -8,7 +8,6 @@ This document is the fastest way for an engineer or AI agent to catch up on this
 
 Three names are currently in use:
 
-- `WhatTheHex`: the local repository folder name.
 - `WatTheHex`: the product/site branding used in HTML titles, visible UI text, and the global namespace.
 - `say-no-to-sleep.github.io`: the Git remote and the current minimal `README.md` heading, reflecting older repo history rather than the current product name.
 
@@ -20,7 +19,7 @@ High-level mental model:
 - There is no framework, no build step, no bundler, no package manager, no transpiler, and no automated test harness in the repo.
 - Pages load shared global scripts with `<script ... defer>` and then optional page/tool-specific scripts.
 - Tool pages are mostly self-contained mini-apps inside `tools/<tool-name>/`.
-- Shared visual language comes from `style.css` plus `vendor/aqua-neo/aqua2.js` ([aqua-neo](https://github.com/say-no-to-sleep/aqua-neo) git submodule).
+- Shared visual language comes from `style.css` plus `vendor/aqua-neo/aqua-neo.js` ([aqua-neo](https://github.com/say-no-to-sleep/aqua-neo) git submodule).
 
 ## Runtime Model
 
@@ -28,7 +27,7 @@ High-level mental model:
 
 - Plain static HTML pages at the repo root and under `tools/`.
 - Shared scripts loaded directly by script tag:
-  - `vendor/aqua-neo/aqua2.js`
+  - `vendor/aqua-neo/aqua-neo.js`
   - `storage.js`
   - `tools.js`
   - `main.js`
@@ -74,7 +73,7 @@ As of 2026-04-06, the repo does not contain:
 | `tools.html` | Tool directory page with filter UI. |
 | `about.html` | Static about page describing fonts and Aqua2. |
 | `style.css` | Shared site stylesheet. Defines fonts, tokens, page shell, shared panels, home/tools/about styles, shared tool page shell, and autograder styles. |
-| `vendor/aqua-neo/aqua2.js` | Large shared Aqua-style UI foundation (submodule). Injects control CSS and attaches behavior for tabs, selects, sliders, progress bars, and scrollbars. |
+| `vendor/aqua-neo/aqua-neo.js` | Large shared Aqua-style UI foundation (submodule). Injects control CSS and attaches behavior for tabs, selects, sliders, progress bars, and scrollbars. |
 | `storage.js` | Shared IndexedDB wrapper exposed as `window.WatTheHex.storage`. Also reapplies viewport `overflow-x: clip`, so it has visual side effects in addition to storage. |
 | `tools.js` | Registry of tool metadata used across the site. |
 | `main.js` | Shared behavior for the home page and tools page. Builds filters, tool cards, and home highlights from `window.WatTheHex.tools`. |
@@ -100,7 +99,7 @@ As of 2026-04-06, the repo does not contain:
 
 ### `index.html`
 
-- Loads `style.css`, `vendor/aqua-neo/aqua2.js`, `storage.js`, `tools.js`, and `main.js`.
+- Loads `style.css`, `vendor/aqua-neo/aqua-neo.js`, `storage.js`, `tools.js`, and `main.js`.
 - Uses the shared top navigation shell.
 - Contains the `#home-highlights` mount point.
 - `main.js` fills the "Newly Added" section using the newest four entries from `window.WatTheHex.tools`, sorted by `date` descending.
@@ -113,7 +112,7 @@ As of 2026-04-06, the repo does not contain:
 
 ### `about.html`
 
-- Loads `style.css`, `vendor/aqua-neo/aqua2.js`, and `storage.js`.
+- Loads `style.css`, `vendor/aqua-neo/aqua-neo.js`, and `storage.js`.
 - Does not load `tools.js` or `main.js`.
 - Purely content-oriented. Safe place to add static explanatory copy, but not used for tool discovery or application state.
 
@@ -191,9 +190,9 @@ Practical rule: if you need lightweight persistence, prefer this wrapper over in
 
 Do not refactor `main.js` into a page-specific script unless you are also restructuring page loading. The current contract is "one shared script, multiple optional mount points."
 
-### Aqua UI contract: `vendor/aqua-neo/aqua2.js`
+### Aqua UI contract: `vendor/aqua-neo/aqua-neo.js`
 
-`vendor/aqua-neo/aqua2.js` is the shared control system for:
+`vendor/aqua-neo/aqua-neo.js` is the shared control system for:
 
 - buttons
 - radios
@@ -215,8 +214,8 @@ What this means for future changes:
 
 - Use existing Aqua class structures instead of inventing a parallel control system for routine controls.
 - Tool-local CSS is expected to restyle or scope Aqua controls, not replace them wholesale.
-- Only edit `vendor/aqua-neo/aqua2.js` when the change is truly cross-site or control-system-level.
-- If you change `vendor/aqua-neo/aqua2.js`, retest every page that uses Aqua tabs, selects, sliders, or progress bars.
+- Only edit `vendor/aqua-neo/aqua-neo.js` when the change is truly cross-site or control-system-level.
+- If you change `vendor/aqua-neo/aqua-neo.js`, retest every page that uses Aqua tabs, selects, sliders, or progress bars.
 
 ### KaTeX contract
 
@@ -255,7 +254,7 @@ Common expectations for `index.html`:
 Shared asset pattern for most tools:
 
 - `../../style.css`
-- `../../vendor/aqua-neo/aqua2.js`
+- `../../vendor/aqua-neo/aqua-neo.js`
 - `../../storage.js`
 - optional KaTeX assets
 - optional local `tool.css`
@@ -561,7 +560,7 @@ Practical rule:
 4. Keep the shared header, breadcrumb, intro, footer, and `file://` fallback script unless there is a deliberate site-wide redesign.
 5. Load shared assets in the usual order:
    - `../../style.css`
-   - `../../vendor/aqua-neo/aqua2.js`
+   - `../../vendor/aqua-neo/aqua-neo.js`
    - `../../storage.js`
    - optional third-party assets
    - optional local CSS
@@ -584,7 +583,6 @@ Practical rule:
 
 These are real and should be understood before refactoring:
 
-- Repository folder name: `WhatTheHex`
 - Product/UI/global name: `WatTheHex`
 - Remote/README history: `say-no-to-sleep.github.io`
 - IndexedDB and localStorage keys use lowercase `watthehex`
@@ -618,7 +616,7 @@ Read in this order:
 2. `tools/<tool-name>/tool.js` if it exists
 3. `tools/<tool-name>/tool.css` if it exists
 4. `style.css`
-5. `vendor/aqua-neo/aqua2.js` only if you need to understand or change shared control behavior
+5. `vendor/aqua-neo/aqua-neo.js` only if you need to understand or change shared control behavior
 
 ### For autograder work
 
@@ -633,7 +631,7 @@ Read in this order:
 
 - `assets/vendor/katex/`: vendored third-party code
 - `assets/fonts/`: binary assets
-- `vendor/aqua-neo/aqua2.js`: shared control system with cross-site blast radius
+- `vendor/aqua-neo/aqua-neo.js`: shared control system with cross-site blast radius
 - shared tokens/layout in `style.css`: small changes can affect every page
 - data shape in autograder dataset files: `tool.js` assumes the current contract
 - tool registry keys in `tools.js`: `main.js` depends on them directly
@@ -666,7 +664,7 @@ Update this file when any of the following changes:
 - `tools.js` metadata shape changes
 - shared globals under `window.WatTheHex` change
 - `storage.js` API changes
-- `vendor/aqua-neo/aqua2.js` markup/behavior contracts change
+- `vendor/aqua-neo/aqua-neo.js` markup/behavior contracts change
 - the repo adopts a build step, framework, package manager, or automated tests
 - the naming mismatch is intentionally normalized
 

@@ -13,6 +13,19 @@
 .conv-tool {
   display: grid;
   gap: 1.25rem;
+  --conv-color-f: #3f9ac2;
+  --conv-color-g: #8c72cf;
+  --conv-color-product: #c79227;
+  --conv-color-output: #59a06e;
+  --conv-color-ghost: #59a06e;
+}
+
+[data-theme="dark"] .conv-tool {
+  --conv-color-f: #5bc8f0;
+  --conv-color-g: #b08cff;
+  --conv-color-product: #f0c14a;
+  --conv-color-output: #78e093;
+  --conv-color-ghost: #78e093;
 }
 
 .conv-hero {
@@ -26,6 +39,12 @@
   --aqua-color: #8c6812;
   --aqua-background: rgba(245, 190, 50, 0.08);
   --aqua-border: rgba(245, 190, 50, 0.2);
+}
+
+[data-theme="dark"] .conv-hero {
+  --aqua-color: #f0c14a;
+  --aqua-background: rgba(240, 193, 74, 0.1);
+  --aqua-border: rgba(240, 193, 74, 0.28);
 }
 
 .conv-hero-copy {
@@ -42,6 +61,10 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+[data-theme="dark"] .conv-eyebrow {
+  color: rgba(214, 238, 247, 0.52);
 }
 
 .conv-hero-title {
@@ -270,24 +293,30 @@
     0 0 8px rgba(38, 79, 108, 0.12);
 }
 
+[data-theme="dark"] .conv-legend-dot {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.44),
+    0 0 10px rgba(196, 230, 242, 0.14);
+}
+
 .conv-legend-dot-f {
-  background: #3f9ac2;
+  background: var(--conv-color-f);
 }
 
 .conv-legend-dot-g {
-  background: #8c72cf;
+  background: var(--conv-color-g);
 }
 
 .conv-legend-dot-product {
-  background: #c79227;
+  background: var(--conv-color-product);
 }
 
 .conv-legend-dot-output {
-  background: #59a06e;
+  background: var(--conv-color-output);
 }
 
 .conv-legend-dot-ghost {
-  background: rgba(89, 160, 110, 0.28);
+  background: color-mix(in srgb, var(--conv-color-ghost) 28%, transparent);
 }
 
 .conv-stage-footnote {
@@ -310,6 +339,10 @@
 .conv-control-group {
   display: grid;
   gap: 0.8rem;
+}
+
+.conv-control-group[aria-labelledby^="conv-presets-heading"] {
+  margin-bottom: 0.85rem;
 }
 
 .conv-control-group-header {
@@ -357,6 +390,11 @@
   --aqua-border: rgba(160, 71, 53, 0.42);
 }
 
+[data-theme="dark"] .conv-expression-wrap[data-error="true"] {
+  --aqua-color: #ff8a74;
+  --aqua-border: rgba(255, 138, 116, 0.36);
+}
+
 .conv-expression-input {
   font-family: var(--font-mono);
 }
@@ -365,6 +403,10 @@
   color: #a04735;
   font-size: 0.74rem;
   line-height: 1.45;
+}
+
+[data-theme="dark"] .conv-input-error {
+  color: #ff907c;
 }
 
 .conv-scrub-field {
