@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatic Resistor Sorter | Jinyuan Zhao</title>
+  <link rel="stylesheet" href="../../style.css?v=portfolio-pages-2">
+  <script src="../../vendor/aqua-neo/aqua-neo.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="../../site-transitions.js" defer></script>
+</head>
+<body>
+  <div class="page-shell portfolio-shell">
+    <header class="site-header aqua-top-bar portfolio-header" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="../index.html">
+        <span class="aqua-top-bar-title">Jinyuan Zhao</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group portfolio-top-links" aria-label="Portfolio sections">
+        <a class="aqua-text-button" href="../index.html" aria-pressed="false">About</a>
+        <a class="aqua-text-button" href="../projects.html" aria-pressed="true" aria-current="page">Projects</a>
+        <a class="aqua-text-button" href="../experience.html" aria-pressed="false">Experience</a>
+        <a class="aqua-text-button" href="../contact.html" aria-pressed="false">Contact</a>
+      </nav>
+    </header>
+
+    <main class="portfolio-page-main portfolio-subpage-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a class="breadcrumb-link" href="../projects.html">Projects</a>
+        <span class="breadcrumb-separator">/</span>
+        <span>Automatic Resistor Sorter</span>
+      </nav>
+
+      <article class="aqua-container portfolio-detail-card portfolio-longform">
+        <div class="portfolio-card-header">
+          <p class="portfolio-card-kicker">Apr 2024 - Jun 2024 / Python, OpenCV, Scikit-learn, Roboflow, Raspberry Pi</p>
+          <h1 class="portfolio-large-heading">Automatic Resistor Sorter</h1>
+          <p class="portfolio-card-copy">A Grade 12 Computer Engineering robotics project for identifying resistors on a custom conveyor, reading color bands, calculating values, and sorting parts.</p>
+        </div>
+
+        <section>
+          <h2 class="portfolio-section-title">Role</h2>
+          <p>My primary responsibilities were the computer vision software, machine learning model development for color-band identification, and the overall system integration logic. My teammates handled the mechanical design/fabrication and electromechanical actuation.</p>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Vision and ML Approach</h2>
+          <p>The hardest part was reliable resistor color detection. I started with traditional OpenCV and Haar Cascade experiments, including HSV masks, sliders, flood fill, and segmented debug windows. Those methods were too sensitive to lighting and reflective resistor bands.</p>
+          <p>I eventually pivoted to a machine-learning based approach: Roboflow for resistor localization, followed by custom preprocessing and a Scikit-learn KNN classifier for color-band classification. The KNN model performed far better than the earlier rule-based attempts on the image sources used in the project.</p>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Integrated Workflow</h2>
+          <ol class="portfolio-bullet-list">
+            <li>A button press triggered PiCamera2 image capture.</li>
+            <li>The captured image was sent through object detection for resistor localization.</li>
+            <li>The detected resistor region was cropped and preprocessed.</li>
+            <li>Individual color bands were segmented and classified with the KNN model.</li>
+            <li>The resistor value was calculated and displayed as an overlay.</li>
+            <li>GPIO output controlled servo/solenoid hardware for sorting.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Outcomes</h2>
+          <ul class="portfolio-bullet-list">
+            <li>Hands-on OpenCV experience for image preprocessing, masking, cropping, and debugging.</li>
+            <li>Practical Scikit-learn experience on a real, messy classification problem.</li>
+            <li>Hardware integration experience with Raspberry Pi camera capture and GPIO control.</li>
+            <li>A clearer understanding of when rule-based vision becomes too brittle and ML is worth the pivot.</li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

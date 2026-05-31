@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRC Robotics | Jinyuan Zhao</title>
+  <link rel="stylesheet" href="../../style.css?v=portfolio-pages-2">
+  <script src="../../vendor/aqua-neo/aqua-neo.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="../../site-transitions.js" defer></script>
+</head>
+<body>
+  <div class="page-shell portfolio-shell">
+    <header class="site-header aqua-top-bar portfolio-header" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="../index.html">
+        <span class="aqua-top-bar-title">Jinyuan Zhao</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group portfolio-top-links" aria-label="Portfolio sections">
+        <a class="aqua-text-button" href="../index.html" aria-pressed="false">About</a>
+        <a class="aqua-text-button" href="../projects.html" aria-pressed="false">Projects</a>
+        <a class="aqua-text-button" href="../experience.html" aria-pressed="true" aria-current="page">Experience</a>
+        <a class="aqua-text-button" href="../contact.html" aria-pressed="false">Contact</a>
+      </nav>
+    </header>
+
+    <main class="portfolio-page-main portfolio-subpage-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a class="breadcrumb-link" href="../experience.html">Experience</a>
+        <span class="breadcrumb-separator">/</span>
+        <span>FRC Robotics</span>
+      </nav>
+
+      <article class="aqua-container portfolio-detail-card portfolio-longform">
+        <div class="portfolio-card-header">
+          <p class="portfolio-card-kicker">Sep 2022 - Jun 2024 / Oakville, ON</p>
+          <h1 class="portfolio-large-heading">FRC Robotics Team Lead Programmer and Vision Specialist</h1>
+          <p class="portfolio-card-copy">Vision-system work for the 2024 CRESCENDO season, where the robot needed to detect and target orange Note game pieces.</p>
+        </div>
+
+        <section>
+          <h2 class="portfolio-section-title">Vision System</h2>
+          <p>I led the initiative to bring machine vision back into the team workflow. The system used an Orange Pi as the processing unit and PhotonVision for game-piece detection.</p>
+          <ul class="portfolio-bullet-list">
+            <li>Installed and configured a PhotonVision fork with Rockchip/RKNN support for Orange Pi hardware.</li>
+            <li>Used a pretrained YOLO model inside PhotonVision to detect CRESCENDO Notes in real time.</li>
+            <li>Output target information from the vision stack to the Java robot code.</li>
+            <li>Provided the vision module used by the drive-code lead for driver-assisted pickup integration.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Problem Solving</h2>
+          <p>The main challenge was software compatibility. I spent time navigating PhotonVision versions, Orange Pi support, Chief Delphi resources, and GitHub forks until I found a setup that worked with the hardware available to the team.</p>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Mentorship</h2>
+          <p>Before graduating, I mentored five Grade 10 students on Linux basics, Orange Pi setup, PhotonVision installation, and connecting vision output to Java robot code. The next year, some of those students were able to build more advanced camera-based systems, including odometry work.</p>
+        </section>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

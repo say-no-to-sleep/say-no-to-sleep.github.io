@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EON Media Co-op | Jinyuan Zhao</title>
+  <link rel="stylesheet" href="../../style.css?v=portfolio-pages-2">
+  <script src="../../vendor/aqua-neo/aqua-neo.js" defer></script>
+  <script src="../../storage.js" defer></script>
+  <script src="../../site-transitions.js" defer></script>
+</head>
+<body>
+  <div class="page-shell portfolio-shell">
+    <header class="site-header aqua-top-bar portfolio-header" data-top-bar-sticky data-top-bar-auto-hide>
+      <a class="aqua-top-bar-brand site-title-link" href="../index.html">
+        <span class="aqua-top-bar-title">Jinyuan Zhao</span>
+      </a>
+      <nav class="aqua-top-bar-menu aqua-text-button-group portfolio-top-links" aria-label="Portfolio sections">
+        <a class="aqua-text-button" href="../index.html" aria-pressed="false">About</a>
+        <a class="aqua-text-button" href="../projects.html" aria-pressed="false">Projects</a>
+        <a class="aqua-text-button" href="../experience.html" aria-pressed="true" aria-current="page">Experience</a>
+        <a class="aqua-text-button" href="../contact.html" aria-pressed="false">Contact</a>
+      </nav>
+    </header>
+
+    <main class="portfolio-page-main portfolio-subpage-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a class="breadcrumb-link" href="../experience.html">Experience</a>
+        <span class="breadcrumb-separator">/</span>
+        <span>EON Media</span>
+      </nav>
+
+      <article class="aqua-container portfolio-detail-card portfolio-longform">
+        <div class="portfolio-card-header">
+          <p class="portfolio-card-kicker">Jan 2025 - Apr 2025 / Remote</p>
+          <h1 class="portfolio-large-heading">BETS Co-op Student, EON Media</h1>
+          <p class="portfolio-card-copy">Remote co-op work across data acquisition, security testing, and AI-driven media analysis projects.</p>
+        </div>
+
+        <section>
+          <h2 class="portfolio-section-title">GovSession Video Acquisition</h2>
+          <p>I worked with a BETS co-op team on scrapers for public government video portals. The task was to revisit websites that previous co-op students had marked as difficult or unavailable and determine whether video acquisition could be made reliable.</p>
+          <p>Many sites exposed video as <code>blob:</code> URLs instead of direct downloadable links. I inspected browser network traffic while videos played, found underlying HLS <code>.m3u8</code> manifests, and automated that discovery with Selenium performance logs.</p>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Security Testing</h2>
+          <p>For an internal assessment of a client archive portal, I reconstructed video URLs from page clues and tested access with Postman. Adding a referrer header allowed a blocked video request to succeed, revealing an access-control misconfiguration. I reported the finding to my manager for follow-up.</p>
+        </section>
+
+        <section>
+          <h2 class="portfolio-section-title">Sports Logo ML Research</h2>
+          <div class="portfolio-feature-layout">
+            <div>
+              <p>I researched sports logo identification from video. My approach used ResNet50 as a feature extractor and trained KNN classifiers on the extracted embeddings.</p>
+              <ul class="portfolio-bullet-list">
+                <li>Collected and organized roughly 1,000 NBA logo images.</li>
+                <li>Split data into training, validation, and test sets.</li>
+                <li>Saved extracted features across experiments for comparison.</li>
+                <li>Generated t-SNE plots to inspect feature-space clustering.</li>
+              </ul>
+            </div>
+            <figure class="portfolio-media">
+              <img src="../../assets/portfolio/tsne_resnet50_features.png" alt="t-SNE visualization of ResNet50 features for NBA team logos">
+              <figcaption>t-SNE plot of ResNet50 extracted features for NBA team logo experiments.</figcaption>
+            </figure>
+          </div>
+        </section>
+      </article>
+    </main>
+  </div>
+</body>
+</html>
