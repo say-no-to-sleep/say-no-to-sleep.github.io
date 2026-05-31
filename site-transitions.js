@@ -98,9 +98,21 @@ function initTheme() {
 }
 
 function installThemeToggle() {
-  const actions = document.querySelector(".site-header .aqua-top-bar-actions");
+  const header = document.querySelector(".site-header");
 
-  if (!actions || actions.querySelector(".site-theme-toggle")) {
+  if (!header) {
+    return;
+  }
+
+  let actions = header.querySelector(".aqua-top-bar-actions");
+
+  if (!actions) {
+    actions = document.createElement("div");
+    actions.className = "aqua-top-bar-actions";
+    header.appendChild(actions);
+  }
+
+  if (actions.querySelector(".site-theme-toggle")) {
     return;
   }
 

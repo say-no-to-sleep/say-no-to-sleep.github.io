@@ -69,6 +69,7 @@ html {
   overflow-x: clip;
   font-family: var(--font-sans);
   scroll-behavior: smooth;
+  background: #f4f7f8;
 }
 
 body {
@@ -79,23 +80,33 @@ body {
   overflow-x: clip;
   font-family: var(--font-sans);
   color: var(--text);
-  background:
-    url("./assets/backgrounds/frutiger-aero-light.webp") center / cover fixed,
-    linear-gradient(180deg, #f8fbfc 0%, var(--bg-base) 100%);
+  background: transparent;
 }
 
-[data-theme="dark"] body {
-  background:
-    url("./assets/backgrounds/frutiger-aero-dark.webp") center / cover fixed,
-    linear-gradient(180deg, #0a202b 0%, var(--bg-base) 100%);
+[data-theme="dark"] {
+  background: #071a24;
 }
 
+/* The full-bleed Frutiger Aero artwork lives on a fixed-position layer instead
+   of using `background-attachment: fixed`. The latter forces a main-thread
+   repaint on every scroll frame and defeats Chrome's paint holding, which
+   produced a solid-color flash between page navigations. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
-  background: transparent;
+  will-change: transform;
+  background:
+    url("./assets/backgrounds/frutiger-aero-light.webp") center / cover,
+    linear-gradient(180deg, #f8fbfc 0%, var(--bg-base) 100%);
+}
+
+[data-theme="dark"] body::before {
+  background:
+    url("./assets/backgrounds/frutiger-aero-dark.webp") center / cover,
+    linear-gradient(180deg, #0a202b 0%, var(--bg-base) 100%);
 }
 
 .site-theme-transitioning *,
@@ -202,11 +213,17 @@ body::before {
   -webkit-text-fill-color: currentColor;
 }
 
-.site-transition-ready .page-shell > :not(.site-header) {
+@media (scripting: enabled) {
+  body:not(.site-transition-ready) .page-shell {
+    opacity: 0;
+  }
+}
+
+.site-transition-ready .page-shell {
   animation: site-page-enter 190ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.site-transition-leaving .page-shell > :not(.site-header) {
+.site-transition-leaving .page-shell {
   pointer-events: none;
   animation: site-page-exit 170ms cubic-bezier(0.7, 0, 0.84, 0) both;
 }
@@ -247,8 +264,8 @@ body::before {
     animation: none !important;
   }
 
-  .site-transition-ready .page-shell > :not(.site-header),
-  .site-transition-leaving .page-shell > :not(.site-header) {
+  .site-transition-ready .page-shell,
+  .site-transition-leaving .page-shell {
     animation: none;
   }
 }
