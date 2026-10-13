@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap">
+  <link rel="stylesheet" href="{{ '/assets/picard.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}">
+</head>
+<body>
+  <audio id="audio1" src="{{ '/assets/beep1.mp3' | relative_url }}" preload="auto"></audio>
+  <audio id="audio2" src="{{ '/assets/beep2.mp3' | relative_url }}" preload="auto"></audio>
+  <audio id="audio3" src="{{ '/assets/beep3.mp3' | relative_url }}" preload="auto"></audio>
+  <audio id="audio4" src="{{ '/assets/beep4.mp3' | relative_url }}" preload="auto"></audio>
+  <audio id="audio5" src="{{ '/assets/picard-key.mp3' | relative_url }}" preload="auto"></audio>
+
+  <div class="top-wrapper">
+    <div class="top-display">
+      <div class="top-display-left">
+        <nav id="primary-nav" aria-label="Primary">
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/" | relative_url }}')">about</button>
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/#projects" | relative_url }}')">projects</button>
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/blog/" | relative_url }}')">blog</button>
+        </nav>
+        <div class="chunk"> </div>
+        <div class="button-4-wrapper">
+          <button onclick="playSoundAndRedirect('audio5', '')" class="button-4">LCARS <span class="hop">&nbsp;40457</span></button>
+        </div>
+      </div>
+      <div class="top-display-right">
+        <div class="lcars-heading">
+          <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        </div>
+        <div class="lcars-access">
+          {{ site.description }}
+        </div>
+      </div>
+    </div>
+    <div class="top-display-bottom">
+      <div class="bar-elbow"></div>
+      <div class="bar-1"></div>
+      <div class="bar-2"></div>
+      <div class="bar-3"></div>
+      <div class="bar-4"></div>
+      <div class="bar-5"></div>
+    </div>
+  </div>
+
+  <div class="spacer">
+    <div class="space-sidebar"></div>
+    <div class="space-1"></div>
+    <div class="space-2"></div>
+    <div class="space-3"></div>
+    <div class="space-4"></div>
+  </div>
+
+  <div class="bottom-wrapper">
+    <div class="left-frame">
+      <button onclick="topFunction()" id="topBtn"><span class="hop">screen</span> top</button>
+      <div>
+        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-3">03-9168</button>
+        <div class="sidebar-cluster">
+          <div id="cluster-alpha">
+            <div class="panel-4-sister"> </div>
+          </div>
+          <div id="cluster-beta">
+            <button class="panel-4" onclick="playSoundAndRedirect('audio2', '')">LIBRARY ACCESS</button>
+            <div class="keypad">
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-first">1</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-first">2</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">3</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">4</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">5</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">6</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">7</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">8</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">9</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key">0</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-last">/</button>
+              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-last">•</button>
+              <div class="key-column"></div>
+              <div class="keypad-button-spacer-top"></div>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">03-967</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">47-185</button>
+              <div class="key-column"></div>
+              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">26-317</button>
+              <div class="key-column"></div>
+              <div class="keypad-button-spacer-bottom"></div>
+            </div>
+            <div class="panel-6"> </div>
+          </div>
+        </div>
+        <div class="panel-7">
+          <div class="three-squares-wrapper">
+            <div class="three-squares"></div>
+            <div class="three-squares"></div>
+            <div class="three-squares"></div>
+          </div>
+          <div class="panel-7-text">
+            07<span class="hide-720">-9148</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-8">08<span class="hop">-091966</span></button>
+      </div>
+    </div>
+
+    <div class="right-frame">
+      <div class="bar-runner">
+        <div class="bar-6"></div>
+        <div class="bar-7"></div>
+        <div class="bar-8"></div>
+        <div class="bar-9"></div>
+        <div class="bar-10"></div>
+      </div>
+      <div class="garnish"></div>
+      <main>
+        <div class="main-top-border-cut"> </div>
+
+{{ content }}
+      </main>
+      <footer>
+        <div class="footer-content-wrapper">
+          <div class="footer-content">
+            Theme: <a href="https://www.thelcars.com">LCARS Picard Theme by TheLCARS.com</a>, with modifications.<br>
+            STAR TREK ® and related marks are trademarks of CBS Studios Inc. All rights reserved.<br>
+            This site is in no way affiliated with CBS Studios Inc.<br>
+            LCARS was designed by graphic artist Michael Okuda.
+          </div>
+        </div>
+        <div class="footer-panel">1315</div>
+      </footer>
+    </div>
+  </div>
+  <div class="baseboard"> </div>
+  <script src="{{ '/assets/site.js' | relative_url }}"></script>
+</body>
+</html>

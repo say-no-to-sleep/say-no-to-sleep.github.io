@@ -1,0 +1,18 @@
+---
+layout: default
+title: Blog
+---
+<h1>Blog</h1>
+<h2 class="flush">Project updates</h2>
+{% if site.posts.size > 0 %}
+<ul class="lcars-list">
+  {%- for post in site.posts %}
+  <li>
+    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    · {{ post.date | date: "%Y-%m-%d" }}{% if post.project %} · {{ post.project }}{% endif %}
+  </li>
+  {%- endfor %}
+</ul>
+{% else %}
+<p>No posts yet.</p>
+{% endif %}

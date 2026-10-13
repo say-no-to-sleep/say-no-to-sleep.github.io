@@ -1,0 +1,25 @@
+# Pages CMS config (https://pagescms.org): browser editor for blog posts.
+media:
+  input: assets/posts
+  output: /assets/posts
+content:
+  - name: posts
+    label: Blog posts
+    type: collection
+    path: _posts
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, project]
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: project
+        label: Project
+        type: string
+      - name: body
+        label: Body
+        type: rich-text
+        options:
+          format: markdown

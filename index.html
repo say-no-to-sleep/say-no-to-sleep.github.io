@@ -1,66 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style data-theme-boot>html{background:#f4f7f8;}@media (prefers-color-scheme: dark){html{background:#071a24;}}</style>
-  <script data-theme-boot>
-    (() => {
-      try {
-        const stored = localStorage.getItem("watthehex.theme") || localStorage.getItem("aqua-theme");
-        const theme = stored === "dark" || stored === "light" ? stored : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = theme;
-        document.documentElement.style.background = theme === "dark" ? "#071a24" : "#f4f7f8";
-      } catch {
-      }
-    })();
-  </script>
-  <title>WatTheHex</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="vendor/aqua-neo/aqua-neo.js" defer></script>
-  <script src="storage.js" defer></script>
-  <script src="tools.js" defer></script>
-  <script src="main.js" defer></script>
-  <script src="site-transitions.js" defer></script>
-</head>
-<body>
-  <div class="page-shell">
-    <header class="site-header aqua-top-bar" data-top-bar-sticky data-top-bar-auto-hide>
-      <div class="aqua-top-bar-brand">
-        <h1 class="aqua-top-bar-title site-title">WatTheHex</h1>
-      </div>
-      <nav class="aqua-top-bar-menu aqua-text-button-group menu-bar" aria-label="Site sections">
-        <a class="aqua-text-button" href="index.html" aria-pressed="true" aria-current="page">Home</a>
-        <a class="aqua-text-button" href="tools.html" aria-pressed="false">Tools</a>
-        <a class="aqua-text-button" href="about.html" aria-pressed="false">About</a>
-      </nav>
-      <div class="aqua-top-bar-actions">
-        <a
-          class="graphite-button site-feedback-link"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSdeyjPCdSfqUNAQWeigzAkdpXYYlOFtl0q8SgipIK58Tz-mqg/viewform?usp=publish-editor"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Feedback</a>
-      </div>
-    </header>
-    <main class="home-page-main home-empty-main">
-      <section class="home-landing">
-        <div class="home-stage">
-          <section class="home-copy-panel" aria-labelledby="home-welcome-heading">
-            <p class="home-eyebrow">Welcome</p>
-            <h2 id="home-welcome-heading" class="home-title">Welcome</h2>
-            <p class="home-lede">WatTheHex???</p>
-            <p class="home-lede">You can find useful/useless tools here.</p>
-          </section>
+---
+layout: default
+---
+<h1 class="go-center">Jinyuan (Eugene) Zhao</h1>
+<h2 class="flush go-center">Portfolio and Project Log</h2>
+<p class="uppercase go-big go-center">Demo page. Content coming soon.</p>
 
-          <div class="home-new-section" aria-labelledby="home-new-heading">
-            <p id="home-new-heading" class="home-eyebrow">Newly Added</p>
-            <div id="home-highlights" class="home-highlights" aria-live="polite"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-</body>
-</html>
+<h2 id="about">About</h2>
+<p>Placeholder.</p>
+
+<h2 id="projects">Projects</h2>
+<p>Placeholder.</p>
+
+<h2 id="blog">Latest posts</h2>
+<ul class="lcars-list">
+  {%- for post in site.posts limit: 5 %}
+  <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> · {{ post.date | date: "%Y-%m-%d" }}</li>
+  {%- endfor %}
+</ul>
+
+<div class="buttons justify-center">
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/blog/" | relative_url }}')" class="button-light-orange-red">all posts</button>
+</div>

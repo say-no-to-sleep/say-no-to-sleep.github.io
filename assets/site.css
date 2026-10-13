@@ -1,0 +1,25 @@
+/* Site additions on top of picard.css. */
+
+/* picard.css removes button outlines; keep keyboard focus visible. */
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--starlight);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* No logo image in the header, so center the name block in the space it left. */
+.top-display-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.top-display-right .lcars-heading {
+  font-size: clamp(1.5rem, 5vw, 3.5rem);
+}

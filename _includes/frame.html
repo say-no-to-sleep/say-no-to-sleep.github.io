@@ -1,0 +1,23 @@
+{%- comment -%}
+LCARS image frame. Usage in a post:
+{% include frame.html src="/assets/posts/photo.jpg" alt="What the photo shows" title="Optional title" %}
+{%- endcomment -%}
+<div class="image-frame">
+  <div class="imgf-title">
+    {%- if include.title %}
+    <div class="h4-wrapper"><h4>{{ include.title }}</h4></div>
+    {%- endif %}
+  </div>
+  <div class="imgf-image-body">
+    <div class="image-holder">
+      <img src="{{ include.src | relative_url }}" alt="{{ include.alt | default: include.title }}" loading="lazy">
+    </div>
+  </div>
+  <div class="imgf-base">
+    <div class="imgf-block-1"> </div>
+    <div class="imgf-block-2"> </div>
+    <div class="imgf-block-3"> </div>
+    <div class="imgf-block-4"> </div>
+    <div class="imgf-block-5"> </div>
+  </div>
+</div>

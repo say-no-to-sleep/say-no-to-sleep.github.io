@@ -1,0 +1,6 @@
+legacy/
+.DS_Store
+.codex-tmp/
+.claude/worktrees/
+_site/
+.jekyll-cache/
