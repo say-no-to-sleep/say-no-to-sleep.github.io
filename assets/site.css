@@ -40,3 +40,9 @@ a:focus-visible {
 .post-body .image-frame {
   max-width: 100%;
 }
+
+/* picard.css uses overflow: hidden here, which lets anchor jumps (#projects)
+   scroll the box itself and shear the frame. clip hides overflow without scrolling. */
+.bottom-wrapper {
+  overflow: clip;
+}
