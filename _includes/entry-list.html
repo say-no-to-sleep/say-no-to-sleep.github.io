@@ -1,4 +1,4 @@
-{%- comment -%} List of projects or experience entries. Usage: {% include entry-list.html items=site.projects %} {%- endcomment -%}
+{%- comment -%} List of projects. Usage: {% include entry-list.html items=site.projects %} {%- endcomment -%}
 {%- assign entries = include.items | sort: "order" -%}
 <ul class="lcars-list">
   {%- for entry in entries %}
