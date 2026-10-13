@@ -1,0 +1,25 @@
+---
+layout: default
+---
+<h1 class="go-center">{{ site.title }}</h1>
+<h2 class="flush go-center">{{ site.description }}</h2>
+
+<div class="post-body">
+  {{ content | replace: "<ul>", '<ul class="lcars-list">' }}
+</div>
+
+<h2>Projects</h2>
+{% include entry-list.html items=site.projects %}
+
+<h2>Latest posts</h2>
+<ul class="lcars-list">
+  {%- for post in site.posts limit: 5 %}
+  <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> · {{ post.date | date: "%Y-%m-%d" }}</li>
+  {%- endfor %}
+</ul>
+
+<div class="buttons justify-center">
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/projects/" | relative_url }}')">projects</button>
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/experience/" | relative_url }}')" class="button-medium-dark-blue">experience</button>
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/blog/" | relative_url }}')" class="button-light-orange-red">all posts</button>
+</div>

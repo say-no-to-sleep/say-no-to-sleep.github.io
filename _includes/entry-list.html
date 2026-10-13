@@ -1,0 +1,10 @@
+{%- comment -%} List of projects or experience entries. Usage: {% include entry-list.html items=site.projects %} {%- endcomment -%}
+{%- assign entries = include.items | sort: "order" -%}
+<ul class="lcars-list">
+  {%- for entry in entries %}
+  <li>
+    <a href="{{ entry.url | relative_url }}">{{ entry.title }}</a> · {{ entry.dates }}<br>
+    {{ entry.summary }}
+  </li>
+  {%- endfor %}
+</ul>

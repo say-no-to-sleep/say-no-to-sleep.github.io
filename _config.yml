@@ -10,9 +10,26 @@ exclude:
   - CLAUDE.md
   - Gemfile
   - Gemfile.lock
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+  experience:
+    output: true
+    permalink: /experience/:name/
 defaults:
   - scope:
       path: ""
       type: posts
     values:
       layout: post
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: entry
+  - scope:
+      path: ""
+      type: experience
+    values:
+      layout: entry

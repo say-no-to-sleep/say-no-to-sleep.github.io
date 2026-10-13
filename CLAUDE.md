@@ -3,7 +3,10 @@
 Personal website for Jinyuan (Eugene) Zhao: portfolio plus a project-update blog. Jekyll site, built by GitHub Pages (`say-no-to-sleep.github.io`). Theme: LCARS Picard v27 from TheLCARS.com.
 
 - `_layouts/default.html` holds the whole LCARS frame. Pages and posts only supply the content of `<main>`.
-- Posts are Markdown in `_posts/YYYY-MM-DD-slug.md` with `title` and optional `project` front matter. Post images live in `assets/posts/`.
+- Posts are Markdown in `_posts/YYYY-MM-DD-slug.md` with `title` and optional `project` front matter. `project` is the project file path (`_projects/resistor-sorter.md`), which is what the Pages CMS reference field stores; `_includes/project-link.html` resolves it.
+- Projects (`_projects/`) and experience (`_experience/`) are Markdown collections using `_layouts/entry.html`, with `title`, `dates`, `details`, `summary` and `order` (1 = top). Project pages list posts whose `project` matches. Images live in `assets/projects/<slug>/` and `assets/experience/<slug>/`; post images in `assets/posts/`.
+- The home page body is `index.md` (About, Skills, Links); `_layouts/home.html` adds the project list and latest posts.
+- Image captions: a paragraph followed by `{: .caption}`.
 - Post images: a Markdown image alone in its paragraph is wrapped in the LCARS frame by `assets/site.js`; its Markdown title becomes the frame title. Sizes: `{: .small}`, `{: .medium}`, `{: .large}` after the image; `{: .plain}` skips the frame. The `frame.html` include does the same in Liquid.
 - `.pages.yml` configures Pages CMS, the browser editor for posts.
 - Theme component markup and class names: `docs/lcars-components.md`.
