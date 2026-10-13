@@ -24,25 +24,127 @@ a:focus-visible {
   font-size: clamp(1.5rem, 5vw, 3.5rem);
 }
 
-/* Post image sizes: add {: .small} / {: .medium} / {: .large} after a Markdown image. */
-.post-body img.small {
+/* Post image sizes: add {: .small} / {: .medium} / {: .large} after a Markdown image.
+   site.js moves the class onto the frame, which shrinks to fit narrow screens. */
+.post-body .image-frame {
+  max-width: 100%;
+}
+
+.post-body .image-frame.small {
+  width: min(100%, 480px);
+}
+
+.post-body .image-frame.medium {
+  width: min(100%, 680px);
+}
+
+.post-body .image-frame.large {
+  width: min(100%, 960px);
+}
+
+.image-frame:is(.small, .medium, .large) .imgf-image-body,
+.image-frame:is(.small, .medium, .large) .image-holder {
+  width: auto;
+}
+
+.image-frame:is(.small, .medium, .large) .image-holder > :is(img, video) {
+  width: 100%;
+}
+
+/* Unframed images keep plain widths. */
+.post-body img.plain.small {
   width: 320px;
 }
 
-.post-body img.medium {
+.post-body img.plain.medium {
   width: 520px;
 }
 
-.post-body img.large {
+.post-body img.plain.large {
   width: 800px;
-}
-
-.post-body .image-frame {
-  max-width: 100%;
 }
 
 /* picard.css uses overflow: hidden here, which lets anchor jumps (#projects)
    scroll the box itself and shear the frame. clip hides overflow without scrolling. */
 .bottom-wrapper {
   overflow: clip;
+}
+
+/* LCARS video player built by lcarsVideo() in site.js. */
+.image-holder video {
+  display: block;
+  max-width: 100%;
+  max-height: 75vh;
+  background-color: #000;
+  cursor: pointer;
+}
+
+/* Flex items default to min-width: auto, so a wide video would stretch the content column. */
+.right-frame {
+  min-width: 0;
+}
+
+.lcars-video-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.lcars-video-controls button {
+  min-width: 5.5rem;
+  height: 2.25rem;
+  padding-inline: 1rem;
+  border-radius: 100vmax;
+  background-color: var(--light-gray);
+  text-align: right;
+  text-transform: uppercase;
+  font-size: var(--sub-fonts);
+  font-weight: bold;
+}
+
+.lcars-video-controls .vid-play {
+  background-color: var(--light-orange-red);
+}
+
+.lcars-video-controls .vid-time {
+  color: var(--ghost-gray);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.vid-seek {
+  flex: 1 1 8rem;
+  height: 1rem;
+  appearance: none;
+  background: var(--medium-dark-gray);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.vid-seek::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.75rem;
+  height: 1.5rem;
+  background: var(--light-orange-red);
+}
+
+.vid-seek::-moz-range-thumb {
+  width: 0.75rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 0;
+  background: var(--light-orange-red);
+}
+
+@media (width <= 540px) {
+  .lcars-video-controls {
+    flex-wrap: wrap;
+  }
+
+  .vid-seek {
+    flex-basis: 100%;
+    order: -1;
+  }
 }

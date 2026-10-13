@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap">
   <link rel="stylesheet" href="{{ '/assets/picard.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 </head>
 <body>
   <audio id="audio1" src="{{ '/assets/beep1.mp3' | relative_url }}" preload="auto"></audio>
@@ -146,6 +146,6 @@
     </div>
   </div>
   <div class="baseboard"> </div>
-  <script src="{{ '/assets/site.js' | relative_url }}"></script>
+  <script src="{{ '/assets/site.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>
 </html>

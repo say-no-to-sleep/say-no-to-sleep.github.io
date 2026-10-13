@@ -38,7 +38,7 @@ Resistor positioned on the conveyor path before image capture and color-band cla
 Vision output after detecting the resistor and calculating the value from its color bands.
 {: .caption}
 
-<video class="pics" controls preload="metadata" playsinline>
+<video controls preload="metadata" playsinline>
   <source src="/assets/projects/resistor-sorter/resistor-sorter-demo-web.mp4" type="video/mp4">
   <a href="/assets/projects/resistor-sorter/resistor-sorter-demo-web.mp4">View the resistor sorter demo video</a>
 </video>

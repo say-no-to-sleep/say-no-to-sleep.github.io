@@ -7,6 +7,8 @@ Personal website for Jinyuan (Eugene) Zhao: portfolio plus a project-update blog
 - Projects (`_projects/`) and experience (`_experience/`) are Markdown collections using `_layouts/entry.html`, with `title`, `dates`, `details`, `summary` and `order` (1 = top). Project pages list posts whose `project` matches. Images live in `assets/projects/<slug>/` and `assets/experience/<slug>/`; post images in `assets/posts/`.
 - The home page body is `index.md` (About, Skills, Links); `_layouts/home.html` adds the project list and latest posts.
 - Image captions: a paragraph followed by `{: .caption}`.
+- Videos: raw `<video controls>` HTML in the Markdown. `site.js` frames it and swaps the native controls for LCARS ones; size classes go on the frame, never as fixed image widths (those overflow narrow screens).
+- `site.css`/`site.js` links carry a build-time `?v=` stamp so browsers don't keep stale copies.
 - Post images: a Markdown image alone in its paragraph is wrapped in the LCARS frame by `assets/site.js`; its Markdown title becomes the frame title. Sizes: `{: .small}`, `{: .medium}`, `{: .large}` after the image; `{: .plain}` skips the frame. The `frame.html` include does the same in Liquid.
 - `.pages.yml` configures Pages CMS, the browser editor for posts.
 - Theme component markup and class names: `docs/lcars-components.md`.
