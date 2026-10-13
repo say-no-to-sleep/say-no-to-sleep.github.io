@@ -1,6 +1,7 @@
 {%- comment -%}
 LCARS image frame. Usage in a post:
-{% include frame.html src="/assets/posts/photo.jpg" alt="What the photo shows" title="Optional title" %}
+{% include frame.html src="/assets/posts/photo.jpg" alt="What the photo shows" title="Optional title" size="small" %}
+size is optional: small, medium or large.
 {%- endcomment -%}
 <div class="image-frame">
   <div class="imgf-title">
@@ -10,7 +11,7 @@ LCARS image frame. Usage in a post:
   </div>
   <div class="imgf-image-body">
     <div class="image-holder">
-      <img src="{{ include.src | relative_url }}" alt="{{ include.alt | default: include.title }}" loading="lazy">
+      <img src="{{ include.src | relative_url }}" alt="{{ include.alt | default: include.title }}"{% if include.size %} class="{{ include.size }}"{% endif %} loading="lazy">
     </div>
   </div>
   <div class="imgf-base">

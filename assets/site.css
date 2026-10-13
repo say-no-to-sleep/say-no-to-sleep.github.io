@@ -23,3 +23,20 @@ a:focus-visible {
 .top-display-right .lcars-heading {
   font-size: clamp(1.5rem, 5vw, 3.5rem);
 }
+
+/* Post image sizes: add {: .small} / {: .medium} / {: .large} after a Markdown image. */
+.post-body img.small {
+  width: 320px;
+}
+
+.post-body img.medium {
+  width: 520px;
+}
+
+.post-body img.large {
+  width: 800px;
+}
+
+.post-body .image-frame {
+  max-width: 100%;
+}
