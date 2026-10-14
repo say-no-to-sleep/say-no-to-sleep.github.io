@@ -1,50 +1,79 @@
 ---
 title: Running the Game Without the Game
 project: _projects/polytrack-ai.md
+unlisted: false
 ---
-Last time I said stage one is "take the champion's inputs and brute force something slightly better". Brute force means trying thousands upon thousands of input variations. Trying them in a browser tab at 1x speed means the champion keeps the seat until the heat death of the universe. So first, I need a simulator that is fast, and *exactly* the game.
+Well well well, look where we are now.
+
+Last time I said stage 1 is "take the champion's inputs and brute force something slightly better". 
+
+This means brute force here, and that implies trying thousands and thousands of input variations. Technically I can try doing that in a browser tab at 1x speed but I would rather prefer it finish calculating before the heat death of the universe
+
+> Tangent: Apparently new discoveries in Dark Energy/Matter mean that we might not be headed for heat death after all... But we shall see.
+
+Yep, this means that we have to find a way to run this game without the game, using a simulator.
 
 ## No reimplementation
 
-The tempting thing is to rewrite the physics myself. That is also how you get a simulator that is 99% right, which in a game decided by milliseconds is 100% wrong.
+Tempting thing would be to rewrite the physics, which is 1: probably a huge pain in the ass, and 2: probably not gonna feature match at some random obscure point and will cause the entire thing to collapse. 
 
-So I didn't. PolyTrack runs its simulation in a web worker: a normal JS file plus a wasm physics engine (C++ under the hood). Node can run that if you lie to it about being a browser. It needs a fake `self`, `importScripts`, `postMessage`, and a `fetch` that reads files. That is about it. The game even ships a `Verify` handler that simulates a whole recording in one tight loop, which is what the leaderboard uses to check runs.
+So we would rather not want to do that...
 
-Two messages the page normally sends the worker get captured once from the real game and saved:
+Polytrack it turns out, runs its sims in a web worker. It's just a js file with a physics engine. We can lie to this thing about being a browser with Node and it will happily accept whatever you want it to do. 
 
-- the geometry of all 186 track part types plus the car's collision hull (13 MB, same for every track)
+The game even has a verify handler that simulates an entire recording in 1 loop which is what the leaderboard uses to check runs btw. 
+
+Once the game is saved, the page sends to this worker two (2) messages: 
+
+- Geometry of all 186 track part types (as of October 2026, may be more in the future) and the car's collision hull. 
 - one `CreateCar` message per map, with the track data and the surrounding mountains
 
-## Does it match?
+## Well then does it match 
 
-Feed it the champion's run on Desert 1 and it finishes on **frame 25245**, exactly the leaderboard time. Twenty repeat runs, identical every time.
+Giving it the champion's run on Desert 1 and it did finish exactly at frame 25245 which is exactly the leaderboard time.
 
-It does this in about 190 ms. That is roughly **130 to 160 times real time**, on one core, in a laptop, without a GPU.
+It does this entire loop in about 190ms which if you calculate against the actual playtime, is 130~160x real time... Bonkers. And on a single core as well. 
 
-## Save states, like an emulator
+If I accidentally forgot to disclose why I chose Desert 1, it's because of the ramp at the start. Please feel free to go check the ramp.
 
-The part I'm happiest about. All of the car's physics state lives in the wasm memory, in one block. So a checkpoint is a copy of that block (24 MB, about 5 ms), and a restore writes it back (about 3 ms).
+So now what, we got a simulator and we got data. Let’s try nudging things a bit. I’m sure nothing will go wrong.
 
-To make sure it really works, I saved checkpoints at frames 0, 5000, 9600, 15000 and 25000. After each one I drove 3000 frames of garbage input to wreck the car, restored the checkpoint, and replayed the champion's inputs. Every frame's full 227-byte car state matched the original run.
+![image.jpeg](/assets/image.jpeg)
 
-(There was a moment where it *didn't* match. That was me comparing two different cars, and byte 0 of the state is the car's id. Hours of my life.)
+Pictured: middle aged man trying to be helpful by suggesting to nudge some things.
 
-The payoff: restoring at 15 s and finishing takes about 61 ms instead of 190. The later the checkpoint, the more you save, and the end of the run is where I'll be searching the most.
+## Walking on the Razer
 
-## The bad news: a knife edge
+Let’s do something… let’s see
 
-Then I tried the obvious experiment. Take one `right` key press and shift it by **1 millisecond**.
+Ah yes, let’s press the right (->) (➡️) key for 1 millisecond. What’s the worse that can happen??
+
+As it turns out it depends on the timing
 
 - Before about 9.5 s, or the very last toggle: nothing changes. Still 25245.
 - Almost anywhere after 9.6 s: the car no longer finishes.
-- 5 of 110 variants still finished. All of them slower. None faster.
 
-So the champion's run is not a smooth hill I can climb one nudge at a time. It is a tightrope. Change one toggle and everything after it is now a different run.
+Which seems absurd until you realize just with how much precision they have to play polytrack.
 
-This kills the naive plan ("nudge a toggle, keep it if faster, repeat"). Every change has to be followed by re-searching all the inputs after it. Which is where the checkpoints come in: work back to front, segment by segment, and never replay the part of the run I'm not touching.
+So there goes the easy solution of just trying 1 input to try to make it faster and rinse and repeat. EVERY change has to be followed by re-searching the entire input space afterwards.
+
+If only we had a thing there we can use to segment this map up and try individual parts to search… I guess we’ll never know.
+
+Wait now hold on a second… segmentation… resume from here… I think you know where we’re going. 
+
+## Save states
+
+As mentioned earlier the car’s physical state lives in the wasm memory in one block. What we want is a checkpoint which yoinks this block then copies it. A restore would write this block back. 
+
+To make sure it actually works I saved checkpoints at frames 0, 5000, 9600, 15000, 25000 and restoring the checkpoint after going through them restored exactly the car state. Horrah! 
+
+The payoff as briefly explored above is definitely the fact that restoring and finishing a checkpoint is way less time consuming than replaying the track up to that point:
+
+- restore at 15s and finishing takes 61ms instead or 190. Massive time improvement
+- the later this checkpoint is, the benefit increases as well. 
+
+And since we’re doing segmented search, this is the best news we want to hear today.
 
 ## Where this leaves us
 
-Next up is mapping which of the four keys' toggles can move at all without breaking the run, and recording split times at the checkpoints. After that, the actual search.
-
-Limits worth admitting: each checkpoint is 24 MB (a checkpoint every second of a run would be about 600 MB), it can only drive one car at a time since a restore rewinds every car, and I've only tested Desert 1. Capturing a new map is still a manual job of hooking `Worker.prototype.postMessage` before the game loads. Future me's problem.
+Next up, mapping which keys I can touch without sending the run to the gutters. As well as the actual search.
