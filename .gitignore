@@ -4,3 +4,4 @@ legacy/
 .claude/worktrees/
 _site/
 .jekyll-cache/
+.playwright-mcp/
