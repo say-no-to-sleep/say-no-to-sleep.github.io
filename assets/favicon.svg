@@ -1,3 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <path fill="#ff6753" d="M0 32V13A13 13 0 0 1 13 0H32V11H19A6 6 0 0 0 13 17V32Z"/>
+  <!-- Two mirrored LCARS elbows, like the sidebar's top-display split: a thick block narrowing into a bar. -->
+  <path fill="#ff6753" d="M0 0H18V3A6 6 0 0 0 24 9H32V14H8A8 8 0 0 1 0 6Z"/>
+  <path fill="#ff6753" d="M0 32H18V29A6 6 0 0 1 24 23H32V18H8A8 8 0 0 0 0 26Z"/>
 </svg>
