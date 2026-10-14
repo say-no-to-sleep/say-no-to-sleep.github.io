@@ -365,7 +365,7 @@ function initKeypad() {
   function press(key) {
     if (key === "enter") {
       // The Tools page answers to whatever today's stardate is.
-      const url = buffer === stardate() ? pages.stardate : pages[buffer.replace("-", "").replace(/^(\d\d)(\d{4})$/, "$1-$2")];
+      const url = buffer === stardate().split(".")[0] ? pages.stardate : pages[buffer.replace("-", "").replace(/^(\d\d)(\d{4})$/, "$1-$2")];
       buffer = "";
       show();
       playSoundAndRedirect(url ? "audio5" : "audio4", url || "");
@@ -406,14 +406,14 @@ function initKeypad() {
   });
 }
 
-// Live stardate for the header: TNG's formula with the year moved forward 400 (2026 is 2426).
+// Live stardate for the header: TNG's formula with the year moved forward 400 (2026 is 2426), two decimals (0.01 is about 5 minutes).
 function stardate() {
   const now = new Date();
   const year = now.getFullYear();
   const start = new Date(year, 0, 1);
-  const length = (new Date(year + 1, 0, 1) - start) / 864e5;
-  const day = Math.floor((now - start) / 864e5);
-  return String((year - 1923) * 1000 + Math.floor((day * 1000) / length));
+  const length = new Date(year + 1, 0, 1) - start;
+  const total = (year - 1923) * 1e5 + Math.floor(((now - start) * 1e5) / length);
+  return Math.floor(total / 100) + "." + String(total % 100).padStart(2, "0");
 }
 
 function updateStardate() {
@@ -426,6 +426,7 @@ function updateStardate() {
 function init() {
   decodeSounds();
   updateStardate();
+  setInterval(updateStardate, 1000);
   initKeypad();
   frameStandaloneImages();
   zoomableImages();

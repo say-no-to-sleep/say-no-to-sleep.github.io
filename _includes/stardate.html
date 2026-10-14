@@ -1,8 +1,18 @@
-{%- comment -%} Stardate for a date: TNG's formula with the year moved forward 400 (2026 is 2426). Usage: include stardate.html date=page.date {%- endcomment -%}
+{%- comment -%} Stardate for a date: TNG's formula with the year moved forward 400 (2026 is 2426), to two decimals (0.01 is about 5 minutes). Usage: include stardate.html date=page.date {%- endcomment -%}
 {%- assign sd_year = include.date | date: "%Y" | plus: 0 -%}
 {%- assign sd_day = include.date | date: "%j" | plus: 0 | minus: 1 -%}
+{%- assign sd_hour = include.date | date: "%H" | plus: 0 -%}
+{%- assign sd_min = include.date | date: "%M" | plus: 0 -%}
+{%- assign sd_sec = include.date | date: "%S" | plus: 0 -%}
+{%- assign sd_days_secs = sd_day | times: 86400 -%}
+{%- assign sd_hour_secs = sd_hour | times: 3600 -%}
+{%- assign sd_min_secs = sd_min | times: 60 -%}
+{%- assign sd_secs = sd_days_secs | plus: sd_hour_secs | plus: sd_min_secs | plus: sd_sec -%}
 {%- assign sd_length = 365 -%}
 {%- assign sd_r4 = sd_year | modulo: 4 -%}{%- assign sd_r100 = sd_year | modulo: 100 -%}{%- assign sd_r400 = sd_year | modulo: 400 -%}
 {%- if sd_r4 == 0 and sd_r100 != 0 or sd_r400 == 0 -%}{%- assign sd_length = 366 -%}{%- endif -%}
-{%- assign sd_base = sd_year | minus: 1923 | times: 1000 -%}
-{{- sd_day | times: 1000 | divided_by: sd_length | plus: sd_base -}}
+{%- assign sd_year_secs = sd_length | times: 86400 -%}
+{%- assign sd_base = sd_year | minus: 1923 | times: 100000 -%}
+{%- assign sd_total = sd_secs | times: 100000 | divided_by: sd_year_secs | plus: sd_base -%}
+{%- assign sd_frac = sd_total | modulo: 100 -%}
+{{- sd_total | divided_by: 100 }}.{% if sd_frac < 10 %}0{% endif %}{{ sd_frac -}}

@@ -1,5 +1,6 @@
 ---
 title: Running the Game Without the Game
+date: 2026-10-14 00:34:00 -0400
 project: _projects/polytrack-ai.md
 unlisted: false
 ---
