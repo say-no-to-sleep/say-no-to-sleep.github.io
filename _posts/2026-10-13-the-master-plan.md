@@ -77,6 +77,10 @@ Hopefully with this step, it will learn the tricks, and the fine tune step shoul
 
 Now I haven't been exactly honest by saying this is my first attempt (if I ever said that at any point). There were previous work done, courtesy of borrowing the [codebase](https://github.com/michael201110/poly-bot) by michael201110, there was an attempt to RL a model into existence on the track that is Desert 1 by me.
 
+![image.png](/assets/posts/image-2.png)
+
+Live view of the Agent when trying to drive.
+
 The problem with the map is the following (you can go see yourself). Need the audience to exercise their imagination here again.
 
 Imagine you are tackling this map. Immediately at the start of the map, there is a big ramp going up. Now normally a player would just fly off into the air, then land, and continue with their lives. But at higher and higher level of playing you will eventually realize that, "wait a minute, by being in the air I'm actually getting slower because I can't accelerate".
