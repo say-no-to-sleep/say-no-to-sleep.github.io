@@ -1,0 +1,23 @@
+{%- comment -%} Missions or logs index: a pill button with the entry's number (0001...) on the left, its description on the right.
+  Usage: include entry-rows.html items=site.projects (sorted by order) or items=site.posts (newest first); optional limit=5. {%- endcomment -%}
+{%- assign entries = include.items -%}
+{%- if entries.first.collection == "projects" -%}{%- assign entries = entries | sort: "order" -%}{%- endif -%}
+{%- assign limit = include.limit | default: entries.size -%}
+<div class="entry-rows">
+  {%- for entry in entries limit: limit %}
+  {%- capture code -%}{% include page-code.html item=entry %}{%- endcapture -%}
+  {%- assign num = code | split: "-" | last %}
+  <div class="entry-row">
+    <a class="lcars-pill-button" href="{{ entry.url | relative_url }}" title="{{ code }}" onclick="event.preventDefault(); playSoundAndRedirect('audio2', this.href)">{{ num }}</a>
+    <div class="entry-desc">
+      <div class="entry-title">{{ entry.title }}</div>
+      {%- if entry.collection == "posts" %}
+      <div class="entry-meta">{{ entry.date | date: "%Y-%m-%d" }} · SD {% include stardate.html date=entry.date %}{% include project-link.html path=entry.project %}</div>
+      {%- else %}
+      <div class="entry-meta">{{ entry.dates }}</div>
+      <p>{{ entry.summary }}</p>
+      {%- endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>

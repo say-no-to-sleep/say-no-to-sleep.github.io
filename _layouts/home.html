@@ -9,14 +9,10 @@ layout: default
 </div>
 
 <h2>Missions</h2>
-{% include entry-list.html items=site.projects %}
+{% include entry-rows.html items=site.projects %}
 
 <h2>Latest logs</h2>
-<ul class="lcars-list">
-  {%- for post in site.posts limit: 5 %}
-  <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> · {{ post.date | date: "%Y-%m-%d" }}</li>
-  {%- endfor %}
-</ul>
+{% include entry-rows.html items=site.posts limit=5 %}
 
 <div class="buttons justify-center">
   <button onclick="playSoundAndRedirect('audio2', '{{ "/projects/" | relative_url }}')">missions</button>

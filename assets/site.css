@@ -327,7 +327,6 @@ main th {
 }
 
 /* Nav and button labels are all caps, like the rest of the LCARS lettering. */
-#primary-nav button,
 .buttons button {
   text-transform: uppercase;
 }
@@ -386,10 +385,15 @@ main th {
   background-color: #000;
   font-size: 1.1rem;
   line-height: 1.3;
+
+  @media (width <= 720px) {
+    font-size: 0.8rem;
+  }
 }
 
 .panel-8 a {
   padding: 0.1rem var(--unipad);
+  white-space: nowrap;
   background-color: var(--dark-gray);
   color: var(--light-gray);
   text-decoration: none;
@@ -454,7 +458,22 @@ main th {
 .sitemap .sm-row { display: flex; justify-content: space-between; gap: 1rem; }
 
 /* Link buttons: anchors dressed like the theme's .buttons button, spread evenly across the row. */
+/* The theme's row wraps; the link row shrinks its buttons evenly instead of dropping one to a new line. */
+.buttons:has(> a) {
+  flex-wrap: nowrap;
+
+  /* Too narrow for three across: stack them full width. */
+  @media (width <= 540px) {
+    flex-direction: column;
+
+    a {
+      flex-basis: auto;
+    }
+  }
+}
+
 .buttons a {
+  min-width: 0;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -579,4 +598,141 @@ main th {
   to {
     clip-path: inset(0);
   }
+}
+
+/* Logs owns the curve so the visible elbow and its hit area are the same shape. */
+.top-wrapper {
+  --nav-elbow-height: 58px;
+  --nav-elbow-radius: 80px;
+
+  @media (width <= 1040px) {
+    --nav-elbow-height: 50px;
+  }
+  @media (width <= 720px) {
+    --nav-elbow-height: 45px;
+    --nav-elbow-radius: 40px;
+  }
+  @media (width <= 540px) {
+    --nav-elbow-height: 34px;
+  }
+}
+
+.top-display-left {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
+
+.top-display-left::after,
+.bar-elbow::after {
+  display: none;
+}
+
+.bar-elbow {
+  height: var(--nav-elbow-height);
+}
+
+.top-display-bottom {
+  pointer-events: none;
+}
+
+.button-4-wrapper {
+  margin-bottom: 0;
+}
+
+.left-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-nav a {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 1rem var(--unipad) 0.25rem;
+  background-color: var(--primary-gray);
+  font-size: var(--large-text);
+  font-weight: bold;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: black;
+}
+
+.left-nav .missions-link {
+  background-color: var(--light-gray);
+  border-bottom: 0.25rem solid black;
+}
+
+.left-nav .elbow-link {
+  flex: 1;
+  margin-bottom: calc(-1 * var(--nav-elbow-height));
+  padding-bottom: calc(1.6rem + var(--nav-elbow-height));
+  border-bottom-left-radius: var(--nav-elbow-radius);
+}
+
+.left-nav a:hover,
+.left-nav a:focus-visible {
+  color: black;
+}
+
+/* Like the sidebar's 03-0000 elbow, the whole Logs elbow (block and curve, corner, arm) lights up together.
+   Recolored rather than filtered: a filter on .bar-1 would also light the small decorations it carries and
+   trap them in its own stacking layer, hiding parts of them. Colors are the theme's primary gray at 120% and 85%. */
+body:has(.elbow-link:hover) {
+  --elbow-lit: #838ba8;
+}
+
+body:has(.elbow-link:active) {
+  --elbow-lit: #5d6377;
+}
+
+body:has(.elbow-link:is(:hover, :active)) :is(.left-nav .elbow-link, .bar-1) {
+  filter: none;
+  background-color: var(--elbow-lit);
+}
+
+body:has(.elbow-link:is(:hover, :active)) .top-display-bottom::before {
+  background: linear-gradient(to top right, var(--elbow-lit) 50%, #000 50%);
+}
+
+/* Missions and logs lists (entry-rows.html): numbered pill button, description beside it. */
+.entry-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-block: 2rem;
+}
+
+.entry-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.entry-row .lcars-pill-button {
+  flex: none;
+  width: 140px;
+  margin-block: 0;
+
+  @media (width <= 540px) {
+    width: 90px;
+    height: 44px;
+  }
+}
+
+.entry-title {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--light-orange-red);
+}
+
+.entry-meta {
+  color: var(--light-gray);
+}
+
+.entry-desc p {
+  margin-top: 0.25rem;
 }

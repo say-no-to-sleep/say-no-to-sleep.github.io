@@ -22,15 +22,15 @@
   <div class="top-wrapper">
     <div class="top-display">
       <div class="top-display-left">
-        <nav id="primary-nav" aria-label="Primary">
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/" | relative_url }}')">comms</button>
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/projects/" | relative_url }}')">missions</button>
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/logs/" | relative_url }}')">logs</button>
-        </nav>
         <div class="chunk"> </div>
         <div class="button-4-wrapper">
           <button onclick="playSoundAndRedirect('audio5', '')" class="button-4">LCARS <span class="hop">&nbsp;<span id="stardate">{% include stardate.html date=site.time %}</span></span></button>
         </div>
+        {%- comment -%} Below the stardate: a Missions block, then the elbow as the Logs button (site.css). Home is the name in the header. {%- endcomment %}
+        <nav class="left-nav" aria-label="Primary">
+          <a class="missions-link" href="{{ "/projects/" | relative_url }}" onclick="event.preventDefault(); playSoundAndRedirect('audio5', this.href)">missions</a>
+          <a class="elbow-link" href="{{ "/logs/" | relative_url }}" onclick="event.preventDefault(); playSoundAndRedirect('audio5', this.href)">logs</a>
+        </nav>
       </div>
       <div class="top-display-right">
         <div class="lcars-heading">

@@ -5,14 +5,7 @@ title: Logs
 <h1>Logs</h1>
 <h2 class="flush">Project updates</h2>
 {% if site.posts.size > 0 %}
-<ul class="lcars-list">
-  {%- for post in site.posts %}
-  <li>
-    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    · {{ post.date | date: "%Y-%m-%d" }} · SD {% include stardate.html date=post.date %}{% include project-link.html path=post.project %}
-  </li>
-  {%- endfor %}
-</ul>
+{% include entry-rows.html items=site.posts %}
 {% else %}
 <p>No logs yet.</p>
 {% endif %}
