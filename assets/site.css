@@ -449,3 +449,6 @@ main th {
     animation: none;
   }
 }
+
+.sitemap { max-width: 40rem; }
+.sitemap .sm-row { display: flex; justify-content: space-between; gap: 1rem; }

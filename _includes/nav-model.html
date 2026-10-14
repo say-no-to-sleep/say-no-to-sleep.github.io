@@ -37,6 +37,8 @@
   {%- case page.url -%}
     {%- when "/projects/" -%}{%- assign current_code = "02-0000" -%}
     {%- when "/logs/" -%}{%- assign current_code = "03-0000" -%}
+    {%- when "/sitemap/" -%}{%- assign current_code = "99-9999" -%}
+    {%- when "/tools/" -%}{%- assign current_code = "00-0000" -%}
     {%- else -%}{%- assign current_code = "01-0000" -%}
   {%- endcase -%}
 {%- endif -%}
@@ -61,10 +63,11 @@
     {%- if newer >= 0 and newer <= last -%}{%- assign nc = step_items[newer] | split: "|" -%}{%- assign next_url = nc[1] -%}{%- endif -%}
   {%- endif -%}
 {%- endfor -%}
+{%- if stepping_top -%}{%- assign prev_url = "" -%}{%- assign next_url = "" -%}{%- endif -%}
 
 {%- comment -%} Every page's ID, unlisted ones too, so typing an ID on the keypad can reach it. {%- endcomment -%}
 {%- capture page_index_json -%}
-{"01-0000":"{{ '/' | relative_url }}","02-0000":"{{ '/projects/' | relative_url }}","03-0000":"{{ '/logs/' | relative_url }}"
+{"01-0000":"{{ '/' | relative_url }}","02-0000":"{{ '/projects/' | relative_url }}","03-0000":"{{ '/logs/' | relative_url }}","stardate":"{{ '/tools/' | relative_url }}","99-9999":"{{ '/sitemap/' | relative_url }}"
 {%- for p in site.projects -%}{%- capture code -%}{% include page-code.html item=p %}{%- endcapture -%},"{{ code }}":"{{ p.url | relative_url }}"{%- endfor -%}
 {%- for p in site.posts -%}{%- capture code -%}{% include page-code.html item=p %}{%- endcapture -%},"{{ code }}":"{{ p.url | relative_url }}"{%- endfor -%}
 }

@@ -1,7 +1,46 @@
 // LCARS button sounds and screen-top button, adapted from TheLCARS.com lcars.js.
 
+// <audio> restarts slowly and MP3s open with encoder silence, so the beeps are decoded once into
+// Web Audio buffers, trimmed to the first audible sample, and played from there. Until a buffer is
+// ready (or if decoding fails, e.g. on file://) playback falls back to the <audio> element.
+const sounds = {};
+const audioCtx = window.AudioContext ? new AudioContext() : null;
+
+function decodeSounds() {
+  if (!audioCtx) {
+    return;
+  }
+  document.querySelectorAll("audio[id]").forEach(function (el) {
+    fetch(el.src)
+      .then(function (r) { return r.arrayBuffer(); })
+      .then(function (data) { return audioCtx.decodeAudioData(data); })
+      .then(function (buffer) {
+        const samples = buffer.getChannelData(0);
+        let first = 0;
+        while (first < samples.length && Math.abs(samples[first]) < 0.01) {
+          first++;
+        }
+        sounds[el.id] = { buffer: buffer, offset: first / buffer.sampleRate };
+      })
+      .catch(function () {});
+  });
+}
+
 function playSoundAndRedirect(audioId, url) {
   const audio = document.getElementById(audioId);
+  const sound = sounds[audioId];
+
+  if (sound) {
+    audioCtx.resume();
+    const source = audioCtx.createBufferSource();
+    source.buffer = sound.buffer;
+    source.connect(audioCtx.destination);
+    if (url) {
+      source.onended = function () { window.location.href = url; };
+    }
+    source.start(0, sound.offset);
+    return;
+  }
 
   function go() {
     if (url) {
@@ -217,12 +256,18 @@ function initKeypad() {
     return;
   }
   const idleText = readout ? readout.textContent : "";
+  const idBlock = document.querySelector(".panel-3");
+  const idleId = idBlock ? idBlock.textContent : "";
   let buffer = "";
   let timer;
 
   function show() {
     if (readout) {
       readout.textContent = buffer || idleText;
+    }
+    // The header readout can be scrolled out of view, so echo the digits in the sidebar ID block too.
+    if (idBlock) {
+      idBlock.textContent = buffer || idleId;
     }
     clearTimeout(timer);
     if (buffer) {
@@ -235,10 +280,11 @@ function initKeypad() {
 
   function press(key) {
     if (key === "enter") {
-      const url = pages[buffer.replace("-", "").replace(/^(\d\d)(\d{4})$/, "$1-$2")];
+      // The Tools page answers to whatever today's stardate is.
+      const url = buffer === stardate() ? pages.stardate : pages[buffer.replace("-", "").replace(/^(\d\d)(\d{4})$/, "$1-$2")];
       buffer = "";
       show();
-      playSoundAndRedirect(url ? "audio5" : "audio3", url || "");
+      playSoundAndRedirect(url ? "audio5" : "audio4", url || "");
       return;
     }
     playSoundAndRedirect("audio2", "");
@@ -277,20 +323,24 @@ function initKeypad() {
 }
 
 // Live stardate for the header: TNG's formula with the year moved forward 400 (2026 is 2426).
-function updateStardate() {
-  const el = document.getElementById("stardate");
-  if (!el) {
-    return;
-  }
+function stardate() {
   const now = new Date();
   const year = now.getFullYear();
   const start = new Date(year, 0, 1);
   const length = (new Date(year + 1, 0, 1) - start) / 864e5;
   const day = Math.floor((now - start) / 864e5);
-  el.textContent = String((year - 1923) * 1000 + Math.floor((day * 1000) / length));
+  return String((year - 1923) * 1000 + Math.floor((day * 1000) / length));
+}
+
+function updateStardate() {
+  const el = document.getElementById("stardate");
+  if (el) {
+    el.textContent = stardate();
+  }
 }
 
 function init() {
+  decodeSounds();
   updateStardate();
   initKeypad();
   frameStandaloneImages();
