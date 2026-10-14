@@ -1,0 +1,7 @@
+{%- comment -%} Sortable YYMM of a mission's start date ("Aug 2026 – Sep 2026" -> 2608). {%- endcomment -%}
+{%- assign dk_months = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec" | split: "," -%}
+{%- assign dk_parts = include.item.dates | split: " " -%}
+{%- assign dk_month = dk_parts[0] | slice: 0, 3 -%}
+{%- assign dk_num = 0 -%}
+{%- for m in dk_months -%}{%- if m == dk_month -%}{%- assign dk_num = forloop.index -%}{%- endif -%}{%- endfor -%}
+{{- dk_parts[1] | slice: 2, 2 -}}{% if dk_num < 10 %}0{% endif %}{{ dk_num }}

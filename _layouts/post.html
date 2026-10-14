@@ -4,11 +4,11 @@ layout: default
 <article>
   <h1>{{ page.title }}</h1>
   <p class="uppercase go-right">
-    {{ page.date | date: "%Y-%m-%d" }}{% include project-link.html path=page.project %}
+    {{ page.date | date: "%Y-%m-%d" }} · SD {% include stardate.html date=page.date %}{% include project-link.html path=page.project %}
   </p>
   {%- comment -%} Markdown bullet lists get the LCARS oval bullets. {%- endcomment -%}
   <div class="post-body">
     {{ content | replace: "<ul>", '<ul class="lcars-list">' }}
   </div>
-  <p><a href="{{ '/blog/' | relative_url }}">← All posts</a></p>
+  <p><a href="{{ '/logs/' | relative_url }}">← All logs</a></p>
 </article>

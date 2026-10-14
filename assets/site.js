@@ -203,7 +203,96 @@ function lcarsVideo(video) {
   render();
 }
 
+// Keypad: type an ID (xx-xxxx) and press return (•) to open that page. The header readout echoes the keys.
+function initKeypad() {
+  const indexEl = document.getElementById("page-index");
+  const readout = document.querySelector(".readout-text");
+  if (!indexEl) {
+    return;
+  }
+  let pages = {};
+  try {
+    pages = JSON.parse(indexEl.textContent);
+  } catch (err) {
+    return;
+  }
+  const idleText = readout ? readout.textContent : "";
+  let buffer = "";
+  let timer;
+
+  function show() {
+    if (readout) {
+      readout.textContent = buffer || idleText;
+    }
+    clearTimeout(timer);
+    if (buffer) {
+      timer = setTimeout(function () {
+        buffer = "";
+        show();
+      }, 4000);
+    }
+  }
+
+  function press(key) {
+    if (key === "enter") {
+      const url = pages[buffer.replace("-", "").replace(/^(\d\d)(\d{4})$/, "$1-$2")];
+      buffer = "";
+      show();
+      playSoundAndRedirect(url ? "audio5" : "audio3", url || "");
+      return;
+    }
+    playSoundAndRedirect("audio2", "");
+    if (buffer.length < 7) {
+      buffer += key;
+      show();
+    }
+  }
+
+  document.querySelectorAll(".key[data-key]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      press(button.dataset.key);
+    });
+  });
+  document.querySelectorAll(".keypad-button[data-href]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      playSoundAndRedirect("audio5", button.dataset.href);
+    });
+  });
+
+  // The physical keyboard works too, unless the user is typing in a field or using a shortcut.
+  document.addEventListener("keydown", function (event) {
+    const target = event.target;
+    if (event.ctrlKey || event.metaKey || event.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable) {
+      return;
+    }
+    if (/^[0-9-]$/.test(event.key)) {
+      press(event.key);
+    } else if (event.key === "." || (event.key === "Enter" && buffer)) {
+      press("enter");
+    } else {
+      return;
+    }
+    event.preventDefault();
+  });
+}
+
+// Live stardate for the header: TNG's formula with the year moved forward 400 (2026 is 2426).
+function updateStardate() {
+  const el = document.getElementById("stardate");
+  if (!el) {
+    return;
+  }
+  const now = new Date();
+  const year = now.getFullYear();
+  const start = new Date(year, 0, 1);
+  const length = (new Date(year + 1, 0, 1) - start) / 864e5;
+  const day = Math.floor((now - start) / 864e5);
+  el.textContent = String((year - 1923) * 1000 + Math.floor((day * 1000) / length));
+}
+
 function init() {
+  updateStardate();
+  initKeypad();
   frameStandaloneImages();
   document.querySelectorAll(".post-body video").forEach(lcarsVideo);
 

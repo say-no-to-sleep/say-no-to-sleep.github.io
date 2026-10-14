@@ -1,0 +1,19 @@
+{%- comment -%} Page ID xx-xxxx: 02- or 03- (missions, logs) plus 0001, 0002... by age, oldest first. A `code` in front matter wins. Usage: include page-code.html item=p {%- endcomment -%}
+{%- if include.item.code -%}{{ include.item.code }}
+{%- elsif include.item.collection == "projects" -%}
+{%- capture pc_mine -%}{% include date-key.html item=include.item %}{{ include.item.path }}{%- endcapture -%}
+{%- assign pc_rank = 1 -%}
+{%- for q in site.projects -%}
+{%- capture pc_other -%}{% include date-key.html item=q %}{{ q.path }}{%- endcapture -%}
+{%- if pc_other < pc_mine -%}{%- assign pc_rank = pc_rank | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+02-{{ pc_rank | prepend: "000" | slice: -4, 4 }}
+{%- elsif include.item.collection == "posts" -%}
+{%- capture pc_mine -%}{{ include.item.date | date: "%Y%m%d" }}{{ include.item.path }}{%- endcapture -%}
+{%- assign pc_rank = 1 -%}
+{%- for q in site.posts -%}
+{%- capture pc_other -%}{{ q.date | date: "%Y%m%d" }}{{ q.path }}{%- endcapture -%}
+{%- if pc_other < pc_mine -%}{%- assign pc_rank = pc_rank | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+03-{{ pc_rank | prepend: "000" | slice: -4, 4 }}
+{%- endif -%}

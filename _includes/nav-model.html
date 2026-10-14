@@ -1,0 +1,71 @@
+{%- comment -%}
+  Sidebar console data, shared by default.html. Sets:
+  current_code, nav_items ("code|url|title" rows for the sidebar list), parent_url, prev_url, next_url, page_index_json.
+  Top-level pages: 01-0000 comms, 02-0000 missions, 03-0000 logs. "Previous" is the older entry (lower in the list).
+{%- endcomment -%}
+{%- assign top_items = "" | split: "" -%}
+{%- capture row -%}01-0000|{{ '/' | relative_url }}|Comms{%- endcapture -%}{%- assign top_items = top_items | push: row -%}
+{%- capture row -%}02-0000|{{ '/projects/' | relative_url }}|Missions{%- endcapture -%}{%- assign top_items = top_items | push: row -%}
+{%- capture row -%}03-0000|{{ '/logs/' | relative_url }}|Logs{%- endcapture -%}{%- assign top_items = top_items | push: row -%}
+
+{%- assign section = "top" -%}
+{%- if page.layout == "entry" or page.url == "/projects/" -%}{%- assign section = "projects" -%}
+{%- elsif page.layout == "post" or page.url == "/logs/" -%}{%- assign section = "posts" -%}{%- endif -%}
+
+{%- assign nav_items = top_items -%}
+{%- if section == "projects" -%}
+  {%- assign source = site.projects | where_exp: "p", "p.unlisted != true" | sort: "order" -%}
+{%- elsif section == "posts" -%}
+  {%- assign source = site.posts | where_exp: "p", "p.unlisted != true" -%}
+{%- endif -%}
+{%- if section != "top" -%}
+  {%- assign nav_items = "" | split: "" -%}
+  {%- for p in source -%}
+    {%- capture code -%}{% include page-code.html item=p %}{%- endcapture -%}
+    {%- capture row -%}{{ code }}|{{ p.url | relative_url }}|{{ p.title | strip }}{%- endcapture -%}
+    {%- assign nav_items = nav_items | push: row -%}
+  {%- endfor -%}
+  {%- comment -%} Newest ID first, so the list and prev/next follow the IDs. {%- endcomment -%}
+  {%- assign nav_items = nav_items | sort | reverse -%}
+{%- endif -%}
+
+{%- if page.layout == "entry" or page.layout == "post" -%}
+  {%- capture current_code -%}{% include page-code.html item=page %}{%- endcapture -%}
+  {%- assign step_items = nav_items -%}{%- assign stepping_top = false -%}
+{%- else -%}
+  {%- assign step_items = top_items -%}{%- assign stepping_top = true -%}
+  {%- case page.url -%}
+    {%- when "/projects/" -%}{%- assign current_code = "02-0000" -%}
+    {%- when "/logs/" -%}{%- assign current_code = "03-0000" -%}
+    {%- else -%}{%- assign current_code = "01-0000" -%}
+  {%- endcase -%}
+{%- endif -%}
+
+{%- assign parent_url = "" -%}
+{%- if page.layout == "entry" -%}{%- assign parent_url = '/projects/' | relative_url -%}
+{%- elsif page.layout == "post" -%}{%- assign parent_url = '/logs/' | relative_url -%}
+{%- elsif current_code != "01-0000" -%}{%- assign parent_url = '/' | relative_url -%}{%- endif -%}
+
+{%- assign prev_url = "" -%}{%- assign next_url = "" -%}
+{%- assign last = step_items.size | minus: 1 -%}
+{%- for r in step_items -%}
+  {%- assign cols = r | split: "|" -%}
+  {%- if cols[0] == current_code -%}
+    {%- assign i = forloop.index0 -%}
+    {%- if stepping_top -%}
+      {%- assign older = i | minus: 1 -%}{%- assign newer = i | plus: 1 -%}
+    {%- else -%}
+      {%- assign older = i | plus: 1 -%}{%- assign newer = i | minus: 1 -%}
+    {%- endif -%}
+    {%- if older >= 0 and older <= last -%}{%- assign pc = step_items[older] | split: "|" -%}{%- assign prev_url = pc[1] -%}{%- endif -%}
+    {%- if newer >= 0 and newer <= last -%}{%- assign nc = step_items[newer] | split: "|" -%}{%- assign next_url = nc[1] -%}{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Every page's ID, unlisted ones too, so typing an ID on the keypad can reach it. {%- endcomment -%}
+{%- capture page_index_json -%}
+{"01-0000":"{{ '/' | relative_url }}","02-0000":"{{ '/projects/' | relative_url }}","03-0000":"{{ '/logs/' | relative_url }}"
+{%- for p in site.projects -%}{%- capture code -%}{% include page-code.html item=p %}{%- endcapture -%},"{{ code }}":"{{ p.url | relative_url }}"{%- endfor -%}
+{%- for p in site.posts -%}{%- capture code -%}{% include page-code.html item=p %}{%- endcapture -%},"{{ code }}":"{{ p.url | relative_url }}"{%- endfor -%}
+}
+{%- endcapture -%}

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 </head>
 <body>
+  {%- include nav-model.html -%}
   <audio id="audio1" src="{{ '/assets/beep1.mp3' | relative_url }}" preload="auto"></audio>
   <audio id="audio2" src="{{ '/assets/beep2.mp3' | relative_url }}" preload="auto"></audio>
   <audio id="audio3" src="{{ '/assets/beep3.mp3' | relative_url }}" preload="auto"></audio>
@@ -21,13 +22,13 @@
     <div class="top-display">
       <div class="top-display-left">
         <nav id="primary-nav" aria-label="Primary">
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/" | relative_url }}')">about</button>
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/projects/" | relative_url }}')">projects</button>
-          <button onclick="playSoundAndRedirect('audio5', '{{ "/blog/" | relative_url }}')">blog</button>
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/" | relative_url }}')">comms</button>
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/projects/" | relative_url }}')">missions</button>
+          <button onclick="playSoundAndRedirect('audio5', '{{ "/logs/" | relative_url }}')">logs</button>
         </nav>
         <div class="chunk"> </div>
         <div class="button-4-wrapper">
-          <button onclick="playSoundAndRedirect('audio5', '')" class="button-4">LCARS <span class="hop">&nbsp;40457</span></button>
+          <button onclick="playSoundAndRedirect('audio5', '')" class="button-4">LCARS <span class="hop">&nbsp;<span id="stardate">{% include stardate.html date=site.time %}</span></span></button>
         </div>
       </div>
       <div class="top-display-right">
@@ -36,6 +37,15 @@
         </div>
         <div class="lcars-access">
           {{ site.description }}
+        </div>
+        {%- if page.layout == "post" -%}{%- assign readout = "Log entry · " | append: page.date | date: "%Y-%m-%d" -%}
+        {%- elsif page.layout == "entry" -%}{%- assign readout = "Mission file" -%}
+        {%- elsif page.url == "/projects/" -%}{%- assign readout = "Mission index · " | append: site.projects.size | append: " entries" -%}
+        {%- elsif page.url == "/logs/" -%}{%- assign readout = "Log index · " | append: site.posts.size | append: " entries" -%}
+        {%- else -%}{%- assign readout = "Comms channel open" -%}{%- endif -%}
+        <div class="lcars-readout" aria-hidden="true">
+          <span class="readout-text">{{ readout }}</span>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
       </div>
     </div>
@@ -61,7 +71,7 @@
     <div class="left-frame">
       <button onclick="topFunction()" id="topBtn"><span class="hop">screen</span> top</button>
       <div>
-        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-3">03-9168</button>
+        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-3" aria-label="This page's ID">{{ current_code }}</button>
         <div class="sidebar-cluster">
           <div id="cluster-alpha">
             <div class="panel-4-sister"> </div>
@@ -70,31 +80,31 @@
             <button class="panel-4" onclick="playSoundAndRedirect('audio2', '')">LIBRARY ACCESS</button>
             <div class="keypad">
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-first">1</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-first">2</button>
+              <button class="key key-first" data-key="1">1</button>
+              <button class="key key-first" data-key="2">2</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">3</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">4</button>
+              <button class="key" data-key="3">3</button>
+              <button class="key" data-key="4">4</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">5</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">6</button>
+              <button class="key" data-key="5">5</button>
+              <button class="key" data-key="6">6</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">7</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">8</button>
+              <button class="key" data-key="7">7</button>
+              <button class="key" data-key="8">8</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">9</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key">0</button>
+              <button class="key" data-key="9">9</button>
+              <button class="key" data-key="0">0</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-last">/</button>
-              <button onclick="playSoundAndRedirect('audio2', '')" class="key key-last">•</button>
+              <button class="key key-last" data-key="-">-</button>
+              <button class="key key-last" data-key="enter">•</button>
               <div class="key-column"></div>
               <div class="keypad-button-spacer-top"></div>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">03-967</button>
+              <button class="keypad-button" data-href="{{ parent_url }}" aria-label="Parent page"{% if parent_url == "" %} disabled{% endif %}>03-967</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">47-185</button>
+              <button class="keypad-button" data-href="{{ prev_url }}" aria-label="Previous entry"{% if prev_url == "" %} disabled{% endif %}>47-185</button>
               <div class="key-column"></div>
-              <button onclick="playSoundAndRedirect('audio5', '')" class="keypad-button">26-317</button>
+              <button class="keypad-button" data-href="{{ next_url }}" aria-label="Next entry"{% if next_url == "" %} disabled{% endif %}>26-317</button>
               <div class="key-column"></div>
               <div class="keypad-button-spacer-bottom"></div>
             </div>
@@ -112,9 +122,12 @@
           </div>
         </div>
       </div>
-      <div>
-        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-8">08<span class="hop">-091966</span></button>
-      </div>
+      <nav class="panel-8" aria-label="Entries in this section">
+        {%- for r in nav_items limit: 8 %}
+        {%- assign cols = r | split: "|" %}
+        <a href="{{ cols[1] }}" title="{{ cols[2] | escape }}"{% if cols[0] == current_code %} class="current" aria-current="page"{% endif %}>{{ cols[0] }}</a>
+        {%- endfor %}
+      </nav>
     </div>
 
     <div class="right-frame">
@@ -145,6 +158,7 @@
     </div>
   </div>
   <div class="baseboard"> </div>
+  <script type="application/json" id="page-index">{{ page_index_json }}</script>
   <script src="{{ '/assets/site.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 </body>
 </html>

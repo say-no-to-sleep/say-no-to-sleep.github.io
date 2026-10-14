@@ -4,7 +4,7 @@ media:
   output: /assets
 content:
   - name: posts
-    label: Blog posts
+    label: Logs
     type: collection
     path: _posts
     filename: "{year}-{month}-{day}-{primary}.md"
@@ -22,6 +22,12 @@ content:
           collection: projects
           value: "{path}"
           label: "{title}"
+      - name: unlisted
+        label: Unlisted (reachable only by typing its ID on the keypad)
+        type: boolean
+      - name: code
+        label: Page ID override (xx-xxxx, normally automatic)
+        type: string
       - name: body
         label: Body
         type: rich-text
@@ -29,7 +35,7 @@ content:
           format: markdown
 
   - name: projects
-    label: Projects
+    label: Missions
     type: collection
     path: _projects
     filename: "{primary}.md"
@@ -52,6 +58,12 @@ content:
       - name: order
         label: Order (1 = top of list)
         type: number
+      - name: unlisted
+        label: Unlisted (reachable only by typing its ID on the keypad)
+        type: boolean
+      - name: code
+        label: Page ID override (xx-xxxx, normally automatic)
+        type: string
       - name: body
         label: Body
         type: rich-text
@@ -66,6 +78,12 @@ content:
       - name: layout
         type: string
         hidden: true
+      - name: unlisted
+        label: Unlisted (reachable only by typing its ID on the keypad)
+        type: boolean
+      - name: code
+        label: Page ID override (xx-xxxx, normally automatic)
+        type: string
       - name: body
         label: Body
         type: rich-text

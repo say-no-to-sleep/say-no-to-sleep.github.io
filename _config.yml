@@ -2,7 +2,7 @@ title: Jinyuan (Eugene) Zhao
 description: Portfolio and project log
 url: https://say-no-to-sleep.github.io
 markdown: kramdown
-permalink: /blog/:year/:month/:day/:title/
+permalink: /logs/:year/:month/:day/:title/
 exclude:
   - legacy
   - docs

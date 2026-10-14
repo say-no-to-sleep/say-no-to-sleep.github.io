@@ -8,10 +8,10 @@ layout: default
   {{ content | replace: "<ul>", '<ul class="lcars-list">' }}
 </div>
 
-<h2>Projects</h2>
+<h2>Missions</h2>
 {% include entry-list.html items=site.projects %}
 
-<h2>Latest posts</h2>
+<h2>Latest logs</h2>
 <ul class="lcars-list">
   {%- for post in site.posts limit: 5 %}
   <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> · {{ post.date | date: "%Y-%m-%d" }}</li>
@@ -19,6 +19,6 @@ layout: default
 </ul>
 
 <div class="buttons justify-center">
-  <button onclick="playSoundAndRedirect('audio2', '{{ "/projects/" | relative_url }}')">projects</button>
-  <button onclick="playSoundAndRedirect('audio2', '{{ "/blog/" | relative_url }}')" class="button-light-orange-red">all posts</button>
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/projects/" | relative_url }}')">missions</button>
+  <button onclick="playSoundAndRedirect('audio2', '{{ "/logs/" | relative_url }}')" class="button-light-orange-red">all logs</button>
 </div>

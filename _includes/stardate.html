@@ -1,0 +1,8 @@
+{%- comment -%} Stardate for a date: TNG's formula with the year moved forward 400 (2026 is 2426). Usage: include stardate.html date=page.date {%- endcomment -%}
+{%- assign sd_year = include.date | date: "%Y" | plus: 0 -%}
+{%- assign sd_day = include.date | date: "%j" | plus: 0 | minus: 1 -%}
+{%- assign sd_length = 365 -%}
+{%- assign sd_r4 = sd_year | modulo: 4 -%}{%- assign sd_r100 = sd_year | modulo: 100 -%}{%- assign sd_r400 = sd_year | modulo: 400 -%}
+{%- if sd_r4 == 0 and sd_r100 != 0 or sd_r400 == 0 -%}{%- assign sd_length = 366 -%}{%- endif -%}
+{%- assign sd_base = sd_year | minus: 1923 | times: 1000 -%}
+{{- sd_day | times: 1000 | divided_by: sd_length | plus: sd_base -}}
