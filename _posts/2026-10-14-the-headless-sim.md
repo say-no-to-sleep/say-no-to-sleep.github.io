@@ -45,7 +45,10 @@ Pictured: middle aged man trying to be helpful by suggesting to nudge some thing
 
 ## Walking on the Razer
 
-![Razer before Saint Walker](/assets/image-1.jpeg "Razer before Saint Walker")
+![Razer before Saint Walker](/assets/image-1.jpeg)
+
+**Razer** before Saint **Walk**er
+{: .caption}
 
 Let’s do something… let’s see
 
