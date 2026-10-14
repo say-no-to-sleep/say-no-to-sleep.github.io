@@ -1,9 +1,7 @@
 ---
-title: The Master Plan
+title: The Master Plan (Tentative)
 project: Polytrack-AI
 ---
-# The Master Plan (Tentative)
-
 The end goal of this project is, of course, assert machine dominance over humans in this web based game that only the most tryhards are grinding.
 
 Personally, I proudly once held a position in the top 50 leaderboard on one of the maps, and top 100 on several other maps. Source is of course, trust me.
