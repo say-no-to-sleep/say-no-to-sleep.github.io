@@ -2,5 +2,6 @@
 {%- comment -%} Jekyll's where with a nil value returns every project, so posts without one would show the first. {%- endcomment -%}
 {%- if include.path -%}
 {%- assign linked = site.projects | where: "path", include.path | first -%}
-{%- if linked %} · <a href="{{ linked.url | relative_url }}">{{ linked.title }}</a>{% endif -%}
+{%- comment -%} A project with no mission page yet (work in progress) shows as plain text. {%- endcomment -%}
+{%- if linked %} · <a href="{{ linked.url | relative_url }}">{{ linked.title }}</a>{% else %} · {{ include.path | escape }}{% endif -%}
 {%- endif -%}
