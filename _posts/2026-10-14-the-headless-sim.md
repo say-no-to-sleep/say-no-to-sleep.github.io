@@ -38,11 +38,11 @@ If I accidentally forgot to disclose why I chose Desert 1, it's because of the r
 
 So now what, we got a simulator and we got data. Let’s try nudging things a bit. I’m sure nothing will go wrong.
 
-![image.jpeg](/assets/image.jpeg)
-
-Pictured: middle aged man trying to be helpful by suggesting to nudge some things.
+![image.jpeg](/assets/image.jpeg, "Pictured: middle aged man trying to be helpful by suggesting to nudge some things.")
 
 ## Walking on the Razer
+
+![image.jpeg](/assets/image-1.jpeg, "**Razer** before Saint **Walk**er")
 
 Let’s do something… let’s see
 
