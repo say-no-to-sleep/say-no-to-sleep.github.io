@@ -410,9 +410,11 @@ function initKeypad() {
 function stardate() {
   const now = new Date();
   const year = now.getFullYear();
-  const start = new Date(year, 0, 1);
-  const length = new Date(year + 1, 0, 1) - start;
-  const total = (year - 1923) * 1e5 + Math.floor(((now - start) * 1e5) / length);
+  // Wall-clock time as if UTC, so daylight saving doesn't shift the result by an hour.
+  const wall = Date.UTC(year, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+  const start = Date.UTC(year, 0, 1);
+  const length = Date.UTC(year + 1, 0, 1) - start;
+  const total = (year - 1923) * 1e5 + Math.floor(((wall - start) * 1e5) / length);
   return Math.floor(total / 100) + "." + String(total % 100).padStart(2, "0");
 }
 

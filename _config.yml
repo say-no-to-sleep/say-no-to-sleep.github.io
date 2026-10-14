@@ -25,3 +25,4 @@ defaults:
       type: projects
     values:
       layout: entry
+timezone: America/Toronto
