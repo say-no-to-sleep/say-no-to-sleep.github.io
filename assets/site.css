@@ -91,6 +91,21 @@ a:focus-visible {
   object-fit: contain;
 }
 
+/* Very wide images (marked by site.js) would shrink to an unreadable sliver on a phone, dwarfed by
+   the frame; keep them readable and let them scroll sideways inside the frame. */
+@media (width <= 900px) {
+  .post-body .image-frame.wide .image-holder {
+    overflow-x: auto;
+  }
+
+  .post-body .image-frame.wide .image-holder > img {
+    width: auto;
+    max-width: none;
+    /* Never upscale a small image past its own pixels. */
+    height: min(160px, var(--natural-height, 160px));
+  }
+}
+
 /* Videos leave room for their control bar. */
 .post-body .image-frame.portrait:has(video) {
   max-width: calc(62vh * var(--aspect) + 60px);
@@ -590,6 +605,22 @@ main th {
   display: block;
   max-width: calc(100vw - 12rem);
   max-height: calc(100vh - 14rem);
+}
+
+@media (width <= 900px) {
+  /* The frame and dialog padding only need ~90px; 12rem left a zoomed photo smaller than the inline one. */
+  .image-zoom img {
+    max-width: calc(100vw - 6rem);
+  }
+
+  /* Wide images (diagrams) open at full size and the overlay scrolls sideways. */
+  .image-zoom:has(.wide) {
+    overflow-x: auto;
+  }
+
+  .image-zoom:has(.wide) img {
+    max-width: none;
+  }
 }
 
 /* Zoom animation: the photo morphs (site.js); the frame draws in from the top-left in hard LCARS steps. */

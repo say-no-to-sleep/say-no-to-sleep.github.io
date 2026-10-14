@@ -178,7 +178,8 @@ function zoomableImages() {
   });
 }
 
-// Tall media gets a height cap (site.css) so a phone screenshot or recording can't fill the screen.
+// Tall media gets a height cap (site.css) so a phone screenshot or recording can't fill the screen;
+// very wide media (diagrams) gets a minimum height on narrow screens and scrolls sideways instead.
 function markPortrait(media, frame) {
   function check() {
     // Width/height attributes give the shape before a video's metadata has loaded.
@@ -186,7 +187,9 @@ function markPortrait(media, frame) {
     const h = media.naturalHeight || media.videoHeight || Number(media.getAttribute("height"));
     if (w && h) {
       frame.style.setProperty("--aspect", w / h);
+      frame.style.setProperty("--natural-height", h + "px");
       frame.classList.toggle("portrait", h > w * 1.1);
+      frame.classList.toggle("wide", w > h * 3);
     }
   }
   check();
