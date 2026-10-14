@@ -69,7 +69,6 @@
 
   <div class="bottom-wrapper">
     <div class="left-frame">
-      <button onclick="topFunction()" id="topBtn"><span class="hop">screen</span> top</button>
       <div>
         <button onclick="playSoundAndRedirect('audio2', '')" class="panel-3" aria-label="This page's ID">{{ current_code }}</button>
         <div class="sidebar-cluster">
@@ -128,6 +127,7 @@
         <a href="{{ cols[1] }}" title="{{ cols[2] | escape }}"{% if cols[0] == current_code %} class="current" aria-current="page"{% endif %}>{{ cols[0] }}</a>
         {%- endfor %}
       </nav>
+      <button onclick="topFunction()" id="topBtn"><span class="hop">screen</span> top</button>
     </div>
 
     <div class="right-frame">

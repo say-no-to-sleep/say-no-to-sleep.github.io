@@ -452,3 +452,56 @@ main th {
 
 .sitemap { max-width: 40rem; }
 .sitemap .sm-row { display: flex; justify-content: space-between; gap: 1rem; }
+
+/* Link buttons: anchors dressed like the theme's .buttons button, spread evenly across the row. */
+.buttons a {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 0 1 200px;
+  height: 58px;
+  position: relative;
+  padding: 0 0.75rem 0 1rem;
+  background-color: var(--light-gray);
+  border-left: 12px solid var(--orange-red);
+  line-height: normal;
+  text-decoration: none;
+  font-size: var(--sub-fonts);
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.buttons a::before {
+  content: "";
+  width: 12px;
+  height: 100%;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.buttons a:hover {
+  filter: brightness(120%);
+  color: #000;
+}
+
+/* Screen-top button: pinned to the bottom of the window in the sidebar column, and docks at the foot of
+   the sidebar at the page end. site.js keeps it hidden below the window edge until the entry list has scrolled past, so it never covers the keypad.
+   `clip` (not the theme's `hidden`) keeps .bottom-wrapper from becoming the scroll container sticky looks at. */
+.bottom-wrapper {
+  overflow: clip;
+}
+
+.left-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+#topBtn {
+  display: block;
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+}

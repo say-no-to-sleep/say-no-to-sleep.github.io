@@ -347,12 +347,18 @@ function init() {
   document.querySelectorAll(".post-body video").forEach(lcarsVideo);
 
   const topBtn = document.getElementById("topBtn");
-  if (!topBtn) {
-    return;
+  const entries = document.querySelector(".left-frame .panel-8");
+  if (topBtn && entries) {
+    // Keep the button one button-height below the entry list, so it never covers the keypad; it slides up 1:1 with scroll.
+    const slide = () => {
+      const h = topBtn.offsetHeight;
+      const y = Math.min(h, Math.max(0, entries.getBoundingClientRect().bottom + 2 * h - window.innerHeight));
+      topBtn.style.transform = "translateY(" + y + "px)";
+    };
+    window.addEventListener("resize", slide);
+    window.addEventListener("scroll", slide, { passive: true });
+    slide();
   }
-  window.addEventListener("scroll", function () {
-    topBtn.style.display = window.scrollY > 200 ? "block" : "none";
-  });
 }
 
 init();
