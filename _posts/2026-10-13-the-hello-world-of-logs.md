@@ -18,7 +18,6 @@ Please enjoy these sets of comparisons:
 
 Seen above is the GPIO Bitmask Builder page.   
 
-
 ![](/assets/posts/before2.png)
 ![](/assets/posts/after2.png)
 
@@ -53,7 +52,7 @@ And it did serve its purpose! It was flat panels, shiny blacks (dark mode, anyon
 
 ![image.png](/assets/posts/image.png)
 
-Though the buttons are all nonsense, and in practice this UI might not be very optimal, many fans, including myself, have a sense of Nostalgia towards this interface... It has a layer of believability that the characters in the show can use them, and they serve a function. For example many have speculated that the random button numbers serve to confuse enemies in case of boarding action. Fun fact, Wil Weaton (Wesley Crusher) and George Takei (Hikaru Sulu) both invented their own labels for the buttons, and made sure every time they perform an action the button presses are all consistent. That just seems incredibly cool to me.
+Though the buttons are all nonsense, and in practice this UI might not be very optimal, many fans, including myself, have a sense of Nostalgia towards this interface... It has a layer of believability that the characters in the show can use them, and they serve a function. For example many have speculated that the random button numbers serve to confuse enemies in case of boarding action. Fun fact, Wil Weaton (Wesley Crusher) and George Takei (Hikaru Sulu) both invented their own labels for the buttons, and made sure every time they perform an action the button presses are all consistent. The actors treated the Enterprise like a real workplace, with real equipment and procedures. Even though the audience couldn't possibly know what any of those buttons did, the characters acted like they knew... Just incredible stuff.
 
 As the wonders of the world wide web progresses, fans of course wants to produce this experience on the computers. The one I am using here on my site comes from the talented [https://www.thelcars.com/](https://www.thelcars.com/). It's the most true-to-life representation of LCARS I've seen on the net, and provides an assortment of sounds and UI variations. Awesome stuff.
 
