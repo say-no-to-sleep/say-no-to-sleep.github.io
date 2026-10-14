@@ -42,6 +42,50 @@ a:focus-visible {
   width: min(100%, 960px);
 }
 
+/* Several images in one Markdown paragraph sit side by side, wrapping on narrow screens. */
+.post-body .image-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-block: 2.75rem;
+}
+
+/* Equal shares on one line; each wraps to its own line only below 14rem, and never grows past its size class. */
+.post-body .image-row .image-frame {
+  flex: 1 1 0;
+  min-width: min(100%, 11rem);
+  margin: 0;
+}
+
+.post-body .image-row .image-frame.small {
+  max-width: 480px;
+}
+
+.post-body .image-row .image-frame.medium {
+  max-width: 680px;
+}
+
+/* Portrait media (marked by site.js): cap the height and let the frame shrink to the media's width. */
+.post-body .image-frame.portrait {
+  max-width: calc(65vh * var(--aspect) + 60px);
+}
+
+.post-body .image-frame.portrait .image-holder > :is(img, video) {
+  max-height: 65vh;
+  object-fit: contain;
+}
+
+/* Videos leave room for their control bar. */
+.post-body .image-frame.portrait:has(video) {
+  max-width: calc(62vh * var(--aspect) + 60px);
+}
+
+.post-body .image-frame.portrait .image-holder > video {
+  max-height: 62vh;
+}
+
 .image-frame:is(.small, .medium, .large) .imgf-image-body,
 .image-frame:is(.small, .medium, .large) .image-holder {
   width: auto;
@@ -49,6 +93,7 @@ a:focus-visible {
 
 .image-frame:is(.small, .medium, .large) .image-holder > :is(img, video) {
   width: 100%;
+  height: auto;
 }
 
 /* Unframed images keep plain widths. */
@@ -84,67 +129,199 @@ a:focus-visible {
   min-width: 0;
 }
 
-.lcars-video-controls {
+/* The frame's bottom bar doubles as the controls: LCARS blocks for play, mute and
+   full screen, and a seek track with the time inside it. */
+/* Same height and starting point as the theme's decorative blocks, so the bar
+   continues the corner's bottom line. */
+.imgf-base.vid-base {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  height: var(--frame-height);
+  background-color: black;
 }
 
-.lcars-video-controls button {
-  min-width: 5.5rem;
-  height: 2.25rem;
-  padding-inline: 1rem;
-  border-radius: 100vmax;
+.vid-base > * {
+  border-right: var(--spacers) solid black;
+}
+
+.vid-base > :last-child {
+  border-right: none;
+}
+
+.vid-base button {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-width: 2.75rem;
+  padding: 0 0.35rem 0.1rem;
   background-color: var(--light-gray);
-  text-align: right;
+  color: black;
   text-transform: uppercase;
   font-size: var(--sub-fonts);
   font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
 }
 
-.lcars-video-controls .vid-play {
+.vid-base .vid-play {
+  min-width: 3.5rem;
   background-color: var(--light-orange-red);
 }
 
-.lcars-video-controls .vid-time {
-  color: var(--ghost-gray);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+.imgf-title .vid-mute {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-width: 3.25rem;
+  padding: 0 0.35rem 0.1rem;
+  border-inline: var(--spacers) solid black;
+  background-color: var(--ghost-gray);
+  color: black;
+  text-transform: uppercase;
+  font-size: var(--sub-fonts);
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
 }
 
+.imgf-title .vid-mute:hover,
+.imgf-title .vid-mute:focus-visible {
+  filter: brightness(1.15);
+}
+
+.vid-track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 3rem;
+}
+
+/* The seek track fills orange as the video plays; site.js sets --progress. */
 .vid-seek {
-  flex: 1 1 8rem;
-  height: 1rem;
+  display: block;
+  width: 100%;
+  height: 100%;
   appearance: none;
-  background: var(--medium-dark-gray);
+  background: linear-gradient(to right, var(--pale-orange-red) var(--progress, 0%), var(--dark-gray) var(--progress, 0%));
   border-radius: 0;
   cursor: pointer;
 }
 
 .vid-seek::-webkit-slider-thumb {
   appearance: none;
-  width: 0.75rem;
-  height: 1.5rem;
-  background: var(--light-orange-red);
+  width: 4px;
+  height: var(--frame-height);
+  background: var(--ghost-gray);
 }
 
 .vid-seek::-moz-range-thumb {
-  width: 0.75rem;
-  height: 1.5rem;
+  width: 4px;
+  height: var(--frame-height);
   border: none;
   border-radius: 0;
-  background: var(--light-orange-red);
+  background: var(--ghost-gray);
 }
 
-@media (width <= 540px) {
-  .lcars-video-controls {
-    flex-wrap: wrap;
-  }
+/* Rounded end cap, matching the title bar's right end. */
+.vid-base .vid-full {
+  padding-right: 0.6rem;
+  border-radius: 0 100vh 100vh 0;
+}
 
-  .vid-seek {
-    flex-basis: 100%;
-    order: -1;
-  }
+.vid-base button:hover,
+.vid-base button:focus-visible {
+  filter: brightness(1.15);
+}
+
+.vid-base button:active {
+  filter: brightness(0.85);
+}
+
+.vid-track .vid-time {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.1rem;
+  color: var(--ghost-gray);
+  font-size: var(--sub-fonts);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.imgf-title .vid-time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Small, portrait and side-by-side frames use the theme's slimmer tablet-size frame,
+   so the decoration doesn't outweigh the picture. */
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) {
+  --spacers: 0.4rem;
+  --frame-height: 22px;
+  border-radius: 34px 20px 0 34px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame)::before {
+  height: 22px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame)::after {
+  width: 20px;
+  height: 50px;
+  top: 50%;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-title {
+  height: 22px;
+  border-right-width: 20px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-title h4 {
+  margin-top: 0;
+  font-size: 24px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-image-body {
+  margin-left: 20px;
+  padding: 0.4rem;
+  border-radius: 16px 0 0 16px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .image-holder {
+  padding: 0.4rem;
+  border-radius: 10px;
+}
+
+.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-base {
+  margin-left: 48px;
+}
+
+/* Markdown tables: the theme resets all cell spacing. */
+main table {
+  border-collapse: collapse;
+  margin-block: 1rem;
+}
+
+main th,
+main td {
+  padding: 0.35rem 1rem 0.35rem 0;
+  border-bottom: 2px solid var(--medium-dark-gray);
+  text-align: left;
+}
+
+main th {
+  color: var(--light-orange-red);
+  text-transform: uppercase;
+}
+
+/* Fenced code blocks: the theme only styles inline code. Wide lines scroll inside the block. */
+.post-body pre {
+  margin-block: 1rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  background-color: #232323;
+  border-left: 0.5rem solid var(--light-orange-red);
+}
+
+.post-body pre code {
+  font-size: 0.85rem;
+  color: #dcdcdc;
 }

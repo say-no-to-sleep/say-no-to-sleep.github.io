@@ -58,17 +58,45 @@ function frameMedia(media, target) {
 
   target.replaceWith(frame);
   frame.querySelector(".image-holder").appendChild(media);
+  markPortrait(media, frame);
   return frame;
 }
 
-function frameStandaloneImages() {
-  const images = document.querySelectorAll(".post-body p > img");
-  images.forEach(function (img) {
-    const paragraph = img.parentElement;
-    const isAlone = paragraph.children.length === 1 && paragraph.textContent.trim() === "";
-    if (isAlone && !img.classList.contains("plain")) {
-      frameMedia(img, paragraph);
+// Tall media gets a height cap (site.css) so a phone screenshot or recording can't fill the screen.
+function markPortrait(media, frame) {
+  function check() {
+    // Width/height attributes give the shape before a video's metadata has loaded.
+    const w = media.naturalWidth || media.videoWidth || Number(media.getAttribute("width"));
+    const h = media.naturalHeight || media.videoHeight || Number(media.getAttribute("height"));
+    if (w && h) {
+      frame.style.setProperty("--aspect", w / h);
+      frame.classList.toggle("portrait", h > w * 1.1);
     }
+  }
+  check();
+  media.addEventListener(media.tagName === "VIDEO" ? "loadedmetadata" : "load", check);
+}
+
+// A paragraph of only images gets framed; two or more become a side-by-side row.
+function frameStandaloneImages() {
+  document.querySelectorAll(".post-body p").forEach(function (paragraph) {
+    const images = Array.from(paragraph.children);
+    const onlyImages = images.length > 0 && paragraph.textContent.trim() === "" &&
+      images.every(function (el) { return el.tagName === "IMG" && !el.classList.contains("plain"); });
+    if (!onlyImages) {
+      return;
+    }
+    if (images.length === 1) {
+      frameMedia(images[0], paragraph);
+      return;
+    }
+    const row = document.createElement("div");
+    row.className = "image-row";
+    paragraph.replaceWith(row);
+    images.forEach(function (img) {
+      row.appendChild(img);
+      frameMedia(img, img);
+    });
   });
 }
 
@@ -82,23 +110,41 @@ function formatTime(seconds) {
 
 // Replace the browser's video controls with LCARS ones. Native controls stay if this never runs.
 function lcarsVideo(video) {
-  frameMedia(video, video);
+  const frame = frameMedia(video, video);
   video.controls = false;
 
-  const bar = document.createElement("div");
-  bar.className = "lcars-video-controls";
+  // The frame's decorative bottom blocks become the controls.
+  const bar = frame.querySelector(".imgf-base");
+  bar.className = "imgf-base vid-base";
   bar.innerHTML =
     '<button type="button" class="vid-play">play</button>' +
+    '<div class="vid-track">' +
     '<input type="range" class="vid-seek" min="0" max="1000" value="0" aria-label="Seek">' +
     '<span class="vid-time" aria-live="off">00:00 / 00:00</span>' +
-    '<button type="button" class="vid-mute">mute</button>' +
+    "</div>" +
     '<button type="button" class="vid-full">full</button>';
-  video.after(bar);
+
+  // Mute sits in the title bar, leaving the bottom bar to play, seek and full screen.
+  const muteButton = document.createElement("button");
+  muteButton.type = "button";
+  muteButton.className = "vid-mute";
+  muteButton.textContent = "mute";
+  frame.querySelector(".imgf-title").prepend(muteButton);
+
+  // An untitled video shows its time readout in the frame's title bar instead of on the seek track.
+  if (!video.title) {
+    const wrapper = document.createElement("div");
+    const heading = document.createElement("h4");
+    wrapper.className = "h4-wrapper";
+    heading.appendChild(bar.querySelector(".vid-time"));
+    wrapper.appendChild(heading);
+    frame.querySelector(".imgf-title").appendChild(wrapper);
+  }
 
   const play = bar.querySelector(".vid-play");
   const seek = bar.querySelector(".vid-seek");
-  const time = bar.querySelector(".vid-time");
-  const mute = bar.querySelector(".vid-mute");
+  const time = frame.querySelector(".vid-time");
+  const mute = muteButton;
   const full = bar.querySelector(".vid-full");
   let seeking = false;
 
@@ -121,6 +167,7 @@ function lcarsVideo(video) {
     if (!seeking && video.duration) {
       seek.value = String(Math.round((video.currentTime / video.duration) * 1000));
     }
+    seek.style.setProperty("--progress", seek.value / 10 + "%");
   }
 
   play.addEventListener("click", function () {
@@ -142,6 +189,7 @@ function lcarsVideo(video) {
   });
   seek.addEventListener("input", function () {
     seeking = true;
+    seek.style.setProperty("--progress", seek.value / 10 + "%");
     if (video.duration) {
       video.currentTime = (Number(seek.value) / 1000) * video.duration;
     }

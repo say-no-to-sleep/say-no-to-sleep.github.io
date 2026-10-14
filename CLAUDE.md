@@ -9,7 +9,7 @@ Personal website for Jinyuan (Eugene) Zhao: portfolio plus a project-update blog
 - Image captions: a paragraph followed by `{: .caption}`.
 - Videos: raw `<video controls>` HTML in the Markdown. `site.js` frames it and swaps the native controls for LCARS ones; size classes go on the frame, never as fixed image widths (those overflow narrow screens).
 - `site.css`/`site.js` links carry a build-time `?v=` stamp so browsers don't keep stale copies.
-- Post images: a Markdown image alone in its paragraph is wrapped in the LCARS frame by `assets/site.js`; its Markdown title becomes the frame title. Sizes: `{: .small}`, `{: .medium}`, `{: .large}` after the image; `{: .plain}` skips the frame. The `frame.html` include does the same in Liquid.
+- Post images: a Markdown image alone in its paragraph is wrapped in the LCARS frame by `assets/site.js`; its Markdown title becomes the frame title. Sizes: `{: .small}`, `{: .medium}`, `{: .large}` after the image; `{: .plain}` skips the frame. Images on consecutive lines (one paragraph) become a side-by-side row that wraps on narrow screens. The `frame.html` include does the same in Liquid.
 - `.pages.yml` configures Pages CMS, the browser editor for posts.
 - Theme component markup and class names: `docs/lcars-components.md`.
 - `assets/picard.css` is the vendor theme. Put site changes in `assets/site.css`, not in it.
