@@ -3,7 +3,6 @@ title: Astrodyn
 dates: Aug 2026 – Sep 2026
 details: Python, NumPy, pytest, SPICE
 summary: A dependency-light Python astrodynamics library built from scratch, with a two-body propagator, a safeguarded Lambert solver, and an Earth-to-Mars porkchop plot.
-order: 1
 ---
 A small Python orbital mechanics library built from scratch on NumPy, following Curtis's *Orbital Mechanics for Engineering Students* chapter by chapter. It propagates orbits, converts between state vectors and orbital elements, and solves Lambert's problem, and it powers an Earth-to-Mars launch window plot driven by real JPL ephemerides. The code is on [GitHub](https://github.com/say-no-to-sleep/astrodyn).
 

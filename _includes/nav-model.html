@@ -14,7 +14,7 @@
 
 {%- assign nav_items = top_items -%}
 {%- if section == "projects" -%}
-  {%- assign source = site.projects | where_exp: "p", "p.unlisted != true" | sort: "order" -%}
+  {%- assign source = site.projects | where_exp: "p", "p.unlisted != true" -%}
 {%- elsif section == "posts" -%}
   {%- assign source = site.posts | where_exp: "p", "p.unlisted != true" -%}
 {%- endif -%}

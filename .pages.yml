@@ -40,7 +40,7 @@ content:
     path: _projects
     filename: "{primary}.md"
     view:
-      fields: [title, dates, order]
+      fields: [title, dates]
     fields:
       - name: title
         label: Title
@@ -55,9 +55,6 @@ content:
       - name: summary
         label: Summary (shown in lists)
         type: text
-      - name: order
-        label: Order (1 = top of list)
-        type: number
       - name: unlisted
         label: Unlisted (reachable only by typing its ID on the keypad)
         type: boolean

@@ -1,6 +1,6 @@
 ---
 title: The Master Plan (Tentative)
-project: Polytrack-AI
+project: _projects/polytrack-ai.md
 ---
 The end goal of this project is, of course, assert machine dominance over humans in this web based game that only the most tryhards are grinding.
 

@@ -3,7 +3,6 @@ title: Initiator Drone
 dates: Jun 2026 – Sep 2026
 details: Python, OpenCV, Swift, ARKit, Metal, ROS 2
 summary: A thermal, depth, and gyro sensor module for indoor reconnaissance that tracks itself in 3D and shows people's body heat to an operator in AR on an iPhone.
-order: 2
 ---
 A sensor module meant to ride on a small indoor drone and scout a room before people go in. It carries an RGB-D camera, a thermal camera, and a gyro on a Raspberry Pi; it tracks its own position, builds a 3D map, and shows an operator where people's body heat is, overlaid in AR on an iPhone, even when the operator is behind a wall. The idea came from the "reveal" abilities in games like Valorant.
 

@@ -140,6 +140,7 @@ function zoomableImages() {
     if (!photo) {
       return;
     }
+    playSoundAndRedirect("audio3", "");
     morph(photo, function () {
       dialog.close();
       dialog.replaceChildren();
@@ -289,7 +290,10 @@ function lcarsVideo(video) {
     beep();
     togglePlay();
   });
-  video.addEventListener("click", togglePlay);
+  video.addEventListener("click", function () {
+    beep();
+    togglePlay();
+  });
   mute.addEventListener("click", function () {
     beep();
     video.muted = !video.muted;
@@ -310,6 +314,7 @@ function lcarsVideo(video) {
     }
   });
   seek.addEventListener("change", function () {
+    playSoundAndRedirect("audio1", "");
     seeking = false;
   });
   ["play", "pause", "timeupdate", "loadedmetadata", "volumechange"].forEach(function (name) {

@@ -61,5 +61,3 @@ I have taken some... liberty in assigning buttons on the side bar to actions. In
 Now the keen eyed might have noticed that the tools page is gone! Now where did that go... don't worry they will mysteriously appear one day!
 
 I hope you enjoy my website! I will be adding more blog posts in the future. In fact I have a few in the backlog so I'll just paste them here real quick...
-
-END LOG

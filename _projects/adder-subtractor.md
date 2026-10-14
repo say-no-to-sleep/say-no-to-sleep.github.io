@@ -3,7 +3,6 @@ title: 4-Bit Binary Adder/Subtractor
 dates: June 2024
 details: Logisim, Tinkercad, NPN transistors
 summary: A 4-bit arithmetic unit built from discrete NPN transistors, passive components, six breadboards, and a lot of wiring.
-order: 6
 ---
 
 This is a hardware-focused capstone with [Andrew Yong](https://www.linkedin.com/in/heng-yong-215927362/): A 4-bit arithmetic unit built from discrete NPN transistors and other components.

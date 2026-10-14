@@ -3,7 +3,6 @@ title: Secure ECG Data Transmission System
 dates: Oct 2024 – Dec 2024
 details: C, STM32 HAL, UART, I2C
 summary: Two STM32 microcontrollers transmitting simulated ECG data with encryption, UART communication, and OLED display output.
-order: 4
 ---
 An ECE 198 (Project Studio) team project with [Vishnu Ajit](https://www.linkedin.com/in/vishnu-ajit-a56760283/): two STM32 microcontrollers that send a simulated ECG signal from one board to the other, encrypted, and draw it as a scrolling trace on OLED screens. The code is on [GitHub](https://github.com/YeehawMcfly/ECE198-STM32).
 

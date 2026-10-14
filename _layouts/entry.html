@@ -3,14 +3,14 @@ layout: default
 ---
 <article>
   <h1>{{ page.title }}</h1>
-  <p class="uppercase go-right">{{ page.dates }}{% if page.details %} · {{ page.details }}{% endif %}</p>
+  <p class="uppercase go-right">{{ page.dates }}{% if page.details %} · {{ page.details }}{% endif %}{% if page.dates contains "present" %} · <span class="blink-slow font-light-orange-red">in progress</span>{% endif %}</p>
   <div class="post-body">
     {{ content | replace: "<ul>", '<ul class="lcars-list">' }}
   </div>
 
   {%- assign updates = site.posts | where: "project", page.path %}
   {%- if updates.size > 0 %}
-  <h2>Project updates</h2>
+  <div class="lcars-text-bar"><h2>Project updates</h2></div>
   <ul class="lcars-list">
     {%- for post in updates %}
     <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> · {{ post.date | date: "%Y-%m-%d" }}</li>

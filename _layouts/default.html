@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+  <title>{% if page.title and page.url != "/" %}{{ page.title }} | {% endif %}{{ site.title }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
@@ -24,7 +24,7 @@
       <div class="top-display-left">
         <div class="chunk"> </div>
         <div class="button-4-wrapper">
-          <button onclick="playSoundAndRedirect('audio5', '')" class="button-4">LCARS <span class="hop">&nbsp;<span id="stardate">{% include stardate.html date=site.time %}</span></span></button>
+          <button onclick="playSoundAndRedirect('audio1', '')" class="button-4">LCARS <span class="hop">&nbsp;<span id="stardate">{% include stardate.html date=site.time %}</span></span></button>
         </div>
         {%- comment -%} Below the stardate: a Missions block, then the elbow as the Logs button (site.css). Home is the name in the header. {%- endcomment %}
         <nav class="left-nav" aria-label="Primary">
@@ -34,7 +34,7 @@
       </div>
       <div class="top-display-right">
         <div class="lcars-heading">
-          <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+          <a href="{{ '/' | relative_url }}" onclick="event.preventDefault(); playSoundAndRedirect('audio5', this.href)">{{ site.title }}</a>
         </div>
         <div class="lcars-access">
           {{ site.description }}
@@ -71,7 +71,7 @@
   <div class="bottom-wrapper">
     <div class="left-frame">
       <div>
-        <button onclick="playSoundAndRedirect('audio2', '')" class="panel-3" aria-label="This page's ID">{{ current_code }}</button>
+        <button onclick="playSoundAndRedirect('audio1', '')" class="panel-3" aria-label="This page's ID">{{ current_code }}</button>
         <div class="sidebar-cluster">
           <div id="cluster-alpha">
             <div class="panel-4-sister"> </div>
@@ -125,7 +125,7 @@
       <nav class="panel-8" aria-label="Entries in this section">
         {%- for r in nav_items limit: 8 %}
         {%- assign cols = r | split: "|" %}
-        <a href="{{ cols[1] }}" title="{{ cols[2] | escape }}"{% if cols[0] == current_code %} class="current" aria-current="page"{% endif %}>{{ cols[0] }}</a>
+        <a href="{{ cols[1] }}" title="{{ cols[2] | escape }}" onclick="event.preventDefault(); playSoundAndRedirect('audio5', this.href)"{% if cols[0] == current_code %} class="current" aria-current="page"{% endif %}>{{ cols[0] }}</a>
         {%- endfor %}
       </nav>
       <button onclick="topFunction()" id="topBtn"><span class="hop">screen</span> top</button>

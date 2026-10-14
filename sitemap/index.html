@@ -7,8 +7,9 @@ title: Site map
   <li><span class="sm-row"><a href="{{ '/' | relative_url }}">Comms</a><span>01-0000</span></span></li>
   <li><span class="sm-row"><a href="{{ '/projects/' | relative_url }}">Missions</a><span>02-0000</span></span>
     <ul>
-      {%- assign missions = site.projects | where_exp: "p", "p.unlisted != true" | sort: "order" %}
-      {%- for p in missions %}
+      {%- assign listed = site.projects | where_exp: "p", "p.unlisted != true" %}
+      {%- include missions-by-date.html items=listed %}
+      {%- for p in missions_by_date %}
       <li><span class="sm-row"><a href="{{ p.url | relative_url }}">{{ p.title }}</a><span>{% include page-code.html item=p %}</span></span></li>
       {%- endfor %}
     </ul>
@@ -20,5 +21,4 @@ title: Site map
       {%- endfor %}
     </ul>
   </li>
-  <li><a href="{{ '/tools/' | relative_url }}">Tools</a></li>
 </ul>

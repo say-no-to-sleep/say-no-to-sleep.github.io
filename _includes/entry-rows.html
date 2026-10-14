@@ -1,7 +1,7 @@
 {%- comment -%} Missions or logs index: a pill button with the entry's number (0001...) on the left, its description on the right.
-  Usage: include entry-rows.html items=site.projects (sorted by order) or items=site.posts (newest first); optional limit=5. {%- endcomment -%}
+  Usage: include entry-rows.html items=site.projects (newest ID first) or items=site.posts (newest first); optional limit=5. {%- endcomment -%}
 {%- assign entries = include.items -%}
-{%- if entries.first.collection == "projects" -%}{%- assign entries = entries | sort: "order" -%}{%- endif -%}
+{%- if entries.first.collection == "projects" -%}{%- include missions-by-date.html items=entries -%}{%- assign entries = missions_by_date -%}{%- endif -%}
 {%- assign limit = include.limit | default: entries.size -%}
 <div class="entry-rows">
   {%- for entry in entries limit: limit %}
@@ -12,9 +12,9 @@
     <div class="entry-desc">
       <div class="entry-title">{{ entry.title }}</div>
       {%- if entry.collection == "posts" %}
-      <div class="entry-meta">{{ entry.date | date: "%Y-%m-%d" }} · SD {% include stardate.html date=entry.date %}{% include project-link.html path=entry.project %}</div>
+      <div class="entry-meta">{{ entry.date | date: "%Y-%m-%d" }} · STARDATE {% include stardate.html date=entry.date %}{% include project-link.html path=entry.project %}</div>
       {%- else %}
-      <div class="entry-meta">{{ entry.dates }}</div>
+      <div class="entry-meta">{{ entry.dates }}{% if entry.dates contains "present" %} · <span class="blink-slow font-light-orange-red">in progress</span>{% endif %}</div>
       <p>{{ entry.summary }}</p>
       {%- endif %}
     </div>

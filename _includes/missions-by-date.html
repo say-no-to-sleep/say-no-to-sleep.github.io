@@ -1,0 +1,14 @@
+{%- comment -%} Sets missions_by_date: include.items (projects) sorted by page ID, newest first, so lists match the IDs.
+  Usage: include missions-by-date.html items=site.projects {%- endcomment -%}
+{%- assign mbd_keys = "" | split: "" -%}
+{%- for p in include.items -%}
+{%- capture mbd_key -%}{% include page-code.html item=p %}|{{ p.path }}{%- endcapture -%}
+{%- assign mbd_keys = mbd_keys | push: mbd_key -%}
+{%- endfor -%}
+{%- assign mbd_keys = mbd_keys | sort | reverse -%}
+{%- assign missions_by_date = "" | split: "" -%}
+{%- for k in mbd_keys -%}
+{%- assign mbd_path = k | split: "|" | last -%}
+{%- assign mbd_item = include.items | where: "path", mbd_path | first -%}
+{%- assign missions_by_date = missions_by_date | push: mbd_item -%}
+{%- endfor -%}

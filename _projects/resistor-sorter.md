@@ -3,7 +3,6 @@ title: Automatic Resistor Sorter
 dates: Apr 2024 – Jun 2024
 details: Python, OpenCV, Scikit-learn, Roboflow, Raspberry Pi
 summary: A Raspberry Pi, computer vision, and machine learning project for identifying resistor color bands and controlling a sorting mechanism.
-order: 5
 ---
 A Grade 12 Computer Engineering project: a 3D-printed conveyor carries a resistor under a Raspberry Pi camera, the software reads its color bands and calculates its value, and the conveyor drops it into one of five bins by order of magnitude.
 

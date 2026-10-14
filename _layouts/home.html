@@ -1,17 +1,18 @@
 ---
 layout: default
 ---
-<h1 class="go-center">{{ site.title }}</h1>
-<h2 class="flush go-center">{{ site.description }}</h2>
+{%- comment -%} The header already shows the name; this h1 is only for screen readers and outlines. {%- endcomment %}
+<h1 class="visually-hidden">{{ site.title }}</h1>
 
+{%- comment -%} Markdown h2s become LCARS text bars; keep home headings short, the bar doesn't wrap. {%- endcomment %}
 <div class="post-body">
-  {{ content | replace: "<ul>", '<ul class="lcars-list">' }}
+  {{ content | replace: "<ul>", '<ul class="lcars-list">' | replace: "<h2 ", '<div class="lcars-text-bar"><h2 ' | replace: "</h2>", "</h2></div>" }}
 </div>
 
-<h2>Missions</h2>
+<div class="lcars-text-bar"><h2>Missions</h2></div>
 {% include entry-rows.html items=site.projects %}
 
-<h2>Latest logs</h2>
+<div class="lcars-text-bar"><h2>Latest logs</h2></div>
 {% include entry-rows.html items=site.posts limit=5 %}
 
 <div class="buttons justify-center">

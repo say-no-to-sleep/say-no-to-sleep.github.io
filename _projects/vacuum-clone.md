@@ -3,7 +3,6 @@ title: VacuumClone
 dates: Dec 2025
 details: Swift, SwiftUI, AppKit
 summary: A native macOS utility built in Swift that gives users a simple free “quit all apps” button.
-order: 3
 ---
 > *Ever wish you had a ‘quit all apps’ button on macOS?*
 
