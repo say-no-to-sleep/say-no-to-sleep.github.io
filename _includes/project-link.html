@@ -1,3 +1,6 @@
 {%- comment -%} Link to the project a post belongs to. Posts store the project file path, e.g. project: _projects/resistor-sorter.md {%- endcomment -%}
+{%- comment -%} Jekyll's where with a nil value returns every project, so posts without one would show the first. {%- endcomment -%}
+{%- if include.path -%}
 {%- assign linked = site.projects | where: "path", include.path | first -%}
 {%- if linked %} · <a href="{{ linked.url | relative_url }}">{{ linked.title }}</a>{% endif -%}
+{%- endif -%}
