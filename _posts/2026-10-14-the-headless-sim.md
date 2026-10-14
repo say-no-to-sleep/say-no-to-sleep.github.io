@@ -34,7 +34,7 @@ Giving it the champion's run on Desert 1 and it did finish exactly at frame 2524
 
 It does this entire loop in about 190ms which if you calculate against the actual playtime, is 130~160x real time... Bonkers. And on a single core as well. 
 
-If I accidentally forgot to disclose why I chose Desert 1, it's because of the ramp at the start. Please feel free to go check the ramp.
+If I accidentally forgot to disclose why I chose Desert 1, it's because of the ramp at the start which we want to conquer. Please feel free to go check the ramp.
 
 So now what, we got a simulator and we got data. Let’s try nudging things a bit. I’m sure nothing will go wrong.
 
