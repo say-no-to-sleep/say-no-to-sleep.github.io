@@ -251,46 +251,46 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Small, portrait and side-by-side frames use the theme's slimmer tablet-size frame,
+/* All post and zoom frames use the theme's slimmer tablet-size frame,
    so the decoration doesn't outweigh the picture. */
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) {
+:is(.post-body, .image-zoom) .image-frame {
   --spacers: 0.4rem;
   --frame-height: 22px;
   border-radius: 34px 20px 0 34px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame)::before {
+:is(.post-body, .image-zoom) .image-frame::before {
   height: 22px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame)::after {
+:is(.post-body, .image-zoom) .image-frame::after {
   width: 20px;
   height: 50px;
   top: 50%;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-title {
+:is(.post-body, .image-zoom) .image-frame .imgf-title {
   height: 22px;
   border-right-width: 20px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-title h4 {
+:is(.post-body, .image-zoom) .image-frame .imgf-title h4 {
   margin-top: 0;
   font-size: 24px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-image-body {
+:is(.post-body, .image-zoom) .image-frame .imgf-image-body {
   margin-left: 20px;
   padding: 0.4rem;
   border-radius: 16px 0 0 16px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .image-holder {
+:is(.post-body, .image-zoom) .image-frame .image-holder {
   padding: 0.4rem;
   border-radius: 10px;
 }
 
-.post-body :is(.image-frame.small, .image-frame.portrait, .image-row .image-frame) .imgf-base {
+:is(.post-body, .image-zoom) .image-frame .imgf-base {
   margin-left: 48px;
 }
 
@@ -504,4 +504,79 @@ main th {
   position: sticky;
   bottom: 0;
   margin-top: auto;
+}
+
+/* Click-to-zoom overlay (zoomableImages in site.js). */
+.post-body .image-frame img {
+  cursor: zoom-in;
+}
+
+.image-zoom {
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 1rem;
+  margin: auto; /* the theme resets dialog margins, which pins it to the corner */
+  border: none;
+  background: transparent;
+  cursor: zoom-out;
+  outline: none;
+}
+
+.image-zoom::backdrop {
+  background: rgb(0 0 0 / 0.85);
+}
+
+/* The frame and the photo share one grid cell; the filter makes the frame's black gaps see-through. */
+.zoom-stack {
+  display: grid;
+}
+
+.zoom-stack > * {
+  grid-area: 1 / 1;
+}
+
+.image-zoom .image-frame {
+  margin: 0;
+  filter: url(#lcars-cutout);
+}
+
+.image-zoom .image-frame img {
+  visibility: hidden;
+}
+
+/* Lines up with the hidden placeholder: slim frame column/title (20px/22px) + body and holder padding + holder border. */
+.zoom-photo {
+  align-self: start;
+  justify-self: start;
+  margin: calc(22px + 0.8rem + 2px) 0 0 calc(20px + 0.8rem + 2px);
+}
+
+.image-zoom img {
+  display: block;
+  max-width: calc(100vw - 12rem);
+  max-height: calc(100vh - 14rem);
+}
+
+/* Zoom animation: the photo morphs (site.js); the frame draws in from the top-left in hard LCARS steps. */
+::view-transition-group(zoom-photo) {
+  animation-duration: 0.25s;
+}
+
+::view-transition-group(root) {
+  animation-duration: 0.2s;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .image-zoom[open] .image-frame {
+    animation: frame-draw 0.3s steps(5, jump-end);
+  }
+}
+
+@keyframes frame-draw {
+  from {
+    clip-path: inset(0 100% 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
 }

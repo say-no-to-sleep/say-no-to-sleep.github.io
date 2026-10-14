@@ -101,6 +101,82 @@ function frameMedia(media, target) {
   return frame;
 }
 
+// Click a framed image to view it full size in its own LCARS frame; click anywhere or press Esc to close.
+// The photo morphs between its spot on the page and the big frame (View Transitions) where the browser supports it.
+function zoomableImages() {
+  const dialog = document.createElement("dialog");
+  dialog.className = "image-zoom";
+  document.body.appendChild(dialog);
+  // The theme paints the frame's gaps black. This filter turns black into transparent (alpha = 20 × (r+g+b))
+  // so the dimmed page shows through them; site.css applies it to the zoom frame.
+  document.body.insertAdjacentHTML("beforeend",
+    '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="lcars-cutout" color-interpolation-filters="sRGB">' +
+    '<feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  20 20 20 0 0"/></filter></svg>');
+
+  let opener = null;
+
+  // Run `update`, morphing `from` into the element it returns.
+  function morph(from, update) {
+    if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      update();
+      return;
+    }
+    from.style.viewTransitionName = "zoom-photo";
+    let to;
+    const transition = document.startViewTransition(function () {
+      from.style.viewTransitionName = "";
+      to = update();
+      to.style.viewTransitionName = "zoom-photo";
+    });
+    // A skipped transition (e.g. a hidden tab) still runs `update`, just without the morph.
+    transition.ready.catch(function () {});
+    transition.finished.finally(function () {
+      to.style.viewTransitionName = "";
+    });
+  }
+
+  function close() {
+    const photo = dialog.querySelector(".zoom-photo");
+    if (!photo) {
+      return;
+    }
+    morph(photo, function () {
+      dialog.close();
+      dialog.replaceChildren();
+      return opener;
+    });
+  }
+
+  dialog.addEventListener("click", close);
+  dialog.addEventListener("cancel", function (event) {
+    event.preventDefault();
+    close();
+  });
+
+  document.querySelectorAll(".post-body .image-frame img").forEach(function (img) {
+    img.addEventListener("click", function () {
+      opener = img;
+      playSoundAndRedirect("audio2", "");
+      morph(img, function () {
+        // The filter would also hollow out dark pixels in the picture, so the framed copy is only a hidden
+        // placeholder and an unfiltered copy is stacked on top of it.
+        const placeholder = img.cloneNode();
+        placeholder.className = "";
+        const photo = img.cloneNode();
+        photo.className = "zoom-photo";
+        const stack = document.createElement("div");
+        stack.className = "zoom-stack";
+        const slot = document.createElement("div");
+        stack.append(slot, photo);
+        dialog.appendChild(stack);
+        frameMedia(placeholder, slot);
+        dialog.showModal();
+        return photo;
+      });
+    });
+  });
+}
+
 // Tall media gets a height cap (site.css) so a phone screenshot or recording can't fill the screen.
 function markPortrait(media, frame) {
   function check() {
@@ -344,6 +420,7 @@ function init() {
   updateStardate();
   initKeypad();
   frameStandaloneImages();
+  zoomableImages();
   document.querySelectorAll(".post-body video").forEach(lcarsVideo);
 
   const topBtn = document.getElementById("topBtn");
