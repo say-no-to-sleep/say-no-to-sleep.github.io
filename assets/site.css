@@ -455,6 +455,8 @@ main th {
 }
 
 .sitemap { max-width: 40rem; }
+/* Nested lists aren't .lcars-list, so they kept the browser's circle bullet next to the LCARS pill. */
+.lcars-list ul { list-style: none; }
 .sitemap .sm-row { display: flex; justify-content: space-between; gap: 1rem; }
 
 /* Link buttons: anchors dressed like the theme's .buttons button, spread evenly across the row. */
